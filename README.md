@@ -24,7 +24,7 @@ Open `http://127.0.0.1:8765/` for the invitation or `http://127.0.0.1:8765/admin
 
 ## GitHub Pages
 
-The workflow in `.github/workflows/deploy.yml` publishes the site after a push to `main`. Once the first deployment succeeds, the site will be available at:
+The repository is public, and GitHub Pages is configured to use **GitHub Actions** as its source. The workflow in `.github/workflows/deploy.yml` publishes the static site after a push to `main`. Once deployment completes, the site address is:
 
 `https://deciever002.github.io/wedding-invite/`
 
