@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#190f19">
+  <meta name="description" content="An invitation to celebrate Ria and Manas in Nagpur, 19–21 November.">
+  <meta property="og:title" content="Ria & Manas — A Wedding in Five Acts">
+  <meta property="og:description" content="Open the letter. Step into five little wedding films. Celebrate with us in Nagpur.">
+  <title>Ria & Manas — A Wedding in Five Acts</title>
+  <link rel="icon" href="assets/lotus.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="masthead">
+    <a class="monogram" href="#cover" aria-label="Ria and Manas invitation cover">R<span>✦</span>M</a>
+    <p class="masthead-label">A WEDDING IN FIVE ACTS <span>·</span> NAGPUR</p>
+    <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Turn music on" hidden>
+      <span class="sound-icon" aria-hidden="true">♫</span><span id="sound-label">SOUND OFF</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="cover" id="cover" aria-labelledby="cover-title">
+      <div class="cover-orbit cover-orbit--one" aria-hidden="true"></div>
+      <div class="cover-orbit cover-orbit--two" aria-hidden="true"></div>
+      <div class="cover-stars" aria-hidden="true"><i>✦</i><i>·</i><i>✧</i><i>·</i><i>✦</i></div>
+      <p class="cover-overline">AN INVITATION FOR YOU</p>
+
+      <div class="envelope-scene" id="envelope-scene">
+        <div class="envelope-shadow" aria-hidden="true"></div>
+        <article class="letter-paper" id="letter-paper" aria-label="Wedding invitation letter">
+          <div class="letter-corner letter-corner--tl" aria-hidden="true">✦</div>
+          <div class="letter-corner letter-corner--tr" aria-hidden="true">✦</div>
+          <div class="letter-corner letter-corner--bl" aria-hidden="true">✦</div>
+          <div class="letter-corner letter-corner--br" aria-hidden="true">✦</div>
+          <p class="letter-label">WITH IMMENSE JOY &amp; HAPPINESS</p>
+          <h1 id="cover-title">Ria <i>&amp;</i><br>Manas</h1>
+          <p class="letter-subtitle">invite you to celebrate</p>
+          <div class="letter-rule" aria-hidden="true"><span>✦</span></div>
+          <p class="letter-to" id="guest-greeting">Dear Friends &amp; Family,</p>
+          <p class="letter-copy">With immense joy, we invite you to celebrate the beautiful beginning of Ria and Manas’s new journey together. Your presence, love, and blessings will make these special moments even more memorable.</p>
+          <p class="letter-date">19—21 NOVEMBER <span>·</span> NAGPUR</p>
+          <button class="letter-continue" id="begin-journey" type="button">
+            ENTER THE CELEBRATIONS <span aria-hidden="true">↘</span>
+          </button>
+        </article>
+
+        <div class="envelope" id="envelope" aria-hidden="true">
+          <div class="envelope-back"></div>
+          <div class="envelope-pocket"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-seal"><span>M</span><i>✦</i><span>R</span></div>
+        </div>
+      </div>
+
+      <button class="open-invite" id="open-invite" type="button" aria-expanded="false" aria-controls="letter-paper">
+        <span class="open-icon" aria-hidden="true">↗</span>
+        <span><strong>Open your invitation</strong><small>Tap to unfold the letter</small></span>
+      </button>
+      <p class="cover-footnote">A LITTLE FILM FOR OUR FAVOURITE PEOPLE <span>✦</span></p>
+    </section>
+
+    <section class="journey-intro" id="journey-intro" hidden aria-labelledby="journey-title">
+      <div class="journey-intro-mark" aria-hidden="true">✦</div>
+      <p class="eyebrow">THREE DAYS <span>·</span> FIVE MOMENTS <span>·</span> ONE BEAUTIFUL BEGINNING</p>
+      <h2 id="journey-title">Let the celebrations<br>unfold.</h2>
+      <p class="journey-intro-copy">Each moment has a little story of its own.<br>Stay for the film; then the details will find you.</p>
+      <button class="start-story" id="start-story" type="button">BEGIN THE STORY <span aria-hidden="true">↓</span></button>
+      <div class="journey-intro-line" aria-hidden="true"></div>
+      <p class="journey-intro-small">ONE SLIDE AT A TIME <span>✦</span></p>
+    </section>
+
+    <div class="event-journey" id="event-journey" hidden>
+      <div class="story-progress" aria-hidden="true"><span id="story-progress-fill"></span></div>
+      <div class="story-counter" id="story-counter" aria-live="polite">01 <span>/</span> 05</div>
+      <button class="journey-exit" type="button" data-exit aria-label="Return to the invitation letter">← <span>BACK TO LETTER</span></button>
+
+      <section class="event-chapter is-active" id="janeu" data-index="0" aria-labelledby="janeu-title">
+        <div class="chapter-art" style="--event-poster:url('assets/events/janeu.jpg')">
+          <div class="film-backdrop" aria-hidden="true"></div>
+          <video class="chapter-film" muted playsinline preload="none" poster="assets/events/janeu.jpg" aria-label="Full-frame cinematic video of a Janeu ceremony">
+            <source src="assets/events/janeu.mp4" type="video/mp4">
+          </video>
+          <div class="art-shade" aria-hidden="true"></div>
+          <div class="art-grain" aria-hidden="true"></div>
+          <div class="art-light" aria-hidden="true"></div>
+          <div class="event-effects event-effects--janeu" aria-hidden="true">
+            <svg class="janeu-thread" viewBox="0 0 420 240" preserveAspectRatio="none">
+              <path class="thread-shadow" d="M-20 162 C56 104 93 181 152 139 S258 102 318 143 S382 175 442 112" />
+              <path class="thread-line" d="M-20 158 C56 100 93 177 152 135 S258 98 318 139 S382 171 442 108" />
+              <path class="thread-highlight" d="M-20 154 C56 96 93 173 152 131 S258 94 318 135 S382 167 442 104" />
+              <circle class="thread-glint" cx="151" cy="135" r="3"/><circle class="thread-glint thread-glint--two" cx="318" cy="139" r="2.5"/>
+            </svg>
+          </div>
+          <div class="chapter-meta"><span>ACT 01</span><i>✦</i><span>19 NOVEMBER</span></div>
+          <div class="intro-title">
+            <p>A BLESSED BEGINNING</p>
+            <h2 id="janeu-title">Janeu<br>Ceremony</h2>
+            <span class="scene-status"><b></b> A MOMENT IS UNFOLDING</span>
+          </div>
+          <div class="film-progress" aria-hidden="true"><span></span></div>
+          <button class="scene-skip" type="button" data-advance>NEXT EVENT <span aria-hidden="true">↗</span></button>
+          <div class="frame-corner frame-corner--top" aria-hidden="true"></div>
+          <div class="frame-corner frame-corner--bottom" aria-hidden="true"></div>
+        </div>
+        <div class="chapter-info">
+          <div class="waiting-copy"><span class="waiting-orbit"><span>✦</span></span><p>THE MOMENT IS UNFOLDING</p></div>
+          <div class="event-reveal" aria-hidden="true">
+          <p class="info-index">A SACRED THREAD <span>·</span> A NEW CHAPTER</p>
+          <h3>Janeu Ceremony</h3>
+          <div class="event-details">
+            <div><span>WHEN</span><strong>19th November<br>10:00 AM onwards</strong></div>
+            <div><span>WHERE</span><strong>Rihayash<br>Rajnagar, Nagpur</strong></div>
+          </div>
+          <div class="info-actions">
+            <a class="map-action" href="https://www.google.com/maps/search/?api=1&amp;query=Rihayash+Rajnagar+Nagpur" target="_blank" rel="noopener noreferrer">OPEN IN MAPS <span aria-hidden="true">↗</span></a>
+            <button class="replay-action" type="button" data-replay>REPLAY SCENE <span aria-hidden="true">↻</span></button>
+          </div>
+          <button class="next-event" type="button" data-next="1"><span>UP NEXT</span> HALDI CARNIVAL <i aria-hidden="true">↓</i></button>
+          </div>
+          <span class="info-watermark" aria-hidden="true">01</span>
+        </div>
+      </section>
+
+      <section class="event-chapter" id="haldi" data-index="1" aria-labelledby="haldi-title">
+        <div class="chapter-art" style="--event-poster:url('assets/events/haldi-carnival.jpg')">
+          <div class="film-backdrop" aria-hidden="true"></div>
+          <video class="chapter-film" muted playsinline preload="none" poster="assets/events/haldi-carnival.jpg" aria-label="Full-frame cinematic video of the Haldi Carnival arrival on a decorated ATV">
+            <source src="assets/events/haldi-carnival.mp4" type="video/mp4">
+          </video>
+          <div class="art-shade" aria-hidden="true"></div><div class="art-grain" aria-hidden="true"></div><div class="art-light" aria-hidden="true"></div>
+          <div class="event-effects event-effects--haldi" aria-hidden="true">
+            <span class="gulal-cloud gulal-cloud--one"></span><span class="gulal-cloud gulal-cloud--two"></span><span class="gulal-cloud gulal-cloud--three"></span>
+            <span class="gulal-dot gulal-dot--one"></span><span class="gulal-dot gulal-dot--two"></span><span class="gulal-dot gulal-dot--three"></span><span class="gulal-dot gulal-dot--four"></span>
+            <svg class="popper popper--left" viewBox="0 0 110 160"><path class="popper-tube" d="M12 146 46 69l33 15-33 76Z"/><path class="popper-rim" d="m42 69 38 16"/><path class="popper-spark" d="m74 54 6-13m12 25 13-7m-12 24 14 3M70 39l-1-13"/></svg>
+            <svg class="popper popper--right" viewBox="0 0 110 160"><path class="popper-tube" d="m98 146-34-77-33 15 33 76Z"/><path class="popper-rim" d="m68 69-38 16"/><path class="popper-spark" d="m36 54-6-13m-12 25-13-7m12 24-14 3m17-47 1-13"/></svg>
+            <span class="confetti confetti--one"></span><span class="confetti confetti--two"></span><span class="confetti confetti--three"></span><span class="confetti confetti--four"></span>
+          </div>
+          <div class="chapter-meta"><span>ACT 02</span><i>✦</i><span>20 NOVEMBER</span></div>
+          <div class="intro-title"><p>COLOUR, CHAOS &amp; JOY</p><h2 id="haldi-title">Haldi<br>Carnival</h2><span class="scene-status"><b></b> THE CARNIVAL IS ARRIVING</span></div>
+          <div class="film-progress" aria-hidden="true"><span></span></div><button class="scene-skip" type="button" data-advance>NEXT EVENT <span aria-hidden="true">↗</span></button>
+          <div class="frame-corner frame-corner--top" aria-hidden="true"></div><div class="frame-corner frame-corner--bottom" aria-hidden="true"></div>
+        </div>
+        <div class="chapter-info">
+          <div class="waiting-copy"><span class="waiting-orbit"><span>✦</span></span><p>THE MOMENT IS UNFOLDING</p></div>
+          <div class="event-reveal" aria-hidden="true">
+          <p class="info-index">THE HALDI CARNIVAL <span>·</span> LET THE FUN BEGIN</p>
+          <h3>Haldi Carnival</h3>
+          <div class="event-details">
+            <div><span>WHEN</span><strong>20th November<br>11:00 AM onwards</strong></div>
+            <div><span>WHERE</span><strong>Dublin<br>Nagpur</strong></div>
+          </div>
+          <div class="info-actions"><a class="map-action" href="https://www.google.com/maps/search/?api=1&amp;query=Dublin+Nagpur" target="_blank" rel="noopener noreferrer">OPEN IN MAPS <span aria-hidden="true">↗</span></a><button class="replay-action" type="button" data-replay>REPLAY SCENE <span aria-hidden="true">↻</span></button></div>
+          <button class="next-event" type="button" data-next="2"><span>UP NEXT</span> SANGEET CEREMONY <i aria-hidden="true">↓</i></button>
+          </div><span class="info-watermark" aria-hidden="true">02</span>
+        </div>
+      </section>
+
+      <section class="event-chapter" id="sangeet" data-index="2" aria-labelledby="sangeet-title">
+        <div class="chapter-art" style="--event-poster:url('assets/events/sangeet.jpg')">
+          <div class="film-backdrop" aria-hidden="true"></div>
+          <video class="chapter-film" muted playsinline preload="none" poster="assets/events/sangeet.jpg" aria-label="Full-frame cinematic video of a couple dancing at the Sangeet">
+            <source src="assets/events/sangeet.mp4" type="video/mp4">
+          </video>
+          <div class="art-shade" aria-hidden="true"></div><div class="art-grain" aria-hidden="true"></div><div class="art-light" aria-hidden="true"></div>
+          <div class="event-effects event-effects--sangeet" aria-hidden="true">
+            <span class="disco-beam disco-beam--one"></span><span class="disco-beam disco-beam--two"></span><span class="disco-beam disco-beam--three"></span>
+            <span class="disco-ball"><i></i><i></i><i></i><i></i><i></i><b></b></span>
+            <span class="disco-glint disco-glint--one">✦</span><span class="disco-glint disco-glint--two">✧</span><span class="disco-glint disco-glint--three">✦</span>
+          </div>
+          <div class="chapter-meta"><span>ACT 03</span><i>✦</i><span>20 NOVEMBER</span></div>
+          <div class="intro-title"><p>ONE FLOOR <span>·</span> ALL HEART</p><h2 id="sangeet-title">Sangeet<br>Ceremony</h2><span class="scene-status"><b></b> THE NIGHT IS IN MOTION</span></div>
+          <div class="film-progress" aria-hidden="true"><span></span></div><button class="scene-skip" type="button" data-advance>NEXT EVENT <span aria-hidden="true">↗</span></button>
+          <div class="frame-corner frame-corner--top" aria-hidden="true"></div><div class="frame-corner frame-corner--bottom" aria-hidden="true"></div>
+        </div>
+        <div class="chapter-info">
+          <div class="waiting-copy"><span class="waiting-orbit"><span>✦</span></span><p>THE MOMENT IS UNFOLDING</p></div>
+          <div class="event-reveal" aria-hidden="true">
+          <p class="info-index">MUSIC, DANCE <span>·</span> MEMORIES</p>
+          <h3>Sangeet Ceremony</h3>
+          <div class="event-details">
+            <div><span>WHEN</span><strong>20th November<br>7:00 PM onwards</strong></div>
+            <div><span>WHERE</span><strong>Dublin<br>Nagpur</strong></div>
+          </div>
+          <div class="info-actions"><a class="map-action" href="https://www.google.com/maps/search/?api=1&amp;query=Dublin+Nagpur" target="_blank" rel="noopener noreferrer">OPEN IN MAPS <span aria-hidden="true">↗</span></a><button class="replay-action" type="button" data-replay>REPLAY SCENE <span aria-hidden="true">↻</span></button></div>
+          <button class="next-event" type="button" data-next="3"><span>UP NEXT</span> BAARAT <i aria-hidden="true">↓</i></button>
+          </div><span class="info-watermark" aria-hidden="true">03</span>
+        </div>
+      </section>
+
+      <section class="event-chapter" id="baarat" data-index="3" aria-labelledby="baarat-title">
+        <div class="chapter-art" style="--event-poster:url('assets/events/baarat.jpg')">
+          <div class="film-backdrop" aria-hidden="true"></div>
+          <video class="chapter-film" muted playsinline preload="none" poster="assets/events/baarat.jpg" aria-label="Full-frame cinematic video of a wedding Baarat procession">
+            <source src="assets/events/baarat.mp4" type="video/mp4">
+          </video>
+          <div class="art-shade" aria-hidden="true"></div><div class="art-grain" aria-hidden="true"></div><div class="art-light" aria-hidden="true"></div>
+          <div class="event-effects event-effects--baarat" aria-hidden="true">
+            <span class="dhol-wave dhol-wave--one"></span><span class="dhol-wave dhol-wave--two"></span><span class="dhol-wave dhol-wave--three"></span>
+            <svg class="procession-dhol" viewBox="0 0 180 140"><path class="dhol-body" d="M43 32 Q90 12 137 32 L137 108 Q90 128 43 108Z"/><ellipse class="dhol-head" cx="43" cy="70" rx="15" ry="39"/><ellipse class="dhol-head dhol-head--far" cx="137" cy="70" rx="15" ry="39"/><path class="dhol-lace" d="m45 37 91 66M45 52l91 36M45 69l91 0M45 87l91-35M45 103l91-66"/><path class="dhol-strap" d="M52 32 35 17m94 91 17 16"/></svg>
+            <span class="procession-spark procession-spark--one"></span><span class="procession-spark procession-spark--two"></span><span class="procession-spark procession-spark--three"></span><span class="procession-spark procession-spark--four"></span>
+          </div>
+          <div class="chapter-meta"><span>ACT 04</span><i>✦</i><span>21 NOVEMBER</span></div>
+          <div class="intro-title"><p>THE GRAND PROCESSION</p><h2 id="baarat-title">Baarat</h2><span class="scene-status"><b></b> THE PROCESSION DRAWS NEAR</span></div>
+          <div class="film-progress" aria-hidden="true"><span></span></div><button class="scene-skip" type="button" data-advance>NEXT EVENT <span aria-hidden="true">↗</span></button>
+          <div class="frame-corner frame-corner--top" aria-hidden="true"></div><div class="frame-corner frame-corner--bottom" aria-hidden="true"></div>
+        </div>
+        <div class="chapter-info">
+          <div class="waiting-copy"><span class="waiting-orbit"><span>✦</span></span><p>THE MOMENT IS UNFOLDING</p></div>
+          <div class="event-reveal" aria-hidden="true">
+          <p class="info-index">DRUMS UP <span>·</span> HEARTS FULL</p>
+          <h3>Baarat</h3>
+          <div class="event-details">
+            <div><span>WHEN</span><strong>21st November<br>10:00 AM onwards</strong></div>
+            <div><span>WHERE</span><strong>Signature Resorts<br>Nagpur</strong></div>
+          </div>
+          <div class="info-actions"><a class="map-action" href="https://www.google.com/maps/search/?api=1&amp;query=Signature+Resorts+Surabardi+Road+Nagpur" target="_blank" rel="noopener noreferrer">OPEN IN MAPS <span aria-hidden="true">↗</span></a><button class="replay-action" type="button" data-replay>REPLAY SCENE <span aria-hidden="true">↻</span></button></div>
+          <button class="next-event" type="button" data-next="4"><span>UP NEXT</span> WEDDING RECEPTION <i aria-hidden="true">↓</i></button>
+          </div><span class="info-watermark" aria-hidden="true">04</span>
+        </div>
+      </section>
+
+      <section class="event-chapter" id="reception" data-index="4" aria-labelledby="reception-title">
+        <div class="chapter-art" style="--event-poster:url('assets/events/reception.jpg')">
+          <div class="film-backdrop" aria-hidden="true"></div>
+          <video class="chapter-film" muted playsinline preload="none" poster="assets/events/reception.jpg" aria-label="Full-frame cinematic video of the wedding reception">
+            <source src="assets/events/reception.mp4" type="video/mp4">
+          </video>
+          <div class="art-shade" aria-hidden="true"></div><div class="art-grain" aria-hidden="true"></div><div class="art-light" aria-hidden="true"></div>
+          <div class="event-effects event-effects--fireworks" aria-hidden="true">
+            <svg class="firework firework--one" viewBox="0 0 180 180"><g><path d="M90 25v27M90 128v27M25 90h27M128 90h27M44 44l19 19m54 54 19 19m0-92-19 19M63 117l-19 19"/><path d="m90 42 5 25 16-18-10 24 25-2-23 12 22 13-25-4 7 24-17-19-8 24-2-26-21 14 13-22-26-6 25-4-16-20 23 12Z"/></g><circle cx="90" cy="90" r="4"/></svg>
+            <svg class="firework firework--two" viewBox="0 0 180 180"><g><path d="M90 25v27M90 128v27M25 90h27M128 90h27M44 44l19 19m54 54 19 19m0-92-19 19M63 117l-19 19"/><path d="m90 42 5 25 16-18-10 24 25-2-23 12 22 13-25-4 7 24-17-19-8 24-2-26-21 14 13-22-26-6 25-4-16-20 23 12Z"/></g><circle cx="90" cy="90" r="4"/></svg>
+            <svg class="firework firework--three" viewBox="0 0 180 180"><g><path d="M90 25v27M90 128v27M25 90h27M128 90h27M44 44l19 19m54 54 19 19m0-92-19 19M63 117l-19 19"/><path d="m90 42 5 25 16-18-10 24 25-2-23 12 22 13-25-4 7 24-17-19-8 24-2-26-21 14 13-22-26-6 25-4-16-20 23 12Z"/></g><circle cx="90" cy="90" r="4"/></svg>
+          </div>
+          <div class="chapter-meta"><span>ACT 05</span><i>✦</i><span>21 NOVEMBER</span></div>
+          <div class="intro-title"><p>AND THEN, FOREVER</p><h2 id="reception-title">Wedding<br>Reception</h2><span class="scene-status"><b></b> ONE LAST MOMENT TOGETHER</span></div>
+          <div class="film-progress" aria-hidden="true"><span></span></div><button class="scene-skip" type="button" data-advance>FINISH INVITATION <span aria-hidden="true">↗</span></button>
+          <div class="frame-corner frame-corner--top" aria-hidden="true"></div><div class="frame-corner frame-corner--bottom" aria-hidden="true"></div>
+        </div>
+        <div class="chapter-info chapter-info--last">
+          <div class="waiting-copy"><span class="waiting-orbit"><span>✦</span></span><p>THE MOMENT IS UNFOLDING</p></div>
+          <div class="event-reveal" aria-hidden="true">
+          <p class="info-index">A NIGHT TO REMEMBER <span>·</span> A LIFE TO BEGIN</p>
+          <h3>Wedding Reception</h3>
+          <div class="event-details">
+            <div><span>WHEN</span><strong>21st November<br>7:00 PM onwards</strong></div>
+            <div><span>WHERE</span><strong>Signature Resorts<br>Nagpur</strong></div>
+          </div>
+          <div class="info-actions"><a class="map-action" href="https://www.google.com/maps/search/?api=1&amp;query=Signature+Resorts+Surabardi+Road+Nagpur" target="_blank" rel="noopener noreferrer">OPEN IN MAPS <span aria-hidden="true">↗</span></a><button class="replay-action" type="button" data-replay>REPLAY SCENE <span aria-hidden="true">↻</span></button></div>
+          <button class="next-event next-event--end" type="button" data-exit><span>WITH LOVE,</span> RIA &amp; MANAS <i aria-hidden="true">↑</i></button>
+          </div><span class="info-watermark" aria-hidden="true">05</span>
+        </div>
+      </section>
+
+      <footer class="story-footer">
+        <div class="footer-ornament" aria-hidden="true">✦ <span>❧</span> ✦</div>
+        <p>Five moments. One beautiful beginning.</p>
+        <strong>RIA <span>✦</span> MANAS</strong>
+        <small>19—21 NOVEMBER <i>·</i> NAGPUR</small>
+      </footer>
+    </div>
+  </main>
+
+  <audio id="wedding-audio" loop preload="none"></audio>
+</body>
+</html>
