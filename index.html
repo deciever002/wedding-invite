@@ -14,6 +14,18 @@
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
+  <svg class="film-filter-defs" aria-hidden="true" focusable="false">
+    <filter id="animated-film" color-interpolation-filters="sRGB" x="-2%" y="-2%" width="104%" height="104%">
+      <feColorMatrix in="SourceGraphic" type="saturate" values="1.1" result="rich" />
+      <feGaussianBlur in="rich" stdDeviation=".4" result="soft" />
+      <feComponentTransfer in="soft" result="poster">
+        <feFuncR type="discrete" tableValues="0 .18 .36 .54 .72 .9 1" />
+        <feFuncG type="discrete" tableValues="0 .18 .36 .54 .72 .9 1" />
+        <feFuncB type="discrete" tableValues="0 .18 .36 .54 .72 .9 1" />
+      </feComponentTransfer>
+      <feConvolveMatrix in="poster" order="3" kernelMatrix="0 -.1 0 -.1 1.4 -.1 0 -.1 0" preserveAlpha="true" edgeMode="duplicate" />
+    </filter>
+  </svg>
 
   <header class="masthead">
     <a class="monogram" href="#cover" aria-label="Ria and Manas invitation cover">R<span>✦</span>M</a>
@@ -68,10 +80,10 @@
       <div class="journey-intro-mark" aria-hidden="true">✦</div>
       <p class="eyebrow">THREE DAYS <span>·</span> FIVE MOMENTS <span>·</span> ONE BEAUTIFUL BEGINNING</p>
       <h2 id="journey-title">Let the celebrations<br>unfold.</h2>
-      <p class="journey-intro-copy">Each moment has a little story of its own.<br>Stay for the film; then the details will find you.</p>
+      <p class="journey-intro-copy">Each moment has a little story of its own.<br>The next celebration follows when the film ends.</p>
       <button class="start-story" id="start-story" type="button">BEGIN THE STORY <span aria-hidden="true">↓</span></button>
       <div class="journey-intro-line" aria-hidden="true"></div>
-      <p class="journey-intro-small">ONE SLIDE AT A TIME <span>✦</span></p>
+      <p class="journey-intro-small">FIVE FILMS <span>·</span> ONE CONTINUOUS CELEBRATION <span>✦</span></p>
     </section>
 
     <div class="event-journey" id="event-journey" hidden>
@@ -265,6 +277,6 @@
     </div>
   </main>
 
-  <audio id="wedding-audio" loop preload="none"></audio>
+  <audio id="wedding-audio" src="assets/audio/wedding-track.mp3" loop preload="auto"></audio>
 </body>
 </html>

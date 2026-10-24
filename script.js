@@ -11,7 +11,34 @@ const TRANSITION_MS = 2100;
 const TRANSITION_FADE_MS = 500;
 const FILM_FALLBACK_MS = 9500;
 const DETAILS_DWELL_MS = 5500;
+const audio = document.querySelector("#wedding-audio");
+const soundToggle = document.querySelector("#sound-toggle");
+const soundLabel = document.querySelector("#sound-label");
+let soundtrackManuallyDisabled = false;
 let savedRootOverflow = "";
+
+function setSoundControl(isPlaying, blocked = false) {
+  soundToggle.classList.toggle("is-on", isPlaying);
+  soundLabel.textContent = isPlaying ? "SOUND ON" : blocked ? "TAP TO PLAY" : "SOUND OFF";
+  soundToggle.setAttribute("aria-label", isPlaying ? "Turn music off" : "Start invitation music");
+}
+
+async function startSoundtrack() {
+  if (soundtrackManuallyDisabled) return false;
+  try {
+    await audio.play();
+    setSoundControl(true);
+    return true;
+  } catch {
+    setSoundControl(false, true);
+    return false;
+  }
+}
+
+soundToggle.hidden = false;
+audio.autoplay = true;
+audio.preload = "auto";
+void startSoundtrack();
 
 const invitedGuest = new URLSearchParams(window.location.search).get("guest")?.trim().slice(0, 100);
 if (invitedGuest) {
@@ -20,6 +47,7 @@ if (invitedGuest) {
 
 function revealLetter() {
   if (cover.classList.contains("is-open")) return;
+  void startSoundtrack();
   cover.classList.add("is-open");
   openInvite.setAttribute("aria-expanded", "true");
   window.setTimeout(() => {
@@ -33,6 +61,7 @@ envelopeScene.addEventListener("click", event => {
 });
 
 document.querySelector("#begin-journey").addEventListener("click", () => {
+  void startSoundtrack();
   journeyIntro.hidden = false;
   document.body.classList.add("story-started");
   journeyIntro.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
@@ -148,6 +177,7 @@ function advanceChapter(chapter) {
 }
 
 document.querySelector("#start-story").addEventListener("click", () => {
+  void startSoundtrack();
   chapters.forEach(resetChapter);
   chapters[0].classList.add("is-active");
   journeyIntro.hidden = true;
@@ -173,32 +203,13 @@ document.querySelectorAll("[data-next]").forEach(button => {
 });
 document.querySelectorAll("[data-exit]").forEach(button => button.addEventListener("click", exitJourney));
 
-// The supplied soundtrack loops only after a guest taps the sound control.
-const audio = document.querySelector("#wedding-audio");
-const soundToggle = document.querySelector("#sound-toggle");
-const soundLabel = document.querySelector("#sound-label");
-const soundtrackPath = "assets/audio/wedding-track.mp3";
-
-fetch(soundtrackPath, { method: "HEAD", cache: "no-store" }).then(response => {
-  if (!response.ok) return;
-  audio.src = soundtrackPath;
-  soundToggle.hidden = false;
-}).catch(() => {});
-
 soundToggle.addEventListener("click", async () => {
   if (audio.paused) {
-    try {
-      await audio.play();
-      soundLabel.textContent = "SOUND ON";
-      soundToggle.classList.add("is-on");
-      soundToggle.setAttribute("aria-label", "Turn music off");
-    } catch {
-      soundLabel.textContent = "TAP TO PLAY";
-    }
+    soundtrackManuallyDisabled = false;
+    await startSoundtrack();
   } else {
+    soundtrackManuallyDisabled = true;
     audio.pause();
-    soundLabel.textContent = "SOUND OFF";
-    soundToggle.classList.remove("is-on");
-    soundToggle.setAttribute("aria-label", "Turn music on");
+    setSoundControl(false);
   }
 });
