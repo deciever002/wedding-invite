@@ -33,7 +33,7 @@ const celebrations = {
     title: "Haldi Carnival",
     date: "20th November",
     time: "11:00 AM onwards",
-    venue: "Dublin, Nagpur",
+    venue: "Signature Resorts, Nagpur",
   },
   sangeet: {
     emoji: "🎶",
@@ -54,7 +54,7 @@ const celebrations = {
     title: "Wedding Reception",
     date: "21st November",
     time: "7:00 PM onwards",
-    venue: "Signature Resorts, Nagpur",
+    venue: "Dublin, Nagpur",
   },
 };
 
@@ -133,7 +133,7 @@ form.addEventListener("submit", event => {
     if (key !== "sukhmani") return celebrations[key];
     const date = document.querySelector("#sukhmani-date").value.trim() || DEFAULT_PAATH_DATE;
     const time = document.querySelector("#sukhmani-time").value.trim() || DEFAULT_PAATH_TIME;
-    const venue = document.querySelector("#sukhmani-venue").value.trim() || "Venue to follow";
+    const venue = document.querySelector("#sukhmani-venue").value.trim() || "At Our Residence (Civil Lines)";
     return { emoji: "🙏", title: "Sukhmani Sahib Paath", date, time, venue };
   });
 

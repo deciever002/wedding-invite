@@ -70,16 +70,17 @@ function configureInvitation() {
 
   const date = (query.get("d") ?? query.get("sukhmaniDate"))?.trim() || "19th November 2026";
   const time = (query.get("t") ?? query.get("sukhmaniTime"))?.trim() || "5:30 PM onwards";
-  const venue = (query.get("v") ?? query.get("sukhmaniVenue"))?.trim();
+  const defaultVenue = "At Our Residence (Civil Lines)";
+  const venue = (query.get("v") ?? query.get("sukhmaniVenue"))?.trim() || defaultVenue;
   const when = document.querySelector("[data-sukhmani-when]");
   const where = document.querySelector("[data-sukhmani-where]");
   const filmDate = document.querySelector("[data-sukhmani-film-date]");
   const map = document.querySelector("[data-sukhmani-map]");
   if (when) when.textContent = [date, time].join("\n");
-  if (where) where.textContent = venue || "Venue to follow";
+  if (where) where.textContent = venue;
   if (filmDate) filmDate.textContent = date.toUpperCase();
   if (map) {
-    const place = venue || "Nagpur";
+    const place = venue === defaultVenue ? "Civil Lines, Nagpur" : venue;
     map.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`;
   }
 }
