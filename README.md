@@ -1,8 +1,8 @@
-# Ria & Manas — A Wedding in Five Acts
+# RiaAndManas — A Wedding in Five Acts
 
-A mobile-first wedding invitation that opens like a letter, then plays five full-screen, silent portrait films. Each event begins with its own transition animation; the time, venue and map link appear after the film ends. Guests can move on by tapping Next Event, or stay while the event details finish their timed display. The supplied soundtrack is optional and begins only after a guest taps the sound control.
+A mobile-first wedding invitation that opens like a letter and then plays the selected celebration films automatically as one continuous sequence. Event details appear over the final moments of each film before a crossfade to the next scene. The supplied soundtrack attempts to start with the invitation; browser autoplay rules may require the guest to enable sound once.
 
-The guest-link studio at `/admin.html` creates a shareable link for each guest name and copies the full invitation message with its personal link. The guest name is shown in the opening letter. This is a static client-side tool; it does not save a guest list or send messages.
+The guest-link studio at `/admin.html` creates a shareable link for each guest name, family side, and selected celebration, then copies the full invitation message with its personal link. Bride-side Sukhmani Sahib details can be entered there. The guest name is shown in the opening letter. This is a static client-side tool; it does not save a guest list or send messages.
 
 ## Events
 
@@ -32,7 +32,7 @@ The admin page starts with that address and also lets you edit it.
 
 ## Soundtrack
 
-`assets/audio/wedding-track.mp3` contains the supplied soundtrack. The five event films are silent; playback is controlled separately with the sound toggle.
+`assets/audio/wedding-track.mp3` contains the supplied soundtrack. Event films are silent so the soundtrack can play separately without overlapping clip audio.
 
 ## Event media
 

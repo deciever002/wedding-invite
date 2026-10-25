@@ -123,7 +123,7 @@ form.addEventListener("submit", event => {
   });
 
   const eventList = chosen.map(item => `${item.title}\n${item.details}\nMaps: ${item.map}`).join("\n\n");
-  inviteMessage = `Dear ${guest},\n\nWith immense joy, we invite you to celebrate the beautiful beginning of Ria and Manas’s new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\nRIAMANAS WEDDING CELEBRATIONS\n\n${eventList}\n\nOpen your personal invitation: ${inviteUrl}\n\nWith love,\nRia & Manas`;
+  inviteMessage = `Dear ${guest},\n\nWith immense joy, we invite you to celebrate the beautiful beginning of Ria and Manas’s new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\nRIAANDMANAS WEDDING CELEBRATIONS\n\n${eventList}\n\nOpen your personal invitation: ${inviteUrl}\n\nWith love,\nRia & Manas`;
   linkOutput.href = inviteUrl;
   linkOutput.textContent = inviteUrl;
   document.querySelector("#open-link").href = inviteUrl;

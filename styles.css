@@ -516,6 +516,43 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
 @keyframes prayer-bloom { 0% { opacity: 0; transform: scale(.5); } 24% { opacity: .9; } 100% { opacity: 0; transform: scale(1.45); } }
 @keyframes prayer-petal-drift { 0% { opacity: 0; transform: translate(0, 70px) rotate(0); } 20% { opacity: .8; } 100% { opacity: 0; transform: translate(var(--petal-x), -180px) rotate(90deg); } }
 
+/* Keep supporting copy comfortably readable on phones without flattening the display type. */
+@media (max-width: 760px) {
+  .masthead { grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; padding-right: 12px; padding-left: 12px; }
+  .masthead-label { font-size: clamp(8px, 2.5vw, 10px); letter-spacing: .08em; text-align: center; white-space: nowrap; }
+  .sound-toggle { gap: 6px; min-height: 36px; padding-right: 9px; padding-left: 9px; font-size: 9px; letter-spacing: .08em; }
+  .cover-overline, .letter-label, .eyebrow, .journey-intro-small, .chapter-meta, .intro-title p, .scene-status, .info-index, .event-details span, .map-action, .replay-action, .next-event, .journey-exit, .cover-footnote, .open-invite small { font-size: 8px; letter-spacing: .1em; }
+  .letter-copy { font-size: clamp(12.5px, 3.7vw, 14px); line-height: 1.55; }
+  .letter-date { font-size: clamp(9px, 2.6vw, 10px); letter-spacing: .04em; }
+  .letter-continue { font-size: 9px; letter-spacing: .06em; }
+  .open-invite strong { font-size: 15px; }
+  .journey-intro-copy { font-size: 15px; }
+  .waiting-copy p { font-size: 8px; }
+  .event-reveal h3 { font-size: clamp(34px, 9vw, 46px); }
+  .event-details strong { font-size: clamp(13px, 3.8vw, 15px); line-height: 1.5; }
+  .map-action, .replay-action { min-height: 40px; font-size: 8.5px; }
+  .story-counter { font-size: 10px; }
+  .event-journey.is-live .event-reveal h3 { font-size: clamp(34px, 9vw, 46px); }
+  .event-journey.is-live .info-index, .event-journey.is-live .event-details span { font-size: 9px; }
+  .event-journey.is-live .event-details strong { font-size: clamp(14px, 4vw, 16px); }
+  .event-journey.is-live .map-action, .event-journey.is-live .replay-action { font-size: 9px; }
+  .event-journey.is-live .next-event { font-size: 9px; }
+}
+
+@media (max-width: 370px) {
+  .masthead { gap: 5px; padding-right: 9px; padding-left: 9px; }
+  .masthead-label { font-size: 8px; letter-spacing: .04em; }
+  .sound-toggle { gap: 4px; padding-right: 7px; padding-left: 7px; font-size: 8.5px; }
+  .letter-copy { font-size: 12.5px; }
+  .letter-date { font-size: 8.5px; }
+  .event-details strong { font-size: 12.5px; }
+}
+
+@media (max-height: 720px) and (max-width: 760px) {
+  .letter-copy { font-size: 12px; line-height: 1.42; }
+  .letter-date { font-size: 9px; }
+}
+
 @media (max-width: 760px) {
   .event-journey.is-live .chapter-film { object-fit: cover; }
   .event-journey.is-live .chapter-info.is-revealed { bottom: max(13px, env(safe-area-inset-bottom)); max-height: calc(100svh - 105px); }
