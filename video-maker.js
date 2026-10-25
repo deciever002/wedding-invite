@@ -215,7 +215,6 @@ function introCard(time = 0) {
   ctx.fillStyle = "rgba(236,204,150,.6)"; ctx.fillRect(W * .34, 384, W * .32, 1);
   centerText("19 — 21 NOVEMBER 2026   ·   NAGPUR", 430, "13px monospace", "#e6c487");
   const dates = { janeu: "19 NOV", sukhmani: "19 NOV", haldi: "20 NOV", sangeet: "20 NOV", baarat: "21 NOV", reception: "21 NOV" };
-  const icons = { janeu: "ॐ", sukhmani: "✧", haldi: "✿", sangeet: "♫", baarat: "✦", reception: "✧" };
   const rowHeight = filmEvents.length > 5 ? 83 : 91;
   const startY = 510;
   filmEvents.forEach((event, index) => {
@@ -227,7 +226,7 @@ function introCard(time = 0) {
     ctx.fillStyle = "rgba(250,241,222,.075)"; ctx.beginPath(); ctx.roundRect(83, y, W - 166, rowHeight - 10, 12); ctx.fill();
     ctx.strokeStyle = "rgba(236,204,150,.28)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(83, y, W - 166, rowHeight - 10, 12); ctx.stroke();
     ctx.fillStyle = "#e7c98e"; ctx.beginPath(); ctx.arc(128, y + (rowHeight - 10) / 2, 23, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#422a40"; ctx.font = event.key === "janeu" || event.key === "sukhmani" ? "19px Georgia" : "22px Georgia"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(icons[event.key] || "✦", 128, y + (rowHeight - 10) / 2);
+    ctx.fillStyle = "#422a40"; ctx.font = "600 16px monospace"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(String(index + 1).padStart(2, "0"), 128, y + (rowHeight - 10) / 2);
     ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillStyle = "rgba(242,220,170,.8)"; ctx.font = "11px monospace"; ctx.fillText(dates[event.key] || "NOV", 170, y + 26, W - 250);
     ctx.fillStyle = "#fbf6ed"; ctx.font = "500 22px Georgia"; ctx.fillText(event.title, 170, y + 51, W - 250);
     ctx.textAlign = "right"; ctx.fillStyle = "rgba(242,220,170,.56)"; ctx.font = "10px monospace"; ctx.fillText(String(index + 1).padStart(2, "0"), W - 104, y + (rowHeight - 10) / 2);
