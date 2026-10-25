@@ -25,6 +25,7 @@ const INTRO_SECONDS = 7;
 const DETAIL_SECONDS = 5;
 const CLOSING_SECONDS = 4.5;
 const codes = { j: "janeu", p: "sukhmani", h: "haldi", n: "sangeet", b: "baarat", r: "reception" };
+const eventCodes = Object.fromEntries(Object.entries(codes).map(([code, key]) => [key, code]));
 const DEFAULT_PAATH_DATE = "19th November 2026";
 const DEFAULT_PAATH_TIME = "5:30 PM onwards";
 const DEFAULT_PAATH_VENUE = "At Our Residence (Civil Lines)";
@@ -91,6 +92,21 @@ const eventPosterCache = new Map();
 function resetStudioPreview() { studioPreviewStarted = performance.now(); }
 function currentGuest() {
   return guestField.value.trim().replace(/\s+/g, " ") || "Friends & Family";
+}
+
+function hostedStudioUrl() {
+  const destination = new URL("video-studio.html", "https://riawedsmanas.github.io/wedding-invite/");
+  destination.searchParams.set("s", side === "bride" ? "b" : "g");
+  destination.searchParams.set("e", filmEvents.map(event => eventCodes[event.key]).join(""));
+  const guest = currentGuest();
+  if (guest !== "Friends & Family") destination.searchParams.set("g", guest);
+  const paath = filmEvents.find(event => event.key === "sukhmani");
+  if (paath) {
+    destination.searchParams.set("d", paath.date);
+    destination.searchParams.set("t", paath.time);
+    destination.searchParams.set("v", paath.venue);
+  }
+  return destination.href;
 }
 
 function updateGuestGreeting() {
@@ -903,9 +919,19 @@ createButton.addEventListener("click", async () => {
   filmIsRendering = true;
   try { await createFilm(); }
   catch (error) {
-    statusLine.textContent = error?.name === "NotAllowedError"
-      ? "The browser blocked media playback. Open the published HTTPS Video Studio and press Create Video directly; turn off Include Music to make a silent video."
-      : error.message || "The video could not be created. Please try again.";
+    if (error?.name === "NotAllowedError" && location.protocol === "file:") {
+      statusLine.replaceChildren(document.createTextNode("This local file could not start media playback. Open the hosted studio to generate your video with the same selections: "));
+      const hostedLink = document.createElement("a");
+      hostedLink.href = hostedStudioUrl();
+      hostedLink.target = "_blank";
+      hostedLink.rel = "noopener noreferrer";
+      hostedLink.textContent = "Open the HTTPS Video Studio";
+      statusLine.append(hostedLink);
+    } else if (error?.name === "NotAllowedError") {
+      statusLine.textContent = "The browser blocked media playback. Reload this page and try again; if it persists, turn off Include Music and retry the video export.";
+    } else {
+      statusLine.textContent = error.message || "The video could not be created. Please try again.";
+    }
   }
   finally {
     filmIsRendering = false;
