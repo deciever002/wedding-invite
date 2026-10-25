@@ -11,11 +11,15 @@ const audio = document.querySelector("#wedding-audio");
 const soundToggle = document.querySelector("#sound-toggle");
 const soundLabel = document.querySelector("#sound-label");
 const query = new URLSearchParams(window.location.search);
-const invitedGuest = query.get("guest")?.trim().slice(0, 100);
-const side = query.get("side") === "bride" ? "bride" : "groom";
-const requestedEvents = query.has("events")
-  ? new Set(query.get("events").split(",").map(event => event.trim()).filter(Boolean))
-  : null;
+const invitedGuest = (query.get("g") ?? query.get("guest"))?.trim().slice(0, 100);
+const sideValue = query.get("s") ?? query.get("side");
+const side = sideValue === "b" || sideValue === "bride" ? "bride" : "groom";
+const compactEventNames = { j: "janeu", p: "sukhmani", h: "haldi", n: "sangeet", b: "baarat", r: "reception" };
+const requestedEvents = query.has("e")
+  ? new Set([...(query.get("e") || "")].map(code => compactEventNames[code]).filter(Boolean))
+  : query.has("events")
+    ? new Set((query.get("events") || "").split(",").map(event => event.trim()).filter(Boolean))
+    : null;
 const sideEvent = side === "bride" ? "sukhmani" : "janeu";
 const commonEvents = ["haldi", "sangeet", "baarat", "reception"];
 const defaults = [sideEvent, ...commonEvents];
@@ -62,9 +66,9 @@ function configureInvitation() {
   document.querySelector("#film-count-label").textContent = `${total === "01" ? "ONE FILM" : `${total} FILMS`}`;
   counter.innerHTML = `01 <span>/</span> ${total}`;
 
-  const date = query.get("sukhmaniDate")?.trim() || "19th November 2026";
-  const time = query.get("sukhmaniTime")?.trim() || "5:30 PM onwards";
-  const venue = query.get("sukhmaniVenue")?.trim();
+  const date = (query.get("d") ?? query.get("sukhmaniDate"))?.trim() || "19th November 2026";
+  const time = (query.get("t") ?? query.get("sukhmaniTime"))?.trim() || "5:30 PM onwards";
+  const venue = (query.get("v") ?? query.get("sukhmaniVenue"))?.trim();
   const when = document.querySelector("[data-sukhmani-when]");
   const where = document.querySelector("[data-sukhmani-where]");
   const filmDate = document.querySelector("[data-sukhmani-film-date]");

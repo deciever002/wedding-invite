@@ -22,31 +22,45 @@ const fields = {
 
 const celebrations = {
   janeu: {
+    emoji: "🪔",
     title: "Janeu Ceremony",
-    details: "19th November\n10:00 AM onwards · Rihayash, Rajnagar, Nagpur",
-    map: "https://www.google.com/maps/search/?api=1&query=Rihayash+Rajnagar+Nagpur",
+    date: "19th November",
+    time: "10:00 AM onwards",
+    venue: "Rihayash, Rajnagar, Nagpur",
   },
   haldi: {
+    emoji: "🌼",
     title: "Haldi Carnival",
-    details: "20th November\n11:00 AM onwards · Dublin, Nagpur",
-    map: "https://www.google.com/maps/search/?api=1&query=Dublin+Nagpur",
+    date: "20th November",
+    time: "11:00 AM onwards",
+    venue: "Dublin, Nagpur",
   },
   sangeet: {
+    emoji: "🎶",
     title: "Sangeet Ceremony",
-    details: "20th November\n7:00 PM onwards · Dublin, Nagpur",
-    map: "https://www.google.com/maps/search/?api=1&query=Dublin+Nagpur",
+    date: "20th November",
+    time: "7:00 PM onwards",
+    venue: "Dublin, Nagpur",
   },
   baarat: {
+    emoji: "🐎",
     title: "Baarat",
-    details: "21st November\n10:00 AM onwards · Signature Resorts, Nagpur",
-    map: "https://www.google.com/maps/search/?api=1&query=Signature+Resorts+Surabardi+Road+Nagpur",
+    date: "21st November",
+    time: "10:00 AM onwards",
+    venue: "Signature Resorts, Nagpur",
   },
   reception: {
+    emoji: "✨",
     title: "Wedding Reception",
-    details: "21st November\n7:00 PM onwards · Signature Resorts, Nagpur",
-    map: "https://www.google.com/maps/search/?api=1&query=Signature+Resorts+Surabardi+Road+Nagpur",
+    date: "21st November",
+    time: "7:00 PM onwards",
+    venue: "Signature Resorts, Nagpur",
   },
 };
+
+const eventCodes = { janeu: "j", sukhmani: "p", haldi: "h", sangeet: "n", baarat: "b", reception: "r" };
+const DEFAULT_PAATH_DATE = "19th November 2026";
+const DEFAULT_PAATH_TIME = "5:30 PM onwards";
 
 function setSide(side) {
   groomSide.checked = side === "groom";
@@ -93,18 +107,20 @@ form.addEventListener("submit", event => {
 
   try {
     const destination = new URL(baseField.value.trim());
-    destination.searchParams.set("guest", guest);
-    destination.searchParams.set("side", side);
-    destination.searchParams.set("events", eventKeys.join(","));
+    for (const key of ["guest", "side", "events", "sukhmaniDate", "sukhmaniTime", "sukhmaniVenue", "g", "s", "e", "d", "t", "v"]) {
+      destination.searchParams.delete(key);
+    }
+    destination.searchParams.set("g", guest);
+    destination.searchParams.set("s", side === "bride" ? "b" : "g");
+    destination.searchParams.set("e", eventKeys.map(key => eventCodes[key]).join(""));
 
-    const scheduleValues = {
-      sukhmaniDate: document.querySelector("#sukhmani-date").value.trim(),
-      sukhmaniTime: document.querySelector("#sukhmani-time").value.trim(),
-      sukhmaniVenue: document.querySelector("#sukhmani-venue").value.trim(),
-    };
-    for (const [key, value] of Object.entries(scheduleValues)) {
-      if (value) destination.searchParams.set(key, value);
-      else destination.searchParams.delete(key);
+    if (eventKeys.includes("sukhmani")) {
+      const paathDate = document.querySelector("#sukhmani-date").value.trim();
+      const paathTime = document.querySelector("#sukhmani-time").value.trim();
+      const paathVenue = document.querySelector("#sukhmani-venue").value.trim();
+      if (paathDate && paathDate !== DEFAULT_PAATH_DATE) destination.searchParams.set("d", paathDate);
+      if (paathTime && paathTime !== DEFAULT_PAATH_TIME) destination.searchParams.set("t", paathTime);
+      if (paathVenue) destination.searchParams.set("v", paathVenue);
     }
     inviteUrl = destination.toString();
   } catch {
@@ -115,15 +131,14 @@ form.addEventListener("submit", event => {
 
   const chosen = eventKeys.map(key => {
     if (key !== "sukhmani") return celebrations[key];
-    const date = document.querySelector("#sukhmani-date").value.trim() || "19th November 2026";
-    const time = document.querySelector("#sukhmani-time").value.trim() || "Time to follow";
+    const date = document.querySelector("#sukhmani-date").value.trim() || DEFAULT_PAATH_DATE;
+    const time = document.querySelector("#sukhmani-time").value.trim() || DEFAULT_PAATH_TIME;
     const venue = document.querySelector("#sukhmani-venue").value.trim() || "Venue to follow";
-    const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue === "Venue to follow" ? "Nagpur" : venue)}`;
-    return { title: "Sukhmani Sahib Paath", details: `${date}\n${time} · ${venue}`, map };
+    return { emoji: "🙏", title: "Sukhmani Sahib Paath", date, time, venue };
   });
 
-  const eventList = chosen.map(item => `${item.title}\n${item.details}\nMaps: ${item.map}`).join("\n\n");
-  inviteMessage = `Dear ${guest},\n\nWith immense joy, we invite you to celebrate the beautiful beginning of Ria and Manas’s new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\nRIAANDMANAS WEDDING CELEBRATIONS\n\n${eventList}\n\nOpen your personal invitation: ${inviteUrl}\n\nWith love,\nRia & Manas`;
+  const eventList = chosen.map(item => `${item.emoji} *${item.title}*\n📅 ${item.date} · ${item.time}\n📍 ${item.venue}`).join("\n\n");
+  inviteMessage = `💌 *A personal invitation for ${guest}*\n${inviteUrl}\n\n*Dear ${guest},*\n\nWith immense joy, we invite you to celebrate the beautiful beginning of *Ria & Manas’s* new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\n✨ *WEDDING CELEBRATIONS* ✨\n\n${eventList}\n\nWith love,\n*Ria & Manas*`;
   linkOutput.href = inviteUrl;
   linkOutput.textContent = inviteUrl;
   document.querySelector("#open-link").href = inviteUrl;
