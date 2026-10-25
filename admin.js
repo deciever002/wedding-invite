@@ -26,7 +26,8 @@ const celebrations = {
     title: "Janeu Ceremony",
     date: "19th November",
     time: "10:00 AM onwards",
-    venue: "Rihayash, Rajnagar, Nagpur",
+    venue: "Rihayash Apartment, Rajnagar, Nagpur",
+    mapUrl: "https://maps.google.com/?q=Rihayash+Apartment+Rajnagar+Nagpur",
   },
   haldi: {
     emoji: "🌼",
@@ -34,6 +35,7 @@ const celebrations = {
     date: "20th November",
     time: "11:00 AM onwards",
     venue: "Signature Resorts, Nagpur",
+    mapUrl: "https://maps.google.com/?q=Signature+Resorts+Surabardi+Road+Nagpur",
   },
   sangeet: {
     emoji: "🎶",
@@ -41,6 +43,7 @@ const celebrations = {
     date: "20th November",
     time: "7:00 PM onwards",
     venue: "Dublin, Nagpur",
+    mapUrl: "https://maps.google.com/?q=Dublin+Nagpur",
   },
   baarat: {
     emoji: "🐎",
@@ -48,6 +51,7 @@ const celebrations = {
     date: "21st November",
     time: "10:00 AM onwards",
     venue: "Signature Resorts, Nagpur",
+    mapUrl: "https://maps.google.com/?q=Signature+Resorts+Surabardi+Road+Nagpur",
   },
   reception: {
     emoji: "✨",
@@ -55,12 +59,15 @@ const celebrations = {
     date: "21st November",
     time: "7:00 PM onwards",
     venue: "Dublin, Nagpur",
+    mapUrl: "https://maps.google.com/?q=Dublin+Nagpur",
   },
 };
 
 const eventCodes = { janeu: "j", sukhmani: "p", haldi: "h", sangeet: "n", baarat: "b", reception: "r" };
 const DEFAULT_PAATH_DATE = "19th November 2026";
 const DEFAULT_PAATH_TIME = "5:30 PM onwards";
+const DEFAULT_PAATH_VENUE = "At Our Residence (Civil Lines)";
+const DEFAULT_PAATH_MAP_URL = "https://goo.gl/maps/ggq18AmDZNJyb4Kn8?g_st=aw";
 
 function setSide(side) {
   groomSide.checked = side === "groom";
@@ -133,11 +140,12 @@ form.addEventListener("submit", event => {
     if (key !== "sukhmani") return celebrations[key];
     const date = document.querySelector("#sukhmani-date").value.trim() || DEFAULT_PAATH_DATE;
     const time = document.querySelector("#sukhmani-time").value.trim() || DEFAULT_PAATH_TIME;
-    const venue = document.querySelector("#sukhmani-venue").value.trim() || "At Our Residence (Civil Lines)";
-    return { emoji: "🙏", title: "Sukhmani Sahib Paath", date, time, venue };
+    const venue = document.querySelector("#sukhmani-venue").value.trim() || DEFAULT_PAATH_VENUE;
+    const mapUrl = venue === DEFAULT_PAATH_VENUE ? DEFAULT_PAATH_MAP_URL : `https://maps.google.com/?q=${encodeURIComponent(venue)}`;
+    return { emoji: "🙏", title: "Sukhmani Sahib Paath", date, time, venue, mapUrl };
   });
 
-  const eventList = chosen.map(item => `${item.emoji} *${item.title}*\n📅 ${item.date} · ${item.time}\n📍 ${item.venue}`).join("\n\n");
+  const eventList = chosen.map(item => `${item.emoji} *${item.title}*\n📅 ${item.date} · ${item.time}\n📍 ${item.venue}\n🗺 ${item.mapUrl}`).join("\n\n");
   inviteMessage = `💌 *A personal invitation for ${guest}*\n${inviteUrl}\n\n*Dear ${guest},*\n\nWith immense joy, we invite you to celebrate the beautiful beginning of *Ria & Manas’s* new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\n✨ *WEDDING CELEBRATIONS* ✨\n\n${eventList}\n\nWith love,\n*Ria & Manas*`;
   linkOutput.href = inviteUrl;
   linkOutput.textContent = inviteUrl;

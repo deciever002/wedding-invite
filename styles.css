@@ -613,3 +613,6 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
 @media (max-width: 760px) {
   .cover .letter-paper { padding-bottom: 18px; }
 }
+
+.venue-map-link { color: inherit; font-weight: inherit; text-decoration: underline; text-decoration-color: rgba(216,176,111,.72); text-decoration-thickness: 1px; text-underline-offset: .2em; }
+.venue-map-link:hover { color: var(--gold-light); text-decoration-color: currentColor; }
