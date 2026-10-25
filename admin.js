@@ -162,7 +162,7 @@ form.addEventListener("submit", event => {
   });
 
   const eventList = chosen.map(item => `${item.emoji} *${item.title}*\n📅 ${item.date} · ${item.time}\n📍 ${item.venue}\n🗺 ${item.mapUrl}`).join("\n\n");
-  inviteMessage = `💌 *A personal invitation for ${guest}*\n${inviteUrl}\n\n*Dear ${guest},*\n\nWith immense joy, we invite you to celebrate the beautiful beginning of *Ria & Manas’s* new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\n✨ *WEDDING CELEBRATIONS* ✨\n\n${eventList}\n\nWith love,\n*Ria & Manas*`;
+  inviteMessage = `💌 *A personal invitation for ${guest}*\n\n*Dear ${guest},*\n\nWith immense joy, we invite you to celebrate the beautiful beginning of *Ria & Manas’s* new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\n✨ *WEDDING CELEBRATIONS* ✨\n\n${eventList}\n\nWith love,\n*Ria & Manas*`;
   linkOutput.href = inviteUrl;
   linkOutput.textContent = inviteUrl;
   document.querySelector("#open-link").href = inviteUrl;
@@ -208,7 +208,7 @@ document.querySelector("#copy-message").addEventListener("click", async () => {
   if (!inviteMessage) return;
   try {
     await copyText(inviteMessage);
-    copyStatus.textContent = "Complete message and invitation link copied.";
+    copyStatus.textContent = "WhatsApp message copied. The invitation link is available separately above.";
   } catch {
     copyStatus.textContent = "Select the message above and copy it.";
   }
