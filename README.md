@@ -2,7 +2,7 @@
 
 A mobile-first wedding invitation that opens like a letter and then plays the selected celebration films automatically as one continuous sequence. Event details appear over the final moments of each film before a crossfade to the next scene. The supplied soundtrack attempts to start with the invitation; browser autoplay rules may require the guest to enable sound once.
 
-The guest-link studio at `/admin.html` creates a shareable link for each guest name, family side, and selected celebration, then copies the full invitation message with its personal link. Bride-side Sukhmani Sahib details can be entered there. The guest name is shown in the opening letter. This is a static client-side tool; it does not save a guest list or send messages.
+The guest-link studio at `/admin.html` creates a shareable link for each guest name, family side, and selected celebration, then copies the full invitation message with its personal link. Bride-side Sukhmani Sahib defaults to 19th November 2026; its date can be changed per invitation. The guest name is shown in the opening letter. This is a static client-side tool; it does not save a guest list or send messages.
 
 ## Events
 

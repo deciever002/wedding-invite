@@ -62,16 +62,16 @@ function configureInvitation() {
   document.querySelector("#film-count-label").textContent = `${total === "01" ? "ONE FILM" : `${total} FILMS`}`;
   counter.innerHTML = `01 <span>/</span> ${total}`;
 
-  const date = query.get("sukhmaniDate")?.trim();
-  const time = query.get("sukhmaniTime")?.trim();
+  const date = query.get("sukhmaniDate")?.trim() || "19th November 2026";
+  const time = query.get("sukhmaniTime")?.trim() || "5:30 PM onwards";
   const venue = query.get("sukhmaniVenue")?.trim();
   const when = document.querySelector("[data-sukhmani-when]");
   const where = document.querySelector("[data-sukhmani-where]");
   const filmDate = document.querySelector("[data-sukhmani-film-date]");
   const map = document.querySelector("[data-sukhmani-map]");
-  if (when) when.textContent = [date || "Date to follow", time || "Time to follow"].join("\n");
+  if (when) when.textContent = [date, time].join("\n");
   if (where) where.textContent = venue || "Venue to follow";
-  if (filmDate) filmDate.textContent = date || "DATE TO FOLLOW";
+  if (filmDate) filmDate.textContent = date.toUpperCase();
   if (map) {
     const place = venue || "Nagpur";
     map.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`;

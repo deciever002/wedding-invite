@@ -115,7 +115,7 @@ form.addEventListener("submit", event => {
 
   const chosen = eventKeys.map(key => {
     if (key !== "sukhmani") return celebrations[key];
-    const date = document.querySelector("#sukhmani-date").value.trim() || "Date to follow";
+    const date = document.querySelector("#sukhmani-date").value.trim() || "19th November 2026";
     const time = document.querySelector("#sukhmani-time").value.trim() || "Time to follow";
     const venue = document.querySelector("#sukhmani-venue").value.trim() || "Venue to follow";
     const map = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue === "Venue to follow" ? "Nagpur" : venue)}`;
