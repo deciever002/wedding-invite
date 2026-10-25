@@ -794,30 +794,9 @@ async function createFilm() {
   guestField.disabled = true;
   audioChoice.disabled = true;
   statusLine.textContent = "Preparing the portrait wedding artwork…";
-  // Start every muted source clip immediately inside the Create button gesture.
-  // Mobile browsers may reject a play() call made much later after the title
-  // cards and async asset loading have consumed the transient user activation.
-  const eventPlaybackStarts = filmEvents.map(event => {
-    const video = preparedClips.get(event.key).video;
-    video.muted = true;
-    video.defaultMuted = true;
-    video.playsInline = true;
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
-    video.loop = true;
-    video.currentTime = 0;
-    try {
-      return Promise.resolve(video.play()).catch(error => {
-        throw tagPlaybackError(error, "event-video", event.title);
-      });
-    } catch (error) {
-      return Promise.reject(tagPlaybackError(error, "event-video", event.title));
-    }
-  });
   let audioDestination;
-  try {
-    const startupTasks = [titleBackdropLoaded, filmFontsReady, ...eventPlaybackStarts];
-    if (audioChoice.checked) {
+  if (audioChoice.checked) {
+    try {
       sharedAudioContext ||= new (window.AudioContext || window.webkitAudioContext)();
       if (!sharedAudioSource) {
         sharedAudioSource = sharedAudioContext.createMediaElementSource(audio);
@@ -826,23 +805,20 @@ async function createFilm() {
       audioDestination = sharedAudioContext.createMediaStreamDestination();
       sharedAudioSource.connect(audioDestination);
       audio.currentTime = 0;
-      // Start audio playback and the context synchronously from the button gesture.
+      // Start both playback and the audio context synchronously from the button
+      // gesture, before waiting on image/font promises. Safari blocks a delayed play().
       const audioStart = audio.play();
       const contextStart = sharedAudioContext.resume();
-      startupTasks.push(audioStart, contextStart);
+      await Promise.all([titleBackdropLoaded, filmFontsReady, audioStart, contextStart]);
+    } catch (error) {
+      audio.pause();
+      if (audioDestination && sharedAudioSource) sharedAudioSource.disconnect(audioDestination);
+      audioDestination?.stream.getTracks().forEach(track => track.stop());
+      if (sharedAudioContext?.state === "running") await sharedAudioContext.suspend().catch(() => {});
+      throw tagPlaybackError(error, "soundtrack");
     }
-    const startupResults = await Promise.allSettled(startupTasks);
-    const startupFailure = startupResults.find(result => result.status === "rejected");
-    if (startupFailure) throw startupFailure.reason;
-  } catch (error) {
-    audio.pause();
-    if (audioDestination && sharedAudioSource) sharedAudioSource.disconnect(audioDestination);
-    audioDestination?.stream.getTracks().forEach(track => track.stop());
-    for (const { video } of preparedClips.values()) video.pause();
-    if (sharedAudioContext?.state === "running") await sharedAudioContext.suspend().catch(() => {});
-    throw error?.mediaStage === "event-video" || !audioChoice.checked
-      ? error
-      : tagPlaybackError(error, "soundtrack");
+  } else {
+    await Promise.all([titleBackdropLoaded, filmFontsReady]);
   }
   downloadSection.hidden = true;
   progressFill.style.width = "0";
@@ -870,8 +846,11 @@ async function createFilm() {
       elapsedTotal += DETAIL_SECONDS;
       clipVideo.currentTime = 0;
       const duration = Math.min(clipVideo.duration || 6, 9);
-      // The muted clip has been playing silently since the Create tap. Seeking
-      // it here keeps playback inside the user-authorized session on mobile.
+      try {
+        await clipVideo.play();
+      } catch (error) {
+        throw tagPlaybackError(error, "event-video", event.title);
+      }
       const clipStart = performance.now();
       await new Promise((resolve, reject) => {
         const tick = now => {
@@ -884,6 +863,7 @@ async function createFilm() {
         };
         requestAnimationFrame(tick);
       });
+      clipVideo.pause();
       elapsedTotal += duration;
     }
     await renderStatic(closingCard, CLOSING_SECONDS, "Closing invitation", elapsedTotal, totalDuration);
@@ -961,11 +941,11 @@ createButton.addEventListener("click", async () => {
       hostedLink.textContent = "Open the HTTPS Video Studio";
       statusLine.append(hostedLink);
     } else if (error?.name === "NotAllowedError" && error.mediaStage === "event-video") {
-      statusLine.textContent = `Your browser blocked ${error.eventTitle || "an event clip"} from starting. Reload this page, keep the Video Studio in the foreground, and tap Create Video again. The clips are started from that tap to meet mobile playback rules.`;
+      statusLine.textContent = `Your browser blocked ${error.eventTitle || "an event clip"} from playing. Reload the Video Studio and try again with the page open in the foreground.`;
     } else if (error?.name === "NotAllowedError" && error.mediaStage === "soundtrack") {
       statusLine.textContent = "The browser blocked soundtrack playback. Turn off Include Music and retry to create a silent video.";
     } else if (error?.name === "NotAllowedError") {
-      statusLine.textContent = "Your browser blocked media playback. Reload the Video Studio and tap Create Video again while the page is in the foreground.";
+      statusLine.textContent = "Your browser blocked media playback. Reload the Video Studio and try again with the page open in the foreground.";
     } else {
       statusLine.textContent = error.message || "The video could not be created. Please try again.";
     }
