@@ -26,7 +26,7 @@ Open `http://127.0.0.1:8765/` for the invitation or `http://127.0.0.1:8765/admin
 
 The repository is public, and GitHub Pages is configured to use **GitHub Actions** as its source. The workflow in `.github/workflows/deploy.yml` publishes the static site after a push to `main`. Once deployment completes, the site address is:
 
-`https://deciever002.github.io/wedding-invite/`
+`https://riawedsmanas.github.io/wedding-invite/`
 
 The admin page starts with that address and also lets you edit it.
 
