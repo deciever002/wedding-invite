@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#190f19">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Video Studio — RiaAndManas Wedding</title>
+  <link rel="icon" href="assets/lotus.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="video-maker.js" defer></script>
+  <style>
+    .maker-shell { min-height: 100svh; padding: 93px 18px 44px; background: radial-gradient(ellipse at 48% 5%, #3b2438, #1a111b 65%); }
+    .maker-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 430px); align-items: start; gap: clamp(24px, 6vw, 78px); width: min(100%, 1040px); margin: auto; }
+    .maker-copy { padding-top: 26px; }
+    .maker-eyebrow { margin: 0 0 14px; color: var(--gold-light); font: 10px var(--mono); letter-spacing: .16em; }
+    .maker-copy h1 { margin: 0; color: var(--paper); font: 500 clamp(42px, 8vw, 72px)/.98 var(--serif); letter-spacing: -.045em; }
+    .maker-copy > p:not(.maker-eyebrow) { max-width: 540px; margin: 18px 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .maker-selection { display: grid; gap: 14px; margin: 23px 0; }
+    .maker-selection[disabled] { opacity: .6; }
+    .maker-fieldset { min-width: 0; margin: 0; padding: 15px; border: 1px solid rgba(216,176,111,.26); }
+    .sr-only { position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+    .maker-fieldset legend { padding: 0 7px; color: var(--gold-light); font: 9px var(--mono); letter-spacing: .12em; }
+    .maker-choice-grid,.maker-function-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+    .maker-option { min-height: 43px; display: flex; align-items: center; gap: 9px; padding: 8px 10px; color: var(--paper); border: 1px solid rgba(242,220,170,.14); background: rgba(255,255,255,.025); font: 12px/1.35 var(--sans); cursor: pointer; }
+    .maker-option:has(input:checked) { border-color: rgba(242,220,170,.55); background: rgba(216,176,111,.1); }
+    .maker-option input { flex: none; width: 16px; height: 16px; accent-color: #d8b06f; }
+    .maker-field label:not(.maker-option) { display: grid; gap: 7px; color: var(--gold-light); font: 9px var(--mono); letter-spacing: .08em; }
+    .maker-text-input { width: 100%; min-height: 44px; padding: 10px 12px; color: var(--paper); border: 1px solid rgba(242,220,170,.24); background: rgba(255,255,255,.04); font: 13px var(--sans); letter-spacing: normal; }
+    .maker-text-input::placeholder { color: rgba(243,235,220,.38); }
+    .maker-form-hint { margin: 9px 0 0; color: rgba(243,235,220,.47); font: 10px/1.5 var(--sans); }
+    .maker-paath-schedule { display: grid; gap: 11px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(216,176,111,.18); }
+    .maker-paath-schedule[hidden] { display: none; }
+    .maker-events { margin: 26px 0 23px; padding: 17px 19px; border: 1px solid rgba(216,176,111,.28); background: rgba(255,255,255,.025); }
+    .maker-events h2 { margin: 0 0 12px; color: var(--gold-light); font: 9px var(--mono); letter-spacing: .14em; }
+    .maker-events ol { display: grid; gap: 9px; margin: 0; padding-left: 21px; color: var(--paper); font: 14px/1.5 var(--sans); }
+    .maker-preview-wrap { width: min(100%, 360px); justify-self: center; }
+    .maker-canvas-frame { position: relative; width: 100%; aspect-ratio: 9/16; overflow: hidden; border: 1px solid rgba(216,176,111,.42); background: #160f18; box-shadow: 0 22px 70px rgba(0,0,0,.35); }
+    #film-canvas { display: block; width: 100%; height: 100%; }
+    .maker-label { margin: 12px 0 0; color: rgba(243,235,220,.48); font: 8px var(--mono); letter-spacing: .15em; text-align: center; }
+    .maker-actions { display: grid; gap: 10px; margin-top: 22px; }
+    .maker-button { width: 100%; min-height: 51px; padding: 10px 16px; color: #241522; border: 1px solid var(--gold-light); background: linear-gradient(120deg,#f2dcaa,#cfaa6d); font: 10px var(--mono); letter-spacing: .09em; cursor: pointer; }
+    .maker-button:disabled { opacity: .48; cursor: wait; }
+    .maker-button--quiet { color: var(--gold-light); border-color: rgba(242,220,170,.42); background: transparent; text-decoration: none; display: grid; place-items: center; }
+    .maker-hint { margin: 13px 0 0; color: rgba(243,235,220,.5); font: 11px/1.55 var(--sans); }
+    .maker-status { min-height: 41px; margin: 14px 0 0; color: var(--gold-light); font: 12px/1.5 var(--sans); }
+    .maker-progress { height: 3px; margin-top: 6px; overflow: hidden; background: rgba(242,220,170,.12); }
+    .maker-progress span { display: block; width: 0; height: 100%; background: var(--gold-light); transition: width .25s ease; }
+    .maker-audio-choice { display: flex; align-items: center; gap: 10px; margin-top: 16px; color: var(--paper); font: 12px/1.5 var(--sans); }
+    .maker-audio-choice input { width: 17px; height: 17px; accent-color: #d8b06f; }
+    .maker-download { margin-top: 17px; }
+    .maker-download video { display: block; width: min(100%,360px); max-height: 68svh; margin: 0 auto 12px; background: #100c11; }
+    .maker-download a { color: var(--gold-light); font: 10px var(--mono); letter-spacing: .1em; }
+    .maker-back { display: inline-flex; margin-top: 27px; color: var(--gold-light); text-decoration: none; font: 10px var(--mono); letter-spacing: .1em; }
+    @media(max-width:740px) { .maker-shell { padding: 78px 15px 35px; } .maker-layout { grid-template-columns: 1fr; gap: 22px; } .maker-copy { padding-top: 8px; } .maker-preview-wrap { grid-row: 1; width: min(61vw, 290px); } .maker-copy h1 { font-size: clamp(42px, 12vw, 60px); } .maker-events { margin: 18px 0; } }
+    @media(max-width:380px) { .maker-choice-grid,.maker-function-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="masthead">
+    <a class="monogram" href="index.html" aria-label="Ria and Manas invitation">R<span>✦</span>M</a>
+    <p class="masthead-label">RIAANDMANAS WEDDING <span>·</span> VIDEO STUDIO</p>
+  </header>
+  <main class="maker-shell">
+    <div class="maker-layout">
+      <section class="maker-copy" aria-labelledby="maker-title">
+        <p class="maker-eyebrow">VIDEO STUDIO · PORTRAIT FILMS</p>
+        <h1 id="maker-title">Choose the moments.<br>We’ll stitch the film.</h1>
+        <p id="maker-greeting">A continuous invitation assembled from the selected celebration scenes.</p>
+        <fieldset class="maker-fieldset" style="margin-top:22px">
+          <legend>GUEST NAME (OPTIONAL)</legend>
+          <label class="maker-field"><span class="sr-only">Guest name</span><input class="maker-text-input" id="film-guest" type="text" maxlength="100" placeholder="Leave blank for Friends &amp; Family"></label>
+        </fieldset>
+        <fieldset class="maker-fieldset" style="margin-top:14px">
+          <legend>FAMILY SIDE</legend>
+          <div class="maker-choice-grid">
+            <label class="maker-option"><input type="radio" name="film-side" id="film-side-groom" value="groom"> Groom side</label>
+            <label class="maker-option"><input type="radio" name="film-side" id="film-side-bride" value="bride"> Bride side</label>
+          </div>
+        </fieldset>
+        <fieldset class="maker-fieldset" id="video-selection" style="margin-top:14px">
+          <legend>FUNCTIONS TO INCLUDE</legend>
+          <div class="maker-function-grid">
+            <label class="maker-option" data-side-option="groom"><input type="checkbox" id="film-event-janeu"> Janeu Ceremony</label>
+            <label class="maker-option" data-side-option="bride" hidden><input type="checkbox" id="film-event-sukhmani"> Sukhmani Sahib Paath</label>
+            <label class="maker-option"><input type="checkbox" id="film-event-haldi"> Haldi Carnival</label>
+            <label class="maker-option"><input type="checkbox" id="film-event-sangeet"> Sangeet Ceremony</label>
+            <label class="maker-option"><input type="checkbox" id="film-event-baarat"> Baarat</label>
+            <label class="maker-option"><input type="checkbox" id="film-event-reception"> Wedding Reception</label>
+          </div>
+          <div class="maker-paath-schedule" id="film-paath-schedule" hidden>
+            <label>PAATH DATE<input class="maker-text-input" id="film-paath-date" type="text" value="19th November 2026"></label>
+            <label>START TIME<input class="maker-text-input" id="film-paath-time" type="text" value="5:30 PM onwards"></label>
+            <label>VENUE<input class="maker-text-input" id="film-paath-venue" type="text" value="At Our Residence (Civil Lines)"></label>
+          </div>
+          <p class="maker-form-hint">Only checked functions will be stitched into the downloaded film, in event order.</p>
+        </fieldset>
+        <section class="maker-events" aria-labelledby="maker-events-title">
+          <h2 id="maker-events-title">IN THIS FILM</h2>
+          <ol id="maker-event-list"></ol>
+        </section>
+        <label class="maker-audio-choice"><input id="include-music" type="checkbox" checked> Include the wedding soundtrack</label>
+        <div class="maker-actions">
+          <button class="maker-button" id="create-film" type="button">CREATE FUNCTION VIDEO <span aria-hidden="true">✦</span></button>
+          <a class="maker-button maker-button--quiet" href="admin.html">BACK TO INVITATION STUDIO</a>
+        </div>
+        <p class="maker-hint">The studio records the actual event videos into one portrait movie. Keep this page open while it creates the download. Browser support determines whether the file is MP4 or WebM. Estimated duration: <span id="estimate">—</span>.</p>
+        <p class="maker-status" id="maker-status" role="status" aria-live="polite">Loading the selected event footage…</p>
+        <div class="maker-progress" aria-hidden="true"><span id="maker-progress-fill"></span></div>
+        <div class="maker-download" id="maker-download" hidden></div>
+        <a class="maker-back" href="index.html">← RETURN TO INVITATION</a>
+      </section>
+      <aside class="maker-preview-wrap" aria-label="Invitation film preview">
+        <div class="maker-canvas-frame"><canvas id="film-canvas" width="720" height="1280"></canvas></div>
+        <p class="maker-label">THE MOVIE WILL NOT SHOW PLAYER CONTROLS</p>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>

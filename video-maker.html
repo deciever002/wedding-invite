@@ -2,76 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#190f19">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>Invitation Film Studio — RiaAndManas</title>
-  <link rel="icon" href="assets/lotus.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <script src="video-maker.js" defer></script>
-  <style>
-    .maker-shell { min-height: 100svh; padding: 93px 18px 44px; background: radial-gradient(ellipse at 48% 5%, #3b2438, #1a111b 65%); }
-    .maker-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 430px); align-items: start; gap: clamp(24px, 6vw, 78px); width: min(100%, 1040px); margin: auto; }
-    .maker-copy { padding-top: 26px; }
-    .maker-eyebrow { margin: 0 0 14px; color: var(--gold-light); font: 10px var(--mono); letter-spacing: .16em; }
-    .maker-copy h1 { margin: 0; color: var(--paper); font: 500 clamp(42px, 8vw, 72px)/.98 var(--serif); letter-spacing: -.045em; }
-    .maker-copy > p:not(.maker-eyebrow) { max-width: 540px; margin: 18px 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
-    .maker-events { margin: 26px 0 23px; padding: 17px 19px; border: 1px solid rgba(216,176,111,.28); background: rgba(255,255,255,.025); }
-    .maker-events h2 { margin: 0 0 12px; color: var(--gold-light); font: 9px var(--mono); letter-spacing: .14em; }
-    .maker-events ol { display: grid; gap: 9px; margin: 0; padding-left: 21px; color: var(--paper); font: 14px/1.5 var(--sans); }
-    .maker-preview-wrap { width: min(100%, 360px); justify-self: center; }
-    .maker-canvas-frame { position: relative; width: 100%; aspect-ratio: 9/16; overflow: hidden; border: 1px solid rgba(216,176,111,.42); background: #160f18; box-shadow: 0 22px 70px rgba(0,0,0,.35); }
-    #film-canvas { display: block; width: 100%; height: 100%; }
-    .maker-label { margin: 12px 0 0; color: rgba(243,235,220,.48); font: 8px var(--mono); letter-spacing: .15em; text-align: center; }
-    .maker-actions { display: grid; gap: 10px; margin-top: 22px; }
-    .maker-button { width: 100%; min-height: 51px; padding: 10px 16px; color: #241522; border: 1px solid var(--gold-light); background: linear-gradient(120deg,#f2dcaa,#cfaa6d); font: 10px var(--mono); letter-spacing: .09em; cursor: pointer; }
-    .maker-button:disabled { opacity: .48; cursor: wait; }
-    .maker-button--quiet { color: var(--gold-light); border-color: rgba(242,220,170,.42); background: transparent; text-decoration: none; display: grid; place-items: center; }
-    .maker-hint { margin: 13px 0 0; color: rgba(243,235,220,.5); font: 11px/1.55 var(--sans); }
-    .maker-status { min-height: 41px; margin: 14px 0 0; color: var(--gold-light); font: 12px/1.5 var(--sans); }
-    .maker-progress { height: 3px; margin-top: 6px; overflow: hidden; background: rgba(242,220,170,.12); }
-    .maker-progress span { display: block; width: 0; height: 100%; background: var(--gold-light); transition: width .25s ease; }
-    .maker-audio-choice { display: flex; align-items: center; gap: 10px; margin-top: 16px; color: var(--paper); font: 12px/1.5 var(--sans); }
-    .maker-audio-choice input { width: 17px; height: 17px; accent-color: #d8b06f; }
-    .maker-download { margin-top: 17px; }
-    .maker-download video { display: block; width: min(100%,360px); max-height: 68svh; margin: 0 auto 12px; background: #100c11; }
-    .maker-download a { color: var(--gold-light); font: 10px var(--mono); letter-spacing: .1em; }
-    .maker-back { display: inline-flex; margin-top: 27px; color: var(--gold-light); text-decoration: none; font: 10px var(--mono); letter-spacing: .1em; }
-    @media(max-width:740px) { .maker-shell { padding: 78px 15px 35px; } .maker-layout { grid-template-columns: 1fr; gap: 22px; } .maker-copy { padding-top: 8px; } .maker-preview-wrap { grid-row: 1; width: min(61vw, 290px); } .maker-copy h1 { font-size: clamp(42px, 12vw, 60px); } .maker-events { margin: 18px 0; } }
-  </style>
+  <title>Opening Video Studio…</title>
+  <script>
+    window.location.replace(`video-studio.html${window.location.search}${window.location.hash}`);
+  </script>
 </head>
 <body>
-  <div class="grain" aria-hidden="true"></div>
-  <header class="masthead">
-    <a class="monogram" href="index.html" aria-label="Ria and Manas invitation">R<span>✦</span>M</a>
-    <p class="masthead-label">RIAANDMANAS WEDDING <span>·</span> INVITATION FILM STUDIO</p>
-  </header>
-  <main class="maker-shell">
-    <div class="maker-layout">
-      <section class="maker-copy" aria-labelledby="maker-title">
-        <p class="maker-eyebrow">A PERSONALISED PORTRAIT FILM</p>
-        <h1 id="maker-title">Your own<br>celebration film.</h1>
-        <p id="maker-greeting">A continuous invitation assembled from the selected celebration scenes.</p>
-        <section class="maker-events" aria-labelledby="maker-events-title">
-          <h2 id="maker-events-title">IN THIS FILM</h2>
-          <ol id="maker-event-list"></ol>
-        </section>
-        <label class="maker-audio-choice"><input id="include-music" type="checkbox" checked> Include the wedding soundtrack</label>
-        <div class="maker-actions">
-          <button class="maker-button" id="create-film" type="button">CREATE FUNCTION VIDEO <span aria-hidden="true">✦</span></button>
-          <a class="maker-button maker-button--quiet" href="admin.html">BACK TO INVITATION STUDIO</a>
-        </div>
-        <p class="maker-hint">The studio records the actual event videos into one portrait movie. Keep this page open while it creates the download. Browser support determines whether the file is MP4 or WebM. Estimated duration: <span id="estimate">—</span>.</p>
-        <p class="maker-status" id="maker-status" role="status" aria-live="polite">Loading the selected event footage…</p>
-        <div class="maker-progress" aria-hidden="true"><span id="maker-progress-fill"></span></div>
-        <div class="maker-download" id="maker-download" hidden></div>
-        <a class="maker-back" href="index.html">← RETURN TO INVITATION</a>
-      </section>
-      <aside class="maker-preview-wrap" aria-label="Invitation film preview">
-        <div class="maker-canvas-frame"><canvas id="film-canvas" width="720" height="1280"></canvas></div>
-        <p class="maker-label">THE MOVIE WILL NOT SHOW PLAYER CONTROLS</p>
-      </aside>
-    </div>
-  </main>
+  <p>Opening the <a href="video-studio.html">RiaAndManas Video Studio</a>…</p>
 </body>
 </html>

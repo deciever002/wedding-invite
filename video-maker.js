@@ -11,16 +11,45 @@ const H = canvas.height;
 const FPS = 30;
 const INTRO_SECONDS = 5.5;
 const DETAIL_SECONDS = 3.6;
+const CLOSING_SECONDS = 4.5;
 const codes = { j: "janeu", p: "sukhmani", h: "haldi", n: "sangeet", b: "baarat", r: "reception" };
 const defaults = ["janeu", "haldi", "sangeet", "baarat", "reception"];
 const brideDefaults = ["sukhmani", "haldi", "sangeet", "baarat", "reception"];
-const side = params.get("s") === "b" || params.get("s") === "bride" ? "bride" : "groom";
-const guest = (params.get("g") || "Friends & Family").trim().slice(0, 100);
+let side = params.get("s") === "b" || params.get("s") === "bride" ? "bride" : "groom";
+const guestField = document.querySelector("#film-guest");
+const sideGroom = document.querySelector("#film-side-groom");
+const sideBride = document.querySelector("#film-side-bride");
+const selectionPanel = document.querySelector("#video-selection");
+const paathSchedule = document.querySelector("#film-paath-schedule");
+const paathDateField = document.querySelector("#film-paath-date");
+const paathTimeField = document.querySelector("#film-paath-time");
+const paathVenueField = document.querySelector("#film-paath-venue");
+const fields = {
+  janeu: document.querySelector("#film-event-janeu"),
+  sukhmani: document.querySelector("#film-event-sukhmani"),
+  haldi: document.querySelector("#film-event-haldi"),
+  sangeet: document.querySelector("#film-event-sangeet"),
+  baarat: document.querySelector("#film-event-baarat"),
+  reception: document.querySelector("#film-event-reception"),
+};
+const rawGuest = (params.get("g") || "").trim().slice(0, 100);
+guestField.value = rawGuest === "Friends & Family" ? "" : rawGuest;
 const requested = params.has("e") ? [...(params.get("e") || "")].map(code => codes[code]).filter(Boolean) : null;
-const selectedKeys = [...new Set(requested?.length ? requested : side === "bride" ? brideDefaults : defaults)];
 const paathDate = params.get("d") || "19th November 2026";
 const paathTime = params.get("t") || "5:30 PM onwards";
 const paathVenue = params.get("v") || "At Our Residence (Civil Lines)";
+paathDateField.value = paathDate;
+paathTimeField.value = paathTime;
+paathVenueField.value = paathVenue;
+sideGroom.checked = side === "groom";
+sideBride.checked = side === "bride";
+
+const requestedKeys = requested === null
+  ? new Set(side === "bride" ? brideDefaults : defaults)
+  : new Set(requested);
+for (const [key, field] of Object.entries(fields)) field.checked = requestedKeys.has(key);
+if (side === "groom") fields.sukhmani.checked = false;
+else fields.janeu.checked = false;
 
 const events = {
   janeu: { title: "Janeu Ceremony", date: "19th November 2026", time: "10:00 AM onwards", venue: "Rihayash Apartment, Rajnagar, Nagpur", source: "assets/events/janeu.mp4", tone: "A SACRED THREAD · A NEW CHAPTER" },
@@ -30,21 +59,57 @@ const events = {
   baarat: { title: "Baarat", date: "21st November 2026", time: "10:00 AM onwards", venue: "Signature Resorts, Nagpur", source: "assets/events/baarat.mp4", tone: "THE GRAND PROCESSION" },
   reception: { title: "Wedding Reception", date: "21st November 2026", time: "7:00 PM onwards", venue: "Dublin, Nagpur", source: "assets/events/reception.mp4", tone: "A NIGHT TO REMEMBER" },
 };
-const filmEvents = selectedKeys.map(key => ({ key, ...events[key] })).filter(item => item.source);
+let filmEvents = [];
+let selectionVersion = 0;
+function currentGuest() {
+  return guestField.value.trim().replace(/\s+/g, " ") || "Friends & Family";
+}
 
-document.querySelector("#maker-greeting").textContent = guest === "Friends & Family"
-  ? "A continuous invitation assembled from the selected celebration scenes."
-  : `A continuous invitation created especially for ${guest}.`;
-document.querySelector("#maker-event-list").replaceChildren(...filmEvents.map(item => {
-  const li = document.createElement("li");
-  li.textContent = `${item.title} · ${item.date}`;
-  return li;
-}));
+function updateGuestGreeting() {
+  const guest = currentGuest();
+  document.querySelector("#maker-greeting").textContent = guest === "Friends & Family"
+    ? "A continuous invitation assembled from the selected celebration scenes."
+    : `A continuous invitation created especially for ${guest}.`;
+}
+
+function updateSideControls() {
+  document.querySelector('[data-side-option="groom"]').hidden = side !== "groom";
+  document.querySelector('[data-side-option="bride"]').hidden = side !== "bride";
+  paathSchedule.hidden = side !== "bride" || !fields.sukhmani.checked;
+}
+
+function selectedFilmEvents() {
+  const date = paathDateField.value.trim() || "19th November 2026";
+  const time = paathTimeField.value.trim() || "5:30 PM onwards";
+  const venue = paathVenueField.value.trim() || "At Our Residence (Civil Lines)";
+  return Object.entries(fields)
+    .filter(([, field]) => field.checked)
+    .map(([key]) => ({ key, ...events[key], ...(key === "sukhmani" ? { date, time, venue } : {}) }));
+}
+
+function renderEventList() {
+  const eventList = document.querySelector("#maker-event-list");
+  eventList.replaceChildren(...filmEvents.map(item => {
+    const li = document.createElement("li");
+    li.textContent = `${item.title} · ${item.date}`;
+    return li;
+  }));
+}
+
+function updatePaathDetails() {
+  filmEvents = selectedFilmEvents();
+  renderEventList();
+  clearGeneratedVideo();
+  if (clipsReady) statusLine.textContent = `Ready · ${filmEvents.length} function${filmEvents.length === 1 ? "" : "s"} selected · approximately ${formatDuration(totalDuration)}`;
+}
+
+updateGuestGreeting();
+updateSideControls();
 function formatDuration(seconds) {
   const rounded = Math.ceil(seconds);
   return rounded < 60 ? `${rounded} sec` : `${Math.floor(rounded / 60)} min ${rounded % 60} sec`;
 }
-document.querySelector("#estimate").textContent = formatDuration(INTRO_SECONDS * 2 + filmEvents.length * (6 + DETAIL_SECONDS));
+document.querySelector("#estimate").textContent = formatDuration(INTRO_SECONDS * 2 + CLOSING_SECONDS + filmEvents.length * (6 + DETAIL_SECONDS));
 
 const audio = new Audio();
 audio.crossOrigin = "anonymous";
@@ -55,7 +120,8 @@ let generatedObjectUrl = "";
 let sharedAudioContext;
 let sharedAudioSource;
 const preparedClips = new Map();
-let totalDuration = INTRO_SECONDS * 2 + filmEvents.length * (6 + DETAIL_SECONDS);
+let totalDuration = INTRO_SECONDS * 2 + CLOSING_SECONDS + filmEvents.length * (6 + DETAIL_SECONDS);
+let clipsReady = false;
 
 function paintCard() {
   const gradient = ctx.createLinearGradient(0, 0, W, H);
@@ -76,6 +142,7 @@ function centerText(text, y, font, color = "#f2dcaa", maxWidth = W - 120) {
 }
 
 function coverCard() {
+  const guest = currentGuest();
   paintCard();
   centerText("R ✦ M", 268, "500 42px Georgia", "#e6c487");
   ctx.fillStyle = "rgba(236,204,150,.62)"; ctx.fillRect(W * .32, 343, W * .36, 1);
@@ -97,6 +164,15 @@ function introCard() {
   const names = filmEvents.map(item => item.title);
   names.slice(0, 5).forEach((name, index) => centerText(name.toUpperCase(), 785 + index * 48, "16px monospace", "#e5d7c0"));
   centerText("ONE CONTINUOUS CELEBRATION  ✦", 1095, "15px monospace", "#e6c487");
+}
+
+function closingCard() {
+  paintCard();
+  centerText("WITH LOVE", 510, "16px monospace", "#e6c487");
+  centerText("Ria & Manas", 625, "500 72px Georgia", "#fbf6ed");
+  centerText("We cannot wait to celebrate with you.", 710, "24px Georgia", "#d6c6ad");
+  centerText("19—21 NOVEMBER 2026  ·  NAGPUR", 840, "16px monospace", "#e6c487");
+  centerText("✦", 970, "34px Georgia", "#e6c487");
 }
 
 function wrapText(text, maxWidth, font) {
@@ -156,6 +232,8 @@ function renderStatic(draw, durationSeconds, label, baseProgress, totalDuration)
 }
 
 function prepareClip(event) {
+  const cached = preparedClips.get(event.key);
+  if (cached) return cached.ready.then(() => Math.min(cached.video.duration || 6, 9));
   const video = document.createElement("video");
   video.muted = true; video.playsInline = true; video.preload = "auto";
   const ready = new Promise((resolve, reject) => {
@@ -167,8 +245,85 @@ function prepareClip(event) {
     video.src = event.source; video.load();
   });
   preparedClips.set(event.key, { video, ready });
-  return ready.then(() => Math.min(video.duration || 6, 9));
+  return ready.then(
+    () => Math.min(video.duration || 6, 9),
+    error => {
+      if (preparedClips.get(event.key)?.ready === ready) preparedClips.delete(event.key);
+      throw error;
+    },
+  );
 }
+
+function clearGeneratedVideo() {
+  if (generatedObjectUrl) URL.revokeObjectURL(generatedObjectUrl);
+  generatedObjectUrl = "";
+  downloadSection.replaceChildren();
+  downloadSection.hidden = true;
+}
+
+function refreshSelection() {
+  const version = ++selectionVersion;
+  clipsReady = false;
+  filmEvents = selectedFilmEvents();
+  renderEventList();
+  clearGeneratedVideo();
+  coverCard();
+  totalDuration = INTRO_SECONDS * 2 + CLOSING_SECONDS + filmEvents.length * (6 + DETAIL_SECONDS);
+  document.querySelector("#estimate").textContent = formatDuration(totalDuration);
+  progressFill.style.width = "0";
+  createButton.disabled = true;
+  if (!filmEvents.length) {
+    statusLine.textContent = "Choose at least one function to make a video.";
+    return;
+  }
+
+  statusLine.textContent = `Loading ${filmEvents.length} selected event clip${filmEvents.length === 1 ? "" : "s"}…`;
+  Promise.all(filmEvents.map(prepareClip)).then(durations => {
+    if (version !== selectionVersion) return;
+    totalDuration = INTRO_SECONDS * 2 + CLOSING_SECONDS + durations.reduce((sum, duration) => sum + duration + DETAIL_SECONDS, 0);
+    document.querySelector("#estimate").textContent = formatDuration(totalDuration);
+    clipsReady = true;
+    createButton.disabled = false;
+    statusLine.textContent = `Ready · ${filmEvents.length} function${filmEvents.length === 1 ? "" : "s"} selected · approximately ${formatDuration(totalDuration)}`;
+  }).catch(error => {
+    if (version !== selectionVersion) return;
+    createButton.disabled = true;
+    statusLine.textContent = error.message || "Some event footage could not be loaded.";
+  });
+}
+
+sideGroom.addEventListener("change", () => {
+  if (!sideGroom.checked) return;
+  side = "groom";
+  fields.janeu.checked = true;
+  fields.sukhmani.checked = false;
+  updateSideControls();
+  refreshSelection();
+});
+sideBride.addEventListener("change", () => {
+  if (!sideBride.checked) return;
+  side = "bride";
+  fields.janeu.checked = false;
+  fields.sukhmani.checked = true;
+  updateSideControls();
+  refreshSelection();
+});
+for (const [key, field] of Object.entries(fields)) {
+  field.addEventListener("change", () => {
+    if (key === "janeu" && side !== "groom") field.checked = false;
+    if (key === "sukhmani" && side !== "bride") field.checked = false;
+    updateSideControls();
+    refreshSelection();
+  });
+}
+for (const field of [paathDateField, paathTimeField, paathVenueField]) {
+  field.addEventListener("input", updatePaathDetails);
+}
+guestField.addEventListener("input", () => {
+  updateGuestGreeting();
+  clearGeneratedVideo();
+  coverCard();
+});
 
 function supportedMime() {
   if (!window.MediaRecorder) return "";
@@ -182,6 +337,9 @@ async function createFilm() {
   const mimeType = supportedMime();
   if (!mimeType) throw new Error("This browser does not offer a supported MP4 or WebM video encoder.");
   createButton.disabled = true;
+  selectionPanel.disabled = true;
+  guestField.disabled = true;
+  audioChoice.disabled = true;
   downloadSection.hidden = true;
   progressFill.style.width = "0";
   const canvasStream = canvas.captureStream(FPS);
@@ -238,6 +396,8 @@ async function createFilm() {
       await renderStatic(() => detailCard(event, index), DETAIL_SECONDS, `${event.title} details`, elapsedTotal, totalDuration);
       elapsedTotal += DETAIL_SECONDS;
     }
+    await renderStatic(closingCard, CLOSING_SECONDS, "Closing invitation", elapsedTotal, totalDuration);
+    elapsedTotal += CLOSING_SECONDS;
     recorder.stop();
     await finished;
   } catch (error) {
@@ -259,7 +419,8 @@ async function createFilm() {
   const preview = document.createElement("video");
   preview.src = generatedObjectUrl; preview.controls = true; preview.playsInline = true; preview.preload = "metadata";
   const download = document.createElement("a");
-  const guestSlug = guest.normalize("NFKD").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase() || "guest";
+  const guest = currentGuest();
+  const guestSlug = guest === "Friends & Family" ? "friends-and-family" : guest.normalize("NFKD").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
   download.href = generatedObjectUrl;
   download.download = `Ria-and-Manas-${guestSlug}-invitation.${ext}`;
   download.textContent = `DOWNLOAD ${ext.toUpperCase()} VIDEO ↓`;
@@ -270,23 +431,14 @@ async function createFilm() {
 }
 
 coverCard();
-createButton.disabled = true;
-if (filmEvents.length) {
-  statusLine.textContent = "Loading the selected event footage…";
-  Promise.all(filmEvents.map(prepareClip)).then(durations => {
-    totalDuration = INTRO_SECONDS * 2 + durations.reduce((sum, duration) => sum + duration + DETAIL_SECONDS, 0);
-    document.querySelector("#estimate").textContent = formatDuration(totalDuration);
-    createButton.disabled = false;
-    statusLine.textContent = `All ${filmEvents.length} selected video scenes are ready · portrait HD · approximately ${formatDuration(totalDuration)}`;
-  }).catch(error => {
-    createButton.disabled = true;
-    statusLine.textContent = error.message || "Some event footage could not be loaded.";
-  });
-} else {
-  statusLine.textContent = "No functions were selected. Return to the invitation studio and select at least one.";
-}
+refreshSelection();
 createButton.addEventListener("click", async () => {
   try { await createFilm(); }
   catch (error) { statusLine.textContent = error.message || "The video could not be created. Please try again."; }
-  finally { createButton.disabled = false; }
+  finally {
+    selectionPanel.disabled = false;
+    guestField.disabled = false;
+    audioChoice.disabled = false;
+    createButton.disabled = !clipsReady;
+  }
 });

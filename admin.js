@@ -70,7 +70,7 @@ const DEFAULT_PAATH_VENUE = "At Our Residence (Civil Lines)";
 const DEFAULT_PAATH_MAP_URL = "https://goo.gl/maps/ggq18AmDZNJyb4Kn8?g_st=aw";
 
 function videoBuilderUrl(base, guest, side, eventKeys) {
-  const destination = new URL("video-maker.html", base);
+  const destination = new URL("video-studio.html", base);
   destination.searchParams.set("g", guest || "Friends & Family");
   destination.searchParams.set("s", side === "bride" ? "b" : "g");
   destination.searchParams.set("e", eventKeys.map(key => eventCodes[key]).join(""));
