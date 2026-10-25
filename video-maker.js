@@ -25,8 +25,6 @@ const INTRO_SECONDS = 7;
 const DETAIL_SECONDS = 5;
 const CLOSING_SECONDS = 4.5;
 const codes = { j: "janeu", p: "sukhmani", h: "haldi", n: "sangeet", b: "baarat", r: "reception" };
-const eventCodes = Object.fromEntries(Object.entries(codes).map(([code, key]) => [key, code]));
-const PUBLIC_INVITATION_URL = "https://riawedsmanas.github.io/wedding-invite/";
 const DEFAULT_PAATH_DATE = "19th November 2026";
 const DEFAULT_PAATH_TIME = "5:30 PM onwards";
 const DEFAULT_PAATH_VENUE = "At Our Residence (Civil Lines)";
@@ -134,22 +132,6 @@ function updatePaathDetails() {
   if (clipsReady) statusLine.textContent = `Ready · ${filmEvents.length} function${filmEvents.length === 1 ? "" : "s"} selected · approximately ${formatDuration(totalDuration)}`;
 }
 
-function makeInvitationUrl() {
-  const base = new URL(PUBLIC_INVITATION_URL);
-  const destination = new URL("index.html", base);
-  const guest = guestField.value.trim().replace(/\s+/g, " ");
-  if (guest) destination.searchParams.set("g", guest);
-  destination.searchParams.set("s", side === "bride" ? "b" : "g");
-  destination.searchParams.set("e", filmEvents.map(event => eventCodes[event.key]).join(""));
-  const paath = filmEvents.find(event => event.key === "sukhmani");
-  if (paath) {
-    if (paath.date !== DEFAULT_PAATH_DATE) destination.searchParams.set("d", paath.date);
-    if (paath.time !== DEFAULT_PAATH_TIME) destination.searchParams.set("t", paath.time);
-    if (paath.venue !== DEFAULT_PAATH_VENUE) destination.searchParams.set("v", paath.venue);
-  }
-  return destination.toString();
-}
-
 function mapUrlFor(event) {
   if (event.key !== "sukhmani") return messageMaps[event.key] || "";
   return event.venue === DEFAULT_PAATH_VENUE
@@ -175,9 +157,9 @@ function updateWhatsAppMessage() {
     return `${messageEmojis[event.key] || "✨"} *${event.title}*\n📅 ${date} · ${event.time}\n📍 ${event.venue}\n🗺️ ${mapUrlFor(event)}`;
   }).join("\n\n");
   const heading = isGeneric ? "A wedding invitation for our family and friends" : `A personal invitation for ${guest}`;
-  output.value = `${makeInvitationUrl()}\n\n💌 *${heading}*\n\n*Dear ${guest},*\n\nWith immense joy, we invite you to celebrate the beautiful beginning of *Ria & Manas’s* new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\n✨ *WEDDING CELEBRATIONS* ✨\n\n${eventList}\n\nWith love,\n*Ria & Manas*`;
+  output.value = `💌 *${heading}*\n\n*Dear ${guest},*\n\nWith immense joy, we invite you to celebrate the beautiful beginning of *Ria & Manas’s* new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\n✨ *WEDDING CELEBRATIONS* ✨\n\n${eventList}\n\nWith love,\n*Ria & Manas*`;
   copyButton.disabled = false;
-  status.textContent = "Ready to copy · invitation link first, with a map link for every selected function.";
+  status.textContent = "Ready to copy · includes selected event details and map links.";
 }
 
 updateGuestGreeting();
