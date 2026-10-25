@@ -105,6 +105,13 @@ function configureInvitation() {
   chapters.forEach((chapter, index) => {
     chapter.dataset.index = String(index);
     chapter.style.setProperty("--invite-background", `url("${inviteBackgrounds[chapter.dataset.event]}")`);
+    const video = chapter.querySelector("video");
+    if (video) {
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute("playsinline", "");
+      video.setAttribute("webkit-playsinline", "");
+    }
     const act = chapter.querySelector(".chapter-meta span");
     if (act) act.textContent = `ACT ${String(index + 1).padStart(2, "0")}`;
     const watermark = chapter.querySelector(".info-watermark");
@@ -328,6 +335,13 @@ function startChapter(chapter, restart = false) {
     if (isActive) chapter.classList.add("is-active");
   }
   if (!chapter.classList.contains("is-active") || chapter.dataset.started === "true") return;
+
+  if (video) {
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+  }
 
   chapter.dataset.started = "true";
   updateStoryPosition(Number(chapter.dataset.index));

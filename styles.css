@@ -999,3 +999,15 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
   .event-journey.is-live #reception .event-reveal h3 { font-size: 39px; }
   .event-journey.is-live .event-details strong { font-size: 15px; }
 }
+
+/* Keep inline event transitions light and stable on phones. */
+@media (max-width: 760px) {
+  .event-journey.is-live .event-chapter.is-active { animation: mobile-scene-enter .24s ease-out both; }
+  .event-journey.is-live .chapter-art.is-playing .chapter-film { filter: saturate(1.06) contrast(1.02); }
+  .event-journey.is-live .chapter-art.is-revealed .chapter-film { filter: saturate(.82) brightness(.65); }
+  .event-journey.is-live .chapter-art.is-transitioning .event-effects * { animation-duration: 1.5s !important; }
+}
+@keyframes mobile-scene-enter {
+  from { opacity: .72; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
