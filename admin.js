@@ -127,7 +127,7 @@ form.addEventListener("submit", event => {
       const paathVenue = document.querySelector("#sukhmani-venue").value.trim();
       if (paathDate && paathDate !== DEFAULT_PAATH_DATE) destination.searchParams.set("d", paathDate);
       if (paathTime && paathTime !== DEFAULT_PAATH_TIME) destination.searchParams.set("t", paathTime);
-      if (paathVenue) destination.searchParams.set("v", paathVenue);
+      if (paathVenue && paathVenue !== DEFAULT_PAATH_VENUE) destination.searchParams.set("v", paathVenue);
     }
     inviteUrl = destination.toString();
   } catch {
