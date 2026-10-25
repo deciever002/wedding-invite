@@ -228,6 +228,15 @@ function formatDuration(seconds) {
   const rounded = Math.ceil(seconds);
   return rounded < 60 ? `${rounded} sec` : `${Math.floor(rounded / 60)} min ${rounded % 60} sec`;
 }
+
+function tagPlaybackError(error, stage, eventTitle = "") {
+  if (error?.name !== "NotAllowedError") return error;
+  const tagged = new Error(error.message || "Media playback was blocked.");
+  tagged.name = error.name;
+  tagged.mediaStage = stage;
+  tagged.eventTitle = eventTitle;
+  return tagged;
+}
 document.querySelector("#estimate").textContent = formatDuration(INTRO_SECONDS * 2 + CLOSING_SECONDS + filmEvents.length * (6 + DETAIL_SECONDS));
 
 const audio = new Audio();
@@ -806,7 +815,7 @@ async function createFilm() {
       if (audioDestination && sharedAudioSource) sharedAudioSource.disconnect(audioDestination);
       audioDestination?.stream.getTracks().forEach(track => track.stop());
       if (sharedAudioContext?.state === "running") await sharedAudioContext.suspend().catch(() => {});
-      throw error;
+      throw tagPlaybackError(error, "soundtrack");
     }
   } else {
     await Promise.all([titleBackdropLoaded, filmFontsReady]);
@@ -837,7 +846,11 @@ async function createFilm() {
       elapsedTotal += DETAIL_SECONDS;
       clipVideo.currentTime = 0;
       const duration = Math.min(clipVideo.duration || 6, 9);
-      await clipVideo.play();
+      try {
+        await clipVideo.play();
+      } catch (error) {
+        throw tagPlaybackError(error, "event-video", event.title);
+      }
       const clipStart = performance.now();
       await new Promise((resolve, reject) => {
         const tick = now => {
@@ -927,8 +940,12 @@ createButton.addEventListener("click", async () => {
       hostedLink.rel = "noopener noreferrer";
       hostedLink.textContent = "Open the HTTPS Video Studio";
       statusLine.append(hostedLink);
+    } else if (error?.name === "NotAllowedError" && error.mediaStage === "event-video") {
+      statusLine.textContent = `Safari blocked ${error.eventTitle || "an event clip"}. On iPhone this can happen in Low Power Mode (yellow battery). Turn it off in Settings → Battery, reload this page, and retry.`;
+    } else if (error?.name === "NotAllowedError" && error.mediaStage === "soundtrack") {
+      statusLine.textContent = "The browser blocked soundtrack playback. Turn off Include Music and retry to create a silent video.";
     } else if (error?.name === "NotAllowedError") {
-      statusLine.textContent = "The browser blocked media playback. Reload this page and try again; if it persists, turn off Include Music and retry the video export.";
+      statusLine.textContent = "The browser blocked media playback. On iPhone, turn off Low Power Mode, reload this page, and retry.";
     } else {
       statusLine.textContent = error.message || "The video could not be created. Please try again.";
     }
