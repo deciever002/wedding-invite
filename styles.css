@@ -962,3 +962,40 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
   .event-journey.is-live .chapter-info.is-revealed::before { animation: none; transform: scale(1.035); }
   .details-motif, .details-motif * { animation: none !important; }
 }
+
+/* Larger reading sizes for the invitation, with mobile-safe wrapping. */
+.letter-label { font-size: 10px; }
+.letter-to { font-size: 16px; }
+.letter-copy { font-size: 16px; line-height: 1.5; }
+.letter-date { font-size: 11px; }
+.sound-toggle { font-size: 10px; }
+.event-journey.is-live .event-reveal .info-index { font-size: 11px; }
+.event-journey.is-live .event-details span { font-size: 10px; }
+.event-journey.is-live .event-details strong { font-size: clamp(17px, 1.7vw, 21px); line-height: 1.45; }
+.event-journey.is-live .info-actions .map-action { font-size: 10px; }
+
+@media (max-width: 760px) {
+  .letter-label { font-size: 9px; }
+  .letter-copy { font-size: clamp(14.5px, 4.2vw, 16px); line-height: 1.48; }
+  .letter-date { font-size: clamp(10px, 2.9vw, 11px); }
+  .event-journey.is-live .event-reveal .info-index { font-size: 10px; }
+  .event-journey.is-live .event-reveal h3 { font-size: clamp(42px, 10.8vw, 58px); }
+  .event-journey.is-live .event-details span { font-size: 9px; }
+  .event-journey.is-live .event-details strong { font-size: clamp(16px, 4.55vw, 19px); line-height: 1.42; }
+  .event-journey.is-live #haldi .event-reveal h3 { font-size: clamp(42px, 11vw, 60px); }
+  .event-journey.is-live #sangeet .event-reveal h3 { font-size: clamp(42px, 10.8vw, 58px); }
+  .event-journey.is-live #baarat .event-reveal h3 { font-size: clamp(58px, 15.5vw, 80px); }
+  .event-journey.is-live #sukhmani .event-reveal h3,
+  .event-journey.is-live #reception .event-reveal h3 { font-size: clamp(40px, 9.6vw, 56px); }
+  .event-journey.is-live .info-actions .map-action { font-size: 10px; }
+}
+@media (max-width: 370px) {
+  .letter-copy { font-size: 14.5px; }
+  .event-journey.is-live .event-reveal h3 { font-size: 40px; }
+  .event-journey.is-live #haldi .event-reveal h3,
+  .event-journey.is-live #sangeet .event-reveal h3 { font-size: 41px; }
+  .event-journey.is-live #baarat .event-reveal h3 { font-size: 56px; }
+  .event-journey.is-live #sukhmani .event-reveal h3,
+  .event-journey.is-live #reception .event-reveal h3 { font-size: 39px; }
+  .event-journey.is-live .event-details strong { font-size: 15px; }
+}
