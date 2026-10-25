@@ -13,6 +13,20 @@ const INTRO_SECONDS = 7;
 const DETAIL_SECONDS = 3.6;
 const CLOSING_SECONDS = 4.5;
 const codes = { j: "janeu", p: "sukhmani", h: "haldi", n: "sangeet", b: "baarat", r: "reception" };
+const eventCodes = Object.fromEntries(Object.entries(codes).map(([code, key]) => [key, code]));
+const PUBLIC_INVITATION_URL = "https://riawedsmanas.github.io/wedding-invite/";
+const DEFAULT_PAATH_DATE = "19th November 2026";
+const DEFAULT_PAATH_TIME = "5:30 PM onwards";
+const DEFAULT_PAATH_VENUE = "At Our Residence (Civil Lines)";
+const DEFAULT_PAATH_MAP_URL = "https://goo.gl/maps/ggq18AmDZNJyb4Kn8?g_st=aw";
+const messageMaps = {
+  janeu: "https://maps.google.com/?q=Rihayash+Apartment+Rajnagar+Nagpur",
+  haldi: "https://maps.google.com/?q=Signature+Resorts+Surabardi+Road+Nagpur",
+  sangeet: "https://maps.google.com/?q=Dublin+Nagpur",
+  baarat: "https://maps.google.com/?q=Signature+Resorts+Surabardi+Road+Nagpur",
+  reception: "https://maps.google.com/?q=Dublin+Nagpur",
+};
+const messageEmojis = { janeu: "🪔", sukhmani: "🙏", haldi: "🌼", sangeet: "🎶", baarat: "🐎", reception: "✨" };
 const defaults = ["janeu", "haldi", "sangeet", "baarat", "reception"];
 const brideDefaults = ["sukhmani", "haldi", "sangeet", "baarat", "reception"];
 let side = params.get("s") === "b" || params.get("s") === "bride" ? "bride" : "groom";
@@ -103,7 +117,54 @@ function updatePaathDetails() {
   filmEvents = selectedFilmEvents();
   renderEventList();
   clearGeneratedVideo();
+  updateWhatsAppMessage();
   if (clipsReady) statusLine.textContent = `Ready · ${filmEvents.length} function${filmEvents.length === 1 ? "" : "s"} selected · approximately ${formatDuration(totalDuration)}`;
+}
+
+function makeInvitationUrl() {
+  const base = new URL(PUBLIC_INVITATION_URL);
+  const destination = new URL("index.html", base);
+  const guest = guestField.value.trim().replace(/\s+/g, " ");
+  if (guest) destination.searchParams.set("g", guest);
+  destination.searchParams.set("s", side === "bride" ? "b" : "g");
+  destination.searchParams.set("e", filmEvents.map(event => eventCodes[event.key]).join(""));
+  const paath = filmEvents.find(event => event.key === "sukhmani");
+  if (paath) {
+    if (paath.date !== DEFAULT_PAATH_DATE) destination.searchParams.set("d", paath.date);
+    if (paath.time !== DEFAULT_PAATH_TIME) destination.searchParams.set("t", paath.time);
+    if (paath.venue !== DEFAULT_PAATH_VENUE) destination.searchParams.set("v", paath.venue);
+  }
+  return destination.toString();
+}
+
+function mapUrlFor(event) {
+  if (event.key !== "sukhmani") return messageMaps[event.key] || "";
+  return event.venue === DEFAULT_PAATH_VENUE
+    ? DEFAULT_PAATH_MAP_URL
+    : `https://maps.google.com/?q=${encodeURIComponent(event.venue)}`;
+}
+
+function updateWhatsAppMessage() {
+  const output = document.querySelector("#maker-message-text");
+  const copyButton = document.querySelector("#copy-maker-message");
+  const status = document.querySelector("#maker-message-status");
+  if (!output || !copyButton || !status) return;
+  if (!filmEvents.length) {
+    output.value = "Select at least one function to generate the WhatsApp invitation.";
+    copyButton.disabled = true;
+    status.textContent = "Choose one or more functions above.";
+    return;
+  }
+  const guest = currentGuest();
+  const isGeneric = guest === "Friends & Family";
+  const eventList = filmEvents.map(event => {
+    const date = event.date.replace(/\s+2026$/, "");
+    return `${messageEmojis[event.key] || "✨"} *${event.title}*\n📅 ${date} · ${event.time}\n📍 ${event.venue}\n🗺️ ${mapUrlFor(event)}`;
+  }).join("\n\n");
+  const heading = isGeneric ? "A wedding invitation for our family and friends" : `A personal invitation for ${guest}`;
+  output.value = `${makeInvitationUrl()}\n\n💌 *${heading}*\n\n*Dear ${guest},*\n\nWith immense joy, we invite you to celebrate the beautiful beginning of *Ria & Manas’s* new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\n✨ *WEDDING CELEBRATIONS* ✨\n\n${eventList}\n\nWith love,\n*Ria & Manas*`;
+  copyButton.disabled = false;
+  status.textContent = "Ready to copy · invitation link first, with a map link for every selected function.";
 }
 
 updateGuestGreeting();
@@ -335,6 +396,7 @@ function refreshSelection() {
   clipsReady = false;
   filmEvents = selectedFilmEvents();
   renderEventList();
+  updateWhatsAppMessage();
   clearGeneratedVideo();
   resetStudioPreview();
   totalDuration = INTRO_SECONDS * 2 + CLOSING_SECONDS + filmEvents.length * (6 + DETAIL_SECONDS);
@@ -390,6 +452,7 @@ for (const field of [paathDateField, paathTimeField, paathVenueField]) {
 }
 guestField.addEventListener("input", () => {
   updateGuestGreeting();
+  updateWhatsAppMessage();
   clearGeneratedVideo();
   resetStudioPreview();
 });
@@ -510,6 +573,23 @@ function animateStudioPreview(now) {
 
 refreshSelection();
 requestAnimationFrame(animateStudioPreview);
+document.querySelector("#copy-maker-message").addEventListener("click", async () => {
+  const output = document.querySelector("#maker-message-text");
+  const status = document.querySelector("#maker-message-status");
+  if (!filmEvents.length || !output.value) return;
+  try {
+    if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(output.value);
+    else {
+      output.focus(); output.select();
+      if (!document.execCommand("copy")) throw new Error("Clipboard unavailable");
+    }
+    status.textContent = "Complete WhatsApp invitation copied, including the selected function and map links.";
+  } catch {
+    output.focus(); output.select();
+    status.textContent = "Message selected. Copy it to place it in WhatsApp.";
+  }
+});
+
 createButton.addEventListener("click", async () => {
   filmIsRendering = true;
   try { await createFilm(); }

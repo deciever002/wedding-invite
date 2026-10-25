@@ -34,6 +34,12 @@
     .maker-events { margin: 26px 0 23px; padding: 17px 19px; border: 1px solid rgba(216,176,111,.28); background: rgba(255,255,255,.025); }
     .maker-events h2 { margin: 0 0 12px; color: var(--gold-light); font: 9px var(--mono); letter-spacing: .14em; }
     .maker-events ol { display: grid; gap: 9px; margin: 0; padding-left: 21px; color: var(--paper); font: 14px/1.5 var(--sans); }
+    .maker-message { margin: 24px 0; padding: 17px; border: 1px solid rgba(216,176,111,.3); background: linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015)); }
+    .maker-message h2 { margin: 0 0 9px; color: var(--gold-light); font: 9px var(--mono); letter-spacing: .14em; }
+    .maker-message > p { margin: 0 0 13px; color: rgba(243,235,220,.55); font: 11px/1.55 var(--sans); }
+    .maker-message textarea { display: block; width: 100%; min-height: 260px; padding: 13px; resize: vertical; color: var(--paper); border: 1px solid rgba(242,220,170,.2); background: rgba(8,6,10,.32); font: 12px/1.65 var(--sans); white-space: pre-wrap; }
+    .maker-message .maker-button { margin-top: 11px; }
+    .maker-message-status { min-height: 19px; margin: 9px 0 0!important; color: var(--gold-light)!important; font: 11px/1.5 var(--sans)!important; }
     .maker-preview-wrap { width: min(100%, 360px); justify-self: center; }
     .maker-canvas-frame { position: relative; width: 100%; aspect-ratio: 9/16; overflow: hidden; border: 1px solid rgba(216,176,111,.42); background: #160f18; box-shadow: 0 22px 70px rgba(0,0,0,.35); }
     #film-canvas { display: block; width: 100%; height: 100%; }
@@ -99,6 +105,14 @@
         <section class="maker-events" aria-labelledby="maker-events-title">
           <h2 id="maker-events-title">IN THIS FILM</h2>
           <ol id="maker-event-list"></ol>
+        </section>
+        <section class="maker-message" aria-labelledby="maker-message-title">
+          <h2 id="maker-message-title">WHATSAPP INVITATION</h2>
+          <p>The message updates with the guest name and selected functions. The invitation link is first so WhatsApp can show the website preview; each event includes its map link.</p>
+          <label class="sr-only" for="maker-message-text">Generated WhatsApp invitation message</label>
+          <textarea id="maker-message-text" readonly spellcheck="false"></textarea>
+          <button class="maker-button" id="copy-maker-message" type="button">COPY WHATSAPP MESSAGE</button>
+          <p class="maker-message-status" id="maker-message-status" role="status" aria-live="polite"></p>
         </section>
         <label class="maker-audio-choice"><input id="include-music" type="checkbox" checked> Include the wedding soundtrack</label>
         <div class="maker-actions">
