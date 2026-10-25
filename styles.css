@@ -558,3 +558,49 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
   .event-journey.is-live .chapter-info.is-revealed { bottom: max(13px, env(safe-area-inset-bottom)); max-height: calc(100svh - 105px); }
   .event-journey.is-live .event-details strong { line-height: 1.42; }
 }
+
+/* Readable opening letter with controlled spacing at phone and desktop sizes. */
+.letter-label { font-size: 9px; }
+.letter-paper h1 { font-size: clamp(58px, 6vw, 76px); }
+.letter-subtitle { font-size: 17px; }
+.letter-to { max-width: 100%; margin: 0 0 7px; color: #765a50; font: italic 14px/1.35 var(--serif); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.letter-copy { max-width: 34ch; font-size: 15px; line-height: 1.5; }
+.letter-date { font-size: 9px; }
+.letter-continue { min-height: 38px; font-size: 9px; }
+
+@media (max-width: 760px) {
+  .cover { padding: 76px 14px 34px; }
+  .cover-overline { margin-bottom: 8px; font-size: 9px; letter-spacing: .16em; }
+  .envelope-scene { width: min(92vw, 410px); height: min(62svh, 530px); min-height: min(400px, 54svh); }
+  .letter-paper { top: 4%; left: 4%; width: 92%; height: 89%; padding: 13px 17px 53px; }
+  .letter-paper::before { inset: 9px; }
+  .letter-label { margin-bottom: 8px; font-size: 8px; letter-spacing: .12em; }
+  .letter-paper h1 { font-size: clamp(50px, 14vw, 62px); line-height: .9; }
+  .letter-subtitle { margin-top: 7px; font-size: 16px; }
+  .letter-rule { width: 82%; margin: 10px 0 8px; }
+  .letter-to { margin-bottom: 6px; font-size: 14px; }
+  .letter-copy { max-width: 35ch; font-size: clamp(13px, 3.8vw, 15px); line-height: 1.42; }
+  .letter-date { gap: 6px; margin: 9px 0 3px; font-size: clamp(9px, 2.6vw, 10px); letter-spacing: .03em; }
+  .letter-continue { bottom: 10px; min-height: 38px; font-size: 9px; letter-spacing: .06em; }
+  .cover-footnote { margin-top: 13px; font-size: 8px; letter-spacing: .11em; }
+}
+
+@media (max-width: 370px) {
+  .letter-paper { padding-right: 14px; padding-left: 14px; }
+  .letter-paper h1 { font-size: 50px; }
+  .letter-copy { font-size: 13px; }
+  .letter-date { font-size: 9px; }
+}
+
+@media (max-height: 720px) and (max-width: 760px) {
+  .cover { padding-top: 68px; padding-bottom: 28px; }
+  .envelope-scene { height: min(61svh, 470px); min-height: min(340px, 53svh); }
+  .letter-paper { height: 90%; padding-top: 9px; padding-bottom: 48px; }
+  .letter-label { margin-bottom: 6px; }
+  .letter-paper h1 { font-size: clamp(48px, 13vw, 56px); }
+  .letter-subtitle { margin-top: 5px; }
+  .letter-rule { margin: 8px 0 6px; }
+  .letter-to { margin-bottom: 4px; }
+  .letter-copy { font-size: 13px; line-height: 1.36; }
+  .letter-date { margin-top: 7px; margin-bottom: 1px; }
+}

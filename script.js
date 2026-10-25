@@ -106,6 +106,9 @@ async function startSoundtrack() {
 
 soundToggle.hidden = false;
 audio.autoplay = true;
+audio.defaultMuted = false;
+audio.muted = false;
+audio.loop = true;
 audio.preload = "auto";
 audio.volume = 1;
 void startSoundtrack();
