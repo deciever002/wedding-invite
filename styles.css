@@ -999,3 +999,12 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
   .event-journey.is-live #reception .event-reveal h3 { font-size: 39px; }
   .event-journey.is-live .event-details strong { font-size: 15px; }
 }
+
+/* Keep the opening celebration dates easy to read on small screens. */
+.letter-date { font-size: 12px; font-weight: 700; }
+@media (max-width: 760px) {
+  .letter-date { font-size: clamp(10px, 3vw, 12px); }
+}
+@media (max-width: 370px) {
+  .letter-date { font-size: 10px; }
+}

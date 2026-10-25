@@ -7,8 +7,8 @@
   <meta name="robots" content="noindex, nofollow">
   <title>RiaAndManas Wedding — Invitation Studio</title>
   <link rel="icon" href="assets/lotus.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <script src="admin.js?v=20261025-no-site-url" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261025-copy-spacing-dates">
+  <script src="admin.js?v=20261025-copy-spacing-dates" defer></script>
   <style>
     .admin-shell { min-height: 100svh; padding: 105px 20px 55px; background: radial-gradient(ellipse at 50% 5%, #3b2438, #1a111b 64%); }
     .admin-card { width: min(100%, 760px); margin: 0 auto; padding: clamp(23px, 5vw, 48px); border: 1px solid rgba(216,176,111,.38); background: rgba(25,15,25,.76); box-shadow: 0 25px 90px rgba(0,0,0,.24); backdrop-filter: blur(18px); }
@@ -82,9 +82,9 @@
           </div>
           <div class="admin-schedule" id="sukhmani-schedule" hidden>
             <p class="admin-schedule-title">Paath date defaults to 19th November 2026. You can change it for a specific invitation.</p>
-            <label for="sukhmani-date">PAATH DATE<input id="sukhmani-date" type="text" value="19th November 2026" placeholder="e.g. 19th November 2026"></label>
-            <label for="sukhmani-time">START TIME<input id="sukhmani-time" type="text" value="5:30 PM onwards" placeholder="e.g. 5:30 PM onwards"></label>
-            <label for="sukhmani-venue">VENUE<input id="sukhmani-venue" type="text" value="At Our Residence (Civil Lines)" placeholder="Venue and city"></label>
+            <label for="sukhmani-date">PAATH DATE<input id="sukhmani-date" type="text" maxlength="60" value="19th November 2026" placeholder="e.g. 19th November 2026"></label>
+            <label for="sukhmani-time">START TIME<input id="sukhmani-time" type="text" maxlength="60" value="5:30 PM onwards" placeholder="e.g. 5:30 PM onwards"></label>
+            <label for="sukhmani-venue">VENUE<input id="sukhmani-venue" type="text" maxlength="120" value="At Our Residence (Civil Lines)" placeholder="Venue and city"></label>
           </div>
         </fieldset>
         <label for="base-url">INVITATION WEBSITE URL

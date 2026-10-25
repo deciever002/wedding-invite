@@ -7,8 +7,8 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Video Studio — RiaAndManas Wedding</title>
   <link rel="icon" href="assets/lotus.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
-  <script src="video-maker.js?v=20261025-full-hd-output" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20261025-copy-spacing-dates">
+  <script src="video-maker.js?v=20261025-copy-spacing-dates" defer></script>
   <style>
     .maker-shell { min-height: 100svh; padding: 93px 18px 44px; background: radial-gradient(ellipse at 48% 5%, #3b2438, #1a111b 65%); }
     .maker-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 430px); align-items: start; gap: clamp(24px, 6vw, 78px); width: min(100%, 1040px); margin: auto; }
@@ -97,9 +97,9 @@
             <label class="maker-option"><input type="checkbox" id="film-event-reception"> Wedding Reception</label>
           </div>
           <div class="maker-paath-schedule" id="film-paath-schedule" hidden>
-            <label>PAATH DATE<input class="maker-text-input" id="film-paath-date" type="text" value="19th November 2026"></label>
-            <label>START TIME<input class="maker-text-input" id="film-paath-time" type="text" value="5:30 PM onwards"></label>
-            <label>VENUE<input class="maker-text-input" id="film-paath-venue" type="text" value="At Our Residence (Civil Lines)"></label>
+            <label>PAATH DATE<input class="maker-text-input" id="film-paath-date" type="text" maxlength="60" value="19th November 2026"></label>
+            <label>START TIME<input class="maker-text-input" id="film-paath-time" type="text" maxlength="60" value="5:30 PM onwards"></label>
+            <label>VENUE<input class="maker-text-input" id="film-paath-venue" type="text" maxlength="120" value="At Our Residence (Civil Lines)"></label>
           </div>
           <p class="maker-form-hint">Only checked functions will be stitched into the downloaded film, in event order.</p>
         </fieldset>

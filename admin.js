@@ -161,7 +161,7 @@ form.addEventListener("submit", event => {
     return { emoji: "🙏", title: "Sukhmani Sahib Paath", date, time, venue, mapUrl };
   });
 
-  const eventList = chosen.map(item => `${item.emoji} *${item.title}*\n📅 ${item.date} · ${item.time}\n📍 ${item.venue}\n🗺 ${item.mapUrl}`).join("\n\n");
+  const eventList = chosen.map(item => `${item.emoji} *${item.title}*\n📅 *${item.date}*\n🕒 ${item.time}\n📍 ${item.venue}\n🗺 ${item.mapUrl}`).join("\n\n\n");
   inviteMessage = `💌 *A personal invitation for ${guest}*\n\n*Dear ${guest},*\n\nWith immense joy, we invite you to celebrate the beautiful beginning of *Ria & Manas’s* new journey together. Your presence, love, and blessings will make these special moments even more memorable.\n\n✨ *WEDDING CELEBRATIONS* ✨\n\n${eventList}\n\nWith love,\n*Ria & Manas*`;
   linkOutput.href = inviteUrl;
   linkOutput.textContent = inviteUrl;
@@ -169,6 +169,8 @@ form.addEventListener("submit", event => {
   messageOutput.value = inviteMessage;
   result.hidden = false;
   copyStatus.textContent = "Personal invitation created with the selected celebrations.";
+  messageOutput.style.height = "auto";
+  messageOutput.style.height = `${Math.max(messageOutput.scrollHeight, 248)}px`;
   result.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
 });
 
