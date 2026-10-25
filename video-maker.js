@@ -1,6 +1,12 @@
 const params = new URLSearchParams(location.search);
 const canvas = document.querySelector("#film-canvas");
+const OUTPUT_SCALE = 1.5;
+const W = 720;
+const H = 1280;
+canvas.width = W * OUTPUT_SCALE;
+canvas.height = H * OUTPUT_SCALE;
 const ctx = canvas.getContext("2d", { alpha: false });
+ctx.scale(OUTPUT_SCALE, OUTPUT_SCALE);
 const titleBackdrop = new Image();
 let titleBackdropReady = false;
 const titleBackdropLoaded = new Promise(resolve => {
@@ -18,8 +24,6 @@ const progressFill = document.querySelector("#maker-progress-fill");
 const createButton = document.querySelector("#create-film");
 const downloadSection = document.querySelector("#maker-download");
 const audioChoice = document.querySelector("#include-music");
-const W = canvas.width;
-const H = canvas.height;
 const FPS = 30;
 const INTRO_SECONDS = 7;
 const DETAIL_SECONDS = 5;
@@ -828,7 +832,7 @@ async function createFilm() {
     ...(audioDestination ? audioDestination.stream.getAudioTracks() : []),
   ]);
   const chunks = [];
-  const recorder = new MediaRecorder(combined, { mimeType, videoBitsPerSecond: 5_000_000, audioBitsPerSecond: 160_000 });
+  const recorder = new MediaRecorder(combined, { mimeType, videoBitsPerSecond: 8_000_000, audioBitsPerSecond: 160_000 });
   recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data); };
   const finished = new Promise((resolve, reject) => {
     recorder.onstop = () => resolve();

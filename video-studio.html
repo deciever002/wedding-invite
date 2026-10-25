@@ -8,7 +8,7 @@
   <title>Video Studio — RiaAndManas Wedding</title>
   <link rel="icon" href="assets/lotus.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
-  <script src="video-maker.js?v=20261025-restore-sequential-playback" defer></script>
+  <script src="video-maker.js?v=20261025-full-hd-output" defer></script>
   <style>
     .maker-shell { min-height: 100svh; padding: 93px 18px 44px; background: radial-gradient(ellipse at 48% 5%, #3b2438, #1a111b 65%); }
     .maker-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 430px); align-items: start; gap: clamp(24px, 6vw, 78px); width: min(100%, 1040px); margin: auto; }
@@ -120,14 +120,14 @@
           <button class="maker-button" id="create-film" type="button">CREATE FUNCTION VIDEO <span aria-hidden="true">✦</span></button>
           <a class="maker-button maker-button--quiet" href="admin.html">BACK TO INVITATION STUDIO</a>
         </div>
-        <p class="maker-hint">The studio records the actual event videos into one portrait movie. Keep this page open while it creates the download. Browser support determines whether the file is MP4 or WebM. Estimated duration: <span id="estimate">—</span>.</p>
+        <p class="maker-hint">The studio records the selected event videos into one Full HD portrait movie (1080 × 1920). Keep this page open while it creates the download. Browser support determines whether the file is MP4 or WebM. Estimated duration: <span id="estimate">—</span>.</p>
         <p class="maker-status" id="maker-status" role="status" aria-live="polite">Loading the selected event footage…</p>
         <div class="maker-progress" aria-hidden="true"><span id="maker-progress-fill"></span></div>
         <div class="maker-download" id="maker-download" hidden></div>
         <a class="maker-back" href="index.html">← RETURN TO INVITATION</a>
       </section>
       <aside class="maker-preview-wrap" aria-label="Invitation film preview">
-        <div class="maker-canvas-frame"><canvas id="film-canvas" width="720" height="1280"></canvas></div>
+        <div class="maker-canvas-frame"><canvas id="film-canvas" width="1080" height="1920"></canvas></div>
         <p class="maker-label">THE MOVIE WILL NOT SHOW PLAYER CONTROLS</p>
       </aside>
     </div>
