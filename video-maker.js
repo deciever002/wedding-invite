@@ -769,18 +769,35 @@ async function createFilm() {
   guestField.disabled = true;
   audioChoice.disabled = true;
   statusLine.textContent = "Preparing the portrait wedding artwork…";
-  await Promise.all([titleBackdropLoaded, filmFontsReady]);
+  let audioDestination;
+  if (audioChoice.checked) {
+    try {
+      sharedAudioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+      if (!sharedAudioSource) {
+        sharedAudioSource = sharedAudioContext.createMediaElementSource(audio);
+        sharedAudioSource.connect(sharedAudioContext.destination);
+      }
+      audioDestination = sharedAudioContext.createMediaStreamDestination();
+      sharedAudioSource.connect(audioDestination);
+      audio.currentTime = 0;
+      // Start both playback and the audio context synchronously from the button
+      // gesture, before waiting on image/font promises. Safari blocks a delayed play().
+      const audioStart = audio.play();
+      const contextStart = sharedAudioContext.resume();
+      await Promise.all([titleBackdropLoaded, filmFontsReady, audioStart, contextStart]);
+    } catch (error) {
+      audio.pause();
+      if (audioDestination && sharedAudioSource) sharedAudioSource.disconnect(audioDestination);
+      audioDestination?.stream.getTracks().forEach(track => track.stop());
+      if (sharedAudioContext?.state === "running") await sharedAudioContext.suspend().catch(() => {});
+      throw error;
+    }
+  } else {
+    await Promise.all([titleBackdropLoaded, filmFontsReady]);
+  }
   downloadSection.hidden = true;
   progressFill.style.width = "0";
   const canvasStream = canvas.captureStream(FPS);
-  let audioDestination;
-  if (audioChoice.checked) {
-    sharedAudioContext ||= new (window.AudioContext || window.webkitAudioContext)();
-    sharedAudioSource ||= sharedAudioContext.createMediaElementSource(audio);
-    audioDestination = sharedAudioContext.createMediaStreamDestination();
-    sharedAudioSource.connect(sharedAudioContext.destination);
-    sharedAudioSource.connect(audioDestination);
-  }
   const combined = new MediaStream([
     ...canvasStream.getVideoTracks(),
     ...(audioDestination ? audioDestination.stream.getAudioTracks() : []),
@@ -795,12 +812,6 @@ async function createFilm() {
   let elapsedTotal = 0;
   recorder.start(1000);
   try {
-    if (audioChoice.checked) {
-      audio.currentTime = 0;
-      const audioStarted = audio.play();
-      const contextStarted = sharedAudioContext.resume();
-      await Promise.all([audioStarted, contextStarted]);
-    }
     await renderStatic(coverCard, INTRO_SECONDS, "Opening invitation", elapsedTotal, totalDuration); elapsedTotal += INTRO_SECONDS;
     await renderStatic(introCard, INTRO_SECONDS, "Celebration welcome", elapsedTotal, totalDuration); elapsedTotal += INTRO_SECONDS;
     for (let index = 0; index < filmEvents.length; index += 1) {
@@ -891,7 +902,11 @@ document.querySelector("#copy-maker-message").addEventListener("click", async ()
 createButton.addEventListener("click", async () => {
   filmIsRendering = true;
   try { await createFilm(); }
-  catch (error) { statusLine.textContent = error.message || "The video could not be created. Please try again."; }
+  catch (error) {
+    statusLine.textContent = error?.name === "NotAllowedError"
+      ? "The browser blocked media playback. Open the published HTTPS Video Studio and press Create Video directly; turn off Include Music to make a silent video."
+      : error.message || "The video could not be created. Please try again.";
+  }
   finally {
     filmIsRendering = false;
     resetStudioPreview();
