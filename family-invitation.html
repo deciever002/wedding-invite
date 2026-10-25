@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#160e19">
+  <meta name="description" content="A wedding celebration film for family and friends of Ria and Manas.">
+  <meta property="og:title" content="Ria & Manas · Family & Friends Invitation Film">
+  <meta property="og:description" content="A portrait invitation film with real moving celebration scenes and music.">
+  <meta property="og:image" content="https://riawedsmanas.github.io/wedding-invite/assets/og/whatsapp-invitation.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Ria &amp; Manas — Family &amp; Friends Film</title>
+  <style>
+    * { box-sizing: border-box; }
+    html,body { width:100%;height:100%;margin:0;background:#160e19;overflow:hidden; }
+    body { display:grid;place-items:center; }
+    video { display:block;width:100%;height:100%;object-fit:contain;background:#100b12; }
+    .sound-prompt { position:fixed;z-index:2;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100% - 32px);padding:13px 18px;color:#fbf6ed;border:1px solid rgba(242,220,170,.44);border-radius:999px;background:rgba(25,15,25,.8);font:12px/1.3 system-ui,sans-serif;white-space:nowrap;backdrop-filter:blur(14px);cursor:pointer;transition:opacity .6s ease; }
+    .sound-prompt.is-fading { opacity:0;pointer-events:none; }
+    .replay { position:fixed;inset:auto 0 0;display:none;padding:18px max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom));color:#f2dcaa;text-align:center;background:linear-gradient(transparent,rgba(16,11,18,.85));font:13px system-ui,sans-serif;cursor:pointer; }
+    .replay.is-visible { display:block; }
+  </style>
+</head>
+<body>
+  <video id="invite-film" autoplay muted playsinline preload="auto" poster="assets/og/whatsapp-invitation.png" aria-label="Ria and Manas wedding invitation film">
+    <source src="assets/videos/family-and-friends-invitation.mp4" type="video/mp4">
+  </video>
+  <button class="sound-prompt" id="sound-prompt" type="button">♫ &nbsp; Tap once for music</button>
+  <button class="replay" id="replay" type="button">Replay the celebration film ↻</button>
+  <script>
+    const film = document.querySelector("#invite-film");
+    const soundPrompt = document.querySelector("#sound-prompt");
+    const replay = document.querySelector("#replay");
+    const enableSound = async () => {
+      film.muted = false;
+      film.volume = 1;
+      try { await film.play(); } catch { film.muted = true; }
+      soundPrompt.classList.add("is-fading");
+      window.setTimeout(() => soundPrompt.hidden = true, 700);
+    };
+    soundPrompt.addEventListener("click", enableSound, { once: true });
+    film.addEventListener("pointerdown", enableSound, { once: true });
+    film.addEventListener("ended", () => replay.classList.add("is-visible"));
+    replay.addEventListener("click", () => { replay.classList.remove("is-visible"); film.currentTime = 0; void film.play(); });
+  </script>
+</body>
+</html>

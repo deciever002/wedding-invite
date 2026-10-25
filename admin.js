@@ -69,6 +69,20 @@ const DEFAULT_PAATH_TIME = "5:30 PM onwards";
 const DEFAULT_PAATH_VENUE = "At Our Residence (Civil Lines)";
 const DEFAULT_PAATH_MAP_URL = "https://goo.gl/maps/ggq18AmDZNJyb4Kn8?g_st=aw";
 
+function videoBuilderUrl(base, guest, side, eventKeys) {
+  const destination = new URL("video-maker.html", base);
+  destination.searchParams.set("g", guest || "Friends & Family");
+  destination.searchParams.set("s", side === "bride" ? "b" : "g");
+  destination.searchParams.set("e", eventKeys.map(key => eventCodes[key]).join(""));
+  if (eventKeys.includes("sukhmani")) {
+    for (const [fieldId, param] of [["sukhmani-date", "d"], ["sukhmani-time", "t"], ["sukhmani-venue", "v"]]) {
+      const value = document.querySelector(`#${fieldId}`).value.trim();
+      if (value) destination.searchParams.set(param, value);
+    }
+  }
+  return destination;
+}
+
 function setSide(side) {
   groomSide.checked = side === "groom";
   brideSide.checked = side === "bride";
@@ -130,6 +144,8 @@ form.addEventListener("submit", event => {
       if (paathVenue && paathVenue !== DEFAULT_PAATH_VENUE) destination.searchParams.set("v", paathVenue);
     }
     inviteUrl = destination.toString();
+    const videoDestination = videoBuilderUrl(destination, guest, side, eventKeys);
+    document.querySelector("#video-builder-link").href = videoDestination.toString();
   } catch {
     copyStatus.textContent = "Enter a valid invitation website URL first.";
     baseField.focus();
@@ -154,6 +170,27 @@ form.addEventListener("submit", event => {
   result.hidden = false;
   copyStatus.textContent = "Personal invitation created with the selected celebrations.";
   result.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+});
+
+document.querySelector("#standalone-video-link").addEventListener("click", event => {
+  const videoStatus = document.querySelector("#video-status");
+  const guest = guestField.value.trim().replace(/\s+/g, " ");
+  const side = currentSide();
+  const eventKeys = Object.entries(fields).filter(([, field]) => field.checked).map(([key]) => key);
+  if (!eventKeys.length) {
+    event.preventDefault();
+    videoStatus.textContent = "Select at least one celebration for this video.";
+    return;
+  }
+  try {
+    const base = new URL(baseField.value.trim());
+    event.currentTarget.href = videoBuilderUrl(base, guest, side, eventKeys).toString();
+    videoStatus.textContent = `Opening a video studio for ${eventKeys.length} selected function${eventKeys.length === 1 ? "" : "s"}.`;
+  } catch {
+    event.preventDefault();
+    videoStatus.textContent = "Enter a valid invitation website URL first.";
+    baseField.focus();
+  }
 });
 
 async function copyText(text) {

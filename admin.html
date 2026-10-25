@@ -36,6 +36,12 @@
     .admin-button--secondary { color: var(--gold-light); border-color: rgba(242,220,170,.45); background: transparent; }
     .admin-result { margin-top: 33px; padding-top: 28px; border-top: 1px solid rgba(216,176,111,.25); }
     .admin-result h2 { margin: 0 0 17px; font: 500 25px var(--serif); }
+    .admin-video-tool { margin-top: 28px; padding: 21px; border: 1px solid rgba(216,176,111,.28); background: linear-gradient(135deg,rgba(216,176,111,.09),rgba(255,255,255,.02)); }
+    .admin-video-tool h3 { margin: 0; color: var(--paper); font: 500 22px var(--serif); }
+    .admin-video-tool p { max-width: 540px; margin: 9px 0 17px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .admin-video-tool .admin-eyebrow { margin: 0 0 13px; color: var(--gold-light); font: 10px var(--mono); letter-spacing: .16em; }
+    .admin-video-tool .admin-status { min-height: 22px; margin: 13px 0 0; color: var(--gold-light); font: 11px var(--sans); }
+    .admin-video-tool .admin-actions { margin-top: 16px; }
     .admin-link { display: block; overflow-wrap: anywhere; color: var(--gold-light); font: 12px/1.6 var(--mono); }
     .admin-status { min-height: 22px; margin: 13px 0 0; color: var(--gold-light); font: 11px var(--sans); }
     .admin-back { display: inline-flex; margin-top: 25px; color: var(--gold-light); text-decoration: none; font: 10px var(--mono); letter-spacing: .1em; }
@@ -89,6 +95,15 @@
           <button class="admin-button" type="submit">CREATE PERSONAL LINK <span aria-hidden="true">↗</span></button>
         </div>
       </form>
+      <section class="admin-video-tool" aria-labelledby="standalone-video-title">
+        <p class="admin-eyebrow">SEPARATE VIDEO DOWNLOAD</p>
+        <h3 id="standalone-video-title">Build from the selected functions</h3>
+        <p>Choose the family side and functions above, then open the video studio directly. You do not need to create an invitation link first. Leave the guest name blank for “Friends &amp; Family”.</p>
+        <div class="admin-actions">
+          <a class="admin-button" id="standalone-video-link" href="video-maker.html" style="display:grid;place-items:center;text-decoration:none">OPEN FUNCTION VIDEO STUDIO <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="admin-status" id="video-status" aria-live="polite"></p>
+      </section>
       <section class="admin-result" id="invite-result" hidden aria-labelledby="result-title">
         <h2 id="result-title">Ready to share</h2>
         <a class="admin-link" id="guest-link" href="#" target="_blank" rel="noopener noreferrer"></a>
@@ -100,6 +115,23 @@
           <a class="admin-button admin-button--secondary" id="open-link" href="#" target="_blank" rel="noopener noreferrer" style="display:grid;place-items:center;text-decoration:none">PREVIEW INVITATION</a>
         </div>
         <p class="admin-status" id="copy-status" aria-live="polite"></p>
+        <div class="admin-video-tool">
+          <p class="admin-eyebrow">A SEPARATE SHAREABLE FILM</p>
+          <h3>Your function video</h3>
+          <p>A portrait video will be assembled from the actual event clips selected above, with this guest name and their event details. Open the video studio to preview and download it.</p>
+          <div class="admin-actions">
+          <a class="admin-button" id="video-builder-link" href="video-maker.html" style="display:grid;place-items:center;text-decoration:none">CREATE &amp; DOWNLOAD VIDEO <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+      <section class="admin-video-tool" aria-labelledby="generic-video-title">
+        <p class="admin-eyebrow">READY TO SHARE</p>
+        <h3 id="generic-video-title">Family &amp; friends film</h3>
+        <p>Play the complete invitation with real moving event footage, music, and no player controls burned into the video.</p>
+        <div class="admin-actions">
+          <a class="admin-button admin-button--secondary" href="family-invitation.html" style="display:grid;place-items:center;text-decoration:none">OPEN AUTOPLAY FILM <span aria-hidden="true">↗</span></a>
+          <a class="admin-button admin-button--secondary" href="assets/videos/family-and-friends-invitation.mp4" download style="display:grid;place-items:center;text-decoration:none">DOWNLOAD MP4 <span aria-hidden="true">↓</span></a>
+        </div>
       </section>
       <a class="admin-back" href="index.html">← RETURN TO INVITATION</a>
     </section>

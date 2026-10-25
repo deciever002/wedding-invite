@@ -92,8 +92,22 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--gold-light); ou
 .cover.is-open .envelope-shadow { transform: scale(1.25); opacity: .75; }
 .cover.is-open .open-invite, .cover.is-open .cover-overline { opacity: 0; transform: translateY(10px); pointer-events: none; }
 .cover.is-open .letter-continue { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.cover.is-opening .letter-paper { animation: letter-emerge 1.55s cubic-bezier(.18,.82,.2,1) both; }
+.cover.is-opening .letter-paper::after { animation: paper-glimmer 1.25s .22s ease-out both; }
 .cover.is-open .letter-label { animation: type-in .8s .25s both; }
 .cover.is-open .letter-copy { animation: type-in .8s .4s both; }
+@keyframes letter-emerge {
+  0% { opacity: 0; transform: translateY(18%) rotateX(-42deg) scale(.82); }
+  55% { opacity: 1; transform: translateY(-8%) rotateX(4deg) scale(1.025); }
+  78% { opacity: 1; transform: translateY(-4%) rotateX(-1deg) scale(.995); }
+  100% { opacity: 1; transform: translateY(-6%) rotateX(0) scale(1); }
+}
+@keyframes paper-glimmer {
+  0% { opacity: 0; transform: translateX(-115%) skewX(-14deg); }
+  25% { opacity: .72; }
+  100% { opacity: 0; transform: translateX(115%) skewX(-14deg); }
+}
+.letter-paper::after { content: ""; position: absolute; z-index: 1; inset: 0; background: linear-gradient(105deg, transparent 36%, rgba(255,255,255,.68) 49%, rgba(255,255,255,.12) 55%, transparent 68%); opacity: 0; pointer-events: none; }
 
 .journey-intro { min-height: 100svh; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; padding: 86px 22px 60px; text-align: center; background: radial-gradient(ellipse at 50% 49%, #382339, #1b111e 61%, #140d16); animation: page-rise .9s both; }
 .journey-intro::before { content: ""; position: absolute; inset: 24px; border: 1px solid rgba(216,176,111,.18); pointer-events: none; }
@@ -321,6 +335,7 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
 @keyframes chapter-arrive { from { opacity: .35; transform: translateY(12px); filter: blur(5px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
 
 @media (prefers-reduced-motion: reduce) {
+  .cover.is-opening .letter-paper, .cover.is-opening .letter-paper::after { animation: none !important; }
   .event-effects, .chapter-art.is-transitioning .event-effects * { animation: none !important; }
   .chapter-art.is-transitioning .event-effects { opacity: .72; }
   .thread-shadow, .thread-line, .thread-highlight { stroke-dashoffset: 0 !important; }

@@ -132,7 +132,9 @@ document.addEventListener("keydown", resumeSoundtrackOnInteraction);
 function revealLetter() {
   if (cover.classList.contains("is-open")) return;
   void startSoundtrack();
+  cover.classList.add("is-opening");
   cover.classList.add("is-open");
+  window.setTimeout(() => cover.classList.remove("is-opening"), 1800);
   openInvite.setAttribute("aria-expanded", "true");
   window.clearTimeout(autoIntroTimer);
   autoIntroTimer = window.setTimeout(beginJourney, COVER_LETTER_DWELL_MS);
@@ -144,7 +146,7 @@ function beginJourney() {
   journeyIntro.hidden = false;
   document.body.classList.add("story-started");
   journeyIntro.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
-  autoStartTimer = window.setTimeout(startStory, reduceMotion.matches ? 250 : 950);
+  autoStartTimer = window.setTimeout(startStory, COVER_LETTER_DWELL_MS);
 }
 
 openInvite.addEventListener("click", revealLetter);
