@@ -631,3 +631,334 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
 
 .venue-map-link { color: inherit; font-weight: inherit; text-decoration: underline; text-decoration-color: rgba(216,176,111,.72); text-decoration-thickness: 1px; text-underline-offset: .2em; }
 .venue-map-link:hover { color: var(--gold-light); text-decoration-color: currentColor; }
+
+/* Cinematic cover: keep the RM envelope, but use a quiet, editorial reveal. */
+.cover {
+  min-height: max(680px, 100svh);
+  justify-content: center;
+  padding: calc(88px + env(safe-area-inset-top)) 20px calc(36px + env(safe-area-inset-bottom));
+  background: #17101b;
+}
+.cover::before {
+  z-index: -2;
+  opacity: 1;
+  background-image: linear-gradient(180deg, rgba(14,9,17,.46), rgba(18,10,18,.32) 42%, rgba(13,8,15,.7)), url("assets/images/wedding-title-backdrop.png");
+  background-position: center;
+  background-size: cover;
+}
+.cover::after { inset: 13px; border-color: rgba(242,220,170,.45); }
+.cover-orbit, .cover-stars { display: none; }
+.cover-overline { margin: 0 0 14px; color: #f5dfad; font-size: 10px; letter-spacing: .2em; }
+.envelope-scene { width: min(88vw, 438px); height: clamp(340px, 54svh, 490px); min-height: min(340px, 54svh); perspective: none; display: grid; place-items: center; }
+.envelope-shadow { width: 76%; bottom: 12%; height: 12%; opacity: .52; filter: blur(28px); }
+.envelope {
+  top: 13%; bottom: 13%; left: 2%; right: 2%; height: auto; overflow: hidden;
+  border: 1px solid rgba(239,210,156,.7);
+  background: linear-gradient(145deg, #60354d, #32182f 60%, #251528);
+  box-shadow: 0 28px 85px rgba(0,0,0,.45), inset 0 0 0 5px rgba(255,240,207,.04);
+}
+.envelope-back { border: 0; background: linear-gradient(145deg, #60354d, #32182f 60%, #251528); }
+.envelope-back::before, .envelope-back::after { border-color: rgba(242,220,170,.12); }
+.envelope-pocket { background: linear-gradient(145deg, #4a2742, #28162c); border-color: rgba(242,220,170,.28); }
+.envelope-flap { background: linear-gradient(155deg, #785269, #482842 80%); }
+.envelope-seal { width: 46px; height: 46px; grid-template-columns: 1fr 7px 1fr; color: #fff0c9; border-color: rgba(255,239,197,.76); background: radial-gradient(circle at 34% 28%, #ddbd81, #9a644c 65%, #754654); box-shadow: 0 4px 16px rgba(8,5,10,.38), inset 0 0 0 3px rgba(107,53,54,.28); font-size: 9px; }
+.envelope-seal i { font-size: 6px; }
+.letter-paper {
+  top: 50%; left: 50%; width: 100%; height: 100%; min-height: 0;
+  padding: clamp(25px, 5svh, 48px) clamp(22px, 6vw, 42px) 22px;
+  transform: translate(-50%,-47%) scale(.94);
+  transform-origin: center;
+  border: 1px solid rgba(242,220,170,.95);
+  background: linear-gradient(145deg, rgba(255,250,239,.98), rgba(241,229,208,.98));
+  box-shadow: 0 26px 85px rgba(0,0,0,.45), inset 0 0 0 5px rgba(255,255,255,.38);
+}
+.letter-paper::before { inset: 12px; border-color: rgba(150,108,66,.32); }
+.letter-corner { color: #a17c52; font-size: 8px; }
+.letter-label { margin-bottom: 13px; color: #70513f; font-size: 9px; letter-spacing: .17em; }
+.letter-paper h1 { color: #321b32; font-size: clamp(54px, 11vw, 74px); line-height: .92; }
+.letter-paper h1 i { color: #a57848; }
+.letter-subtitle { margin-top: 9px; color: #775f55; font-size: 17px; }
+.letter-rule { margin: 14px 0 10px; background: rgba(151,112,73,.4); }
+.letter-rule span { background: #f7f0e4; }
+.letter-to { color: #694a42; font-size: 15px; }
+.letter-copy { max-width: 35ch; color: #55443f; font-size: 15px; line-height: 1.52; }
+.letter-date { margin: 11px 0 4px; color: #644d42; font-size: 10px; letter-spacing: .07em; }
+.letter-continue { color: #3d2039; font-size: 9px; }
+.cover.is-open .letter-paper { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+.cover.is-open .envelope { opacity: 0; transform: translateY(7%) scale(.96); pointer-events: none; }
+.cover.is-opening .letter-paper { animation: letter-unfold .92s cubic-bezier(.2,.75,.18,1) both; }
+.cover.is-opening .letter-paper::after { animation: paper-glimmer 1.15s .25s ease-out both; }
+.cover.is-open .open-invite, .cover.is-open .cover-overline { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.cover.is-open .envelope-shadow { opacity: 0; }
+.cover-footnote { margin-top: 15px; color: rgba(242,220,170,.74); font-size: 8px; letter-spacing: .15em; }
+@keyframes letter-unfold {
+  0% { opacity: 0; transform: translate(-50%,-43%) scale(.88); clip-path: inset(49% 0 49%); }
+  58% { opacity: 1; clip-path: inset(0); transform: translate(-50%,-51%) scale(1.015); }
+  100% { opacity: 1; clip-path: inset(0); transform: translate(-50%,-50%) scale(1); }
+}
+
+/* Each event details screen gets its own generated scene, typography and motion. */
+.event-journey.is-live .chapter-info.is-revealed {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  min-height: 0;
+  margin: 0;
+  padding: calc(101px + env(safe-area-inset-top)) clamp(24px, 8vw, 106px) calc(40px + env(safe-area-inset-bottom));
+  overflow: hidden;
+  isolation: isolate;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  animation: details-arrive .72s cubic-bezier(.16,.8,.2,1) both;
+}
+.event-journey.is-live .chapter-film { object-fit: contain; }
+.event-journey.is-live .chapter-info.is-revealed::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -2%;
+  background-image: linear-gradient(180deg, rgba(10,7,17,.55) 0%, rgba(12,8,16,.42) 31%, rgba(11,8,15,.14) 58%, rgba(10,7,14,.7) 100%), var(--invite-background);
+  background-position: center 54%;
+  background-size: cover;
+  transform: scale(1.02);
+  animation: invite-art-float 14s ease-in-out infinite alternate;
+}
+.event-journey.is-live .chapter-info.is-revealed::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: 13px;
+  border: 1px solid rgba(242,220,170,.43);
+  pointer-events: none;
+}
+.event-journey.is-live .chapter-info.is-revealed .waiting-copy { display: none; }
+.event-journey.is-live .chapter-info.is-revealed .event-reveal {
+  position: relative;
+  inset: auto;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+  padding: clamp(18px, 3vh, 34px) 0 0;
+  opacity: 1;
+  transform: none;
+  text-align: center;
+  pointer-events: auto;
+  isolation: isolate;
+}
+.event-journey.is-live .details-motif {
+  position: absolute;
+  z-index: 0;
+  inset: -4vh -8vw;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  opacity: 1;
+  pointer-events: none;
+}
+.event-journey.is-live .event-reveal > :not(.details-motif) { position: relative; z-index: 1; }
+.event-journey.is-live .event-reveal .info-index {
+  margin: 0 0 13px;
+  color: #f7dfa6;
+  font: 600 10px/1.4 var(--mono);
+  letter-spacing: .19em;
+  text-shadow: 0 2px 18px rgba(0,0,0,.75);
+}
+.event-journey.is-live .event-reveal h3 {
+  max-width: min(100%, 760px);
+  margin: 0;
+  color: #fff8e9;
+  font: 700 clamp(39px, 9vw, 76px)/.98 var(--serif);
+  letter-spacing: -.04em;
+  text-wrap: balance;
+  text-shadow: 0 4px 24px rgba(9,5,12,.8), 0 1px 2px rgba(0,0,0,.8);
+  overflow-wrap: anywhere;
+}
+.event-journey.is-live .event-details {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.2fr);
+  gap: clamp(16px, 3vw, 32px);
+  width: min(100%, 580px);
+  margin: clamp(22px, 4vh, 35px) 0 0;
+  padding: 17px 0 0;
+  border-top: 1px solid rgba(255,235,192,.63);
+  text-align: left;
+  text-shadow: 0 2px 16px rgba(0,0,0,.82);
+}
+.event-journey.is-live .event-details div { min-width: 0; gap: 7px; }
+.event-journey.is-live .event-details span {
+  color: #f3d89a;
+  font: 600 9px/1.3 var(--mono);
+  letter-spacing: .17em;
+}
+.event-journey.is-live .event-details strong {
+  color: #fffaf1;
+  font: 600 clamp(15px, 3.7vw, 19px)/1.42 var(--serif);
+  overflow-wrap: anywhere;
+}
+.event-journey.is-live .venue-map-link { text-decoration-color: rgba(255,230,172,.85); }
+.event-journey.is-live .info-actions { margin-top: 16px; }
+.event-journey.is-live .info-actions .map-action {
+  min-height: 38px;
+  padding: 0 15px;
+  color: #fff2cf;
+  border: 1px solid rgba(255,235,192,.55);
+  border-radius: 999px;
+  background: rgba(22,13,23,.28);
+  font-size: 9px;
+  backdrop-filter: blur(9px);
+}
+.event-journey.is-live .info-watermark { display: none; }
+
+/* Janeu and prayer are composed as centered ceremonial title cards. */
+.event-journey.is-live #janeu .chapter-info::before { background-position: center 51%; }
+.event-journey.is-live #janeu .event-reveal h3 { font-size: clamp(39px, 8.7vw, 72px); }
+.event-journey.is-live #janeu .event-details { max-width: 540px; }
+.event-journey.is-live #sukhmani .chapter-info::before {
+  background-image: linear-gradient(180deg, rgba(9,16,33,.58), rgba(9,16,33,.34) 40%, rgba(9,16,33,.65)), var(--invite-background);
+  background-position: center 53%;
+}
+.event-journey.is-live #sukhmani .event-reveal { padding-top: clamp(22px, 5vh, 50px); }
+.event-journey.is-live #sukhmani .event-reveal h3 { max-width: 520px; font-size: clamp(37px, 8vw, 65px); }
+.event-journey.is-live #sukhmani .info-index { color: #e6d5a9; }
+.event-journey.is-live #sukhmani .event-details { border-color: rgba(230,213,169,.5); }
+
+/* Haldi uses a playful left-anchored festival marquee and stacked event facts. */
+.event-journey.is-live #haldi .chapter-info::before {
+  background-image: linear-gradient(90deg, rgba(12,10,20,.74), rgba(12,10,20,.46) 44%, rgba(12,10,20,.04) 78%), linear-gradient(180deg, rgba(12,10,20,.48), transparent 55%, rgba(12,10,20,.42)), var(--invite-background);
+  background-position: center 52%;
+}
+.event-journey.is-live #haldi .event-reveal { align-items: flex-start; text-align: left; }
+.event-journey.is-live #haldi .event-reveal .info-index { padding: 7px 11px; border-left: 2px solid #ffd64f; background: rgba(43,20,22,.42); }
+.event-journey.is-live #haldi .event-reveal h3 { max-width: 440px; color: #fff4cf; font-size: clamp(41px, 10vw, 72px); }
+.event-journey.is-live #haldi .event-details { grid-template-columns: minmax(0,1fr); width: min(100%,380px); margin-top: 21px; padding-left: 14px; border-left: 2px solid rgba(255,205,67,.82); border-top: 0; }
+
+/* Sangeet and procession titles sit opposite their moving illustrated subjects. */
+.event-journey.is-live #sangeet .chapter-info::before {
+  background-image: linear-gradient(90deg, rgba(17,7,25,.82), rgba(17,7,25,.54) 45%, rgba(17,7,25,.06) 83%), linear-gradient(180deg, rgba(17,7,25,.35), transparent 55%, rgba(17,7,25,.42)), var(--invite-background);
+  background-position: center 51%;
+}
+.event-journey.is-live #sangeet .event-reveal { align-items: flex-start; text-align: left; }
+.event-journey.is-live #sangeet .event-reveal .info-index { letter-spacing: .22em; }
+.event-journey.is-live #sangeet .event-reveal h3 { max-width: 460px; color: #fff2fb; font-size: clamp(40px, 9vw, 68px); }
+.event-journey.is-live #sangeet .event-details { width: min(100%, 500px); }
+.event-journey.is-live #baarat .chapter-info::before {
+  background-image: linear-gradient(90deg, rgba(5,12,27,.78), rgba(5,12,27,.55) 43%, rgba(5,12,27,.08) 77%), linear-gradient(180deg, rgba(5,12,27,.2), transparent 52%, rgba(5,12,27,.48)), var(--invite-background);
+  background-position: center 50%;
+  animation-duration: 10s;
+}
+.event-journey.is-live #baarat .event-reveal { align-items: flex-start; text-align: left; }
+.event-journey.is-live #baarat .event-reveal .info-index { color: #f4c76e; }
+.event-journey.is-live #baarat .event-reveal h3 { font-size: clamp(50px, 13vw, 90px); }
+.event-journey.is-live #baarat .event-details { grid-template-columns: minmax(0,1fr); max-width: 400px; }
+
+/* Reception returns to a centered, formal finale, with a brighter flower frame. */
+.event-journey.is-live #reception .chapter-info::before {
+  background-image: linear-gradient(180deg, rgba(5,16,15,.6), rgba(5,16,15,.34) 44%, rgba(5,16,15,.68)), var(--invite-background);
+  background-position: center 51%;
+}
+.event-journey.is-live #reception .event-reveal { padding-top: clamp(25px, 6vh, 60px); }
+.event-journey.is-live #reception .event-reveal .info-index { letter-spacing: .22em; }
+.event-journey.is-live #reception .event-reveal h3 { max-width: 520px; font-size: clamp(39px, 8.5vw, 70px); }
+.event-journey.is-live #reception .event-details { max-width: 550px; }
+
+@keyframes invite-art-float { from { transform: scale(1.02) translate3d(0,0,0); } to { transform: scale(1.085) translate3d(0,-.6%,0); } }
+@keyframes detail-petal-float { from { opacity: 0; transform: translate3d(0,45px,0) rotate(0); } 15% { opacity: .8; } to { opacity: 0; transform: translate3d(var(--petal-x,50px),-55vh,0) rotate(190deg); } }
+@keyframes detail-popper { 0%,100% { transform: translateY(3px) rotate(-2deg); } 50% { transform: translateY(-4px) rotate(2deg); } }
+@keyframes detail-horse-motion { 0%,100% { transform: scale(1.02) translate3d(0,0,0); } 50% { transform: scale(1.075) translate3d(-1.1%,.4%,0); } }
+.details-motif .janeu-thread { top: auto; right: -3%; bottom: 5%; left: 0; width: 100%; height: 36%; opacity: .78; }
+.details-motif .thread-shadow, .details-motif .thread-line, .details-motif .thread-highlight { animation: thread-unfurl 7s ease-in-out infinite alternate; stroke-dashoffset: 620; }
+.details-motif .thread-line { animation-delay: .12s; }
+.details-motif .thread-highlight { animation-delay: .22s; }
+.details-motif .thread-glint { opacity: 1; animation: thread-glint 2.6s ease-in-out infinite alternate; }
+.details-motif .prayer-glow { opacity: .44; animation: prayer-bloom 5s ease-in-out infinite; }
+.details-motif .prayer-glow--two { animation-delay: 2.4s; }
+.details-motif .prayer-petal { opacity: .62; animation: detail-petal-float 8s ease-in-out infinite; }
+.details-motif .prayer-petal--one { --petal-x:-16vw; }
+.details-motif .prayer-petal--two { --petal-x:19vw; animation-delay: 2s; }
+.details-motif .prayer-petal--three { --petal-x:3vw; animation-delay: 4.3s; }
+.details-motif .gulal-cloud { opacity: .22; animation: powder-bloom 6s ease-out infinite; }
+.details-motif .gulal-cloud--two { animation-delay: 2s; }
+.details-motif .gulal-cloud--three { animation-delay: 4s; }
+.details-motif .popper { opacity: .84; animation: detail-popper 2.3s ease-in-out infinite; }
+.details-motif .popper--right { animation-delay: .45s; }
+.details-motif .confetti { opacity: .55; animation: confetti-drift 7s linear infinite; }
+.details-motif .confetti--two { animation-delay: -2s; }
+.details-motif .confetti--three { animation-delay: -4s; }
+.details-motif .confetti--four { animation-delay: -5.5s; }
+.details-motif .disco-beam { opacity: .34; animation: beam-swing-one 7s ease-in-out infinite alternate; }
+.details-motif .disco-beam--two { animation-name: beam-swing-two; animation-delay: -2s; }
+.details-motif .disco-beam--three { animation-name: beam-swing-three; animation-delay: -4s; }
+.details-motif .disco-ball { opacity: .88; animation: disco-turn 10s linear infinite; }
+.details-motif .disco-glint { opacity: .8; animation: glint-pop 2.2s ease-in-out infinite alternate; }
+.details-motif .disco-glint--two { animation-delay: .6s; }
+.details-motif .disco-glint--three { animation-delay: 1.2s; }
+.details-motif .procession-dhol { opacity: .29; animation: dhol-bounce 1.8s ease-in-out infinite; }
+.details-motif .dhol-wave { opacity: .34; animation: dhol-beat 3s ease-out infinite; }
+.details-motif .dhol-wave--two { animation-delay: 1s; }
+.details-motif .dhol-wave--three { animation-delay: 2s; }
+.details-motif .procession-spark { opacity: .5; animation: procession-spark 4.5s ease-out infinite; }
+.details-motif .procession-spark--two { animation-delay: 1.1s; --spark-x: 155px; --spark-y:-180px; }
+.details-motif .procession-spark--three { animation-delay: 2.2s; --spark-x:-135px; --spark-y:160px; }
+.details-motif .procession-spark--four { animation-delay: 3.3s; --spark-x:180px; --spark-y:135px; }
+.details-motif .firework { opacity: .2; animation: firework-bloom 3.7s ease-out infinite; }
+.details-motif .firework--two { animation-delay: 1.1s; }
+.details-motif .firework--three { animation-delay: 2.2s; }
+.event-journey.is-live #baarat .chapter-info::before { animation-name: detail-horse-motion; animation-duration: 7s; }
+@keyframes dhol-bounce { 0%,100% { transform: translate(-50%,-50%) rotate(-5deg) scale(.9); } 50% { transform: translate(-50%,-50%) rotate(5deg) scale(1.04); } }
+
+@media (max-width: 760px) {
+  .cover { min-height: max(690px, 100svh); padding: calc(78px + env(safe-area-inset-top)) 12px calc(30px + env(safe-area-inset-bottom)); }
+  .cover-overline { margin-bottom: 10px; font-size: 9px; letter-spacing: .14em; }
+  .envelope-scene { width: min(92vw, 430px); height: clamp(350px, 55svh, 470px); min-height: min(350px, 55svh); }
+  .letter-paper { padding: clamp(20px, 4vh, 34px) 20px 17px; }
+  .letter-paper h1 { font-size: clamp(46px, 13vw, 62px); }
+  .letter-copy { font-size: clamp(13px, 3.8vw, 15px); line-height: 1.43; }
+  .letter-date { font-size: clamp(8.5px, 2.55vw, 10px); letter-spacing: .035em; }
+  .open-invite { margin-top: 14px; }
+  .cover-footnote { margin-top: 10px; }
+  .event-journey.is-live .chapter-info.is-revealed { padding: calc(91px + env(safe-area-inset-top)) max(25px, 7vw) calc(32px + env(safe-area-inset-bottom)); }
+  .event-journey.is-live .chapter-info.is-revealed::after { inset: 9px; }
+  .event-journey.is-live .event-reveal { padding-top: clamp(12px, 2.4vh, 22px); }
+  .event-journey.is-live .event-reveal .info-index { margin-bottom: 10px; font-size: 9px; letter-spacing: .14em; }
+  .event-journey.is-live .event-reveal h3 { font-size: clamp(37px, 10vw, 52px); line-height: 1.02; }
+  .event-journey.is-live .event-details { grid-template-columns: minmax(0,1fr) minmax(0,1.12fr); gap: 13px; width: 100%; margin-top: clamp(18px, 3vh, 27px); padding-top: 14px; }
+  .event-journey.is-live .event-details span { font-size: 8px; }
+  .event-journey.is-live .event-details strong { font-size: clamp(14px, 4.1vw, 17px); line-height: 1.38; }
+  .event-journey.is-live #haldi .event-details, .event-journey.is-live #baarat .event-details { grid-template-columns: minmax(0,1fr); gap: 12px; }
+  .event-journey.is-live #haldi .event-reveal h3 { font-size: clamp(38px, 10.3vw, 54px); }
+  .event-journey.is-live #sangeet .event-reveal h3 { font-size: clamp(38px, 10vw, 53px); }
+  .event-journey.is-live #baarat .event-reveal h3 { font-size: clamp(54px, 15vw, 74px); }
+  .event-journey.is-live #sukhmani .event-reveal h3 { font-size: clamp(36px, 9vw, 50px); }
+  .event-journey.is-live #reception .event-reveal h3 { font-size: clamp(36px, 9vw, 50px); }
+  .event-journey.is-live .info-actions .map-action { min-height: 36px; font-size: 9px; }
+}
+@media (max-width: 370px) {
+  .event-journey.is-live .chapter-info.is-revealed { padding-right: 22px; padding-left: 22px; }
+  .event-journey.is-live .event-details { gap: 10px; }
+  .event-journey.is-live .event-details strong { font-size: 13px; }
+  .letter-copy { font-size: 12.5px; }
+}
+@media (max-height: 710px) and (max-width: 760px) {
+  .event-journey.is-live .chapter-info.is-revealed { padding-top: calc(78px + env(safe-area-inset-top)); }
+  .event-journey.is-live .event-reveal { padding-top: 4px; }
+  .event-journey.is-live .event-details { margin-top: 16px; padding-top: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .event-journey.is-live .chapter-info.is-revealed::before { animation: none; transform: scale(1.035); }
+  .details-motif, .details-motif * { animation: none !important; }
+}

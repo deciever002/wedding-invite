@@ -78,12 +78,12 @@ if (side === "groom") fields.sukhmani.checked = false;
 else fields.janeu.checked = false;
 
 const events = {
-  janeu: { title: "Janeu Ceremony", date: "19th November 2026", time: "10:00 AM onwards", venue: "Rihayash Apartment, Rajnagar, Nagpur", source: "assets/events/janeu.mp4", poster: "assets/events/janeu.jpg", tone: "A SACRED THREAD · A NEW CHAPTER" },
-  sukhmani: { title: "Sukhmani Sahib Paath", date: paathDate, time: paathTime, venue: paathVenue, source: "assets/events/sukhmani-paath.mp4", poster: "assets/events/sukhmani-paath.png", tone: "A PRAYER FOR PEACE · A BLESSED BEGINNING" },
-  haldi: { title: "Haldi Carnival", date: "20th November 2026", time: "11:00 AM onwards", venue: "Signature Resorts, Nagpur", source: "assets/events/haldi-carnival.mp4", poster: "assets/events/haldi-carnival.jpg", tone: "COLOUR, CHAOS & JOY" },
-  sangeet: { title: "Sangeet Ceremony", date: "20th November 2026", time: "7:00 PM onwards", venue: "Dublin, Nagpur", source: "assets/events/sangeet.mp4", poster: "assets/events/sangeet.jpg", tone: "ONE FLOOR · ALL HEART" },
-  baarat: { title: "Baarat", date: "21st November 2026", time: "10:00 AM onwards", venue: "Signature Resorts, Nagpur", source: "assets/events/baarat.mp4", poster: "assets/events/baarat.jpg", tone: "THE GRAND PROCESSION" },
-  reception: { title: "Wedding Reception", date: "21st November 2026", time: "7:00 PM onwards", venue: "Dublin, Nagpur", source: "assets/events/reception.mp4", poster: "assets/events/reception.jpg", tone: "A NIGHT TO REMEMBER" },
+  janeu: { title: "Janeu Ceremony", date: "19th November 2026", time: "10:00 AM onwards", venue: "Rihayash Apartment, Rajnagar, Nagpur", source: "assets/events/janeu.mp4", poster: "assets/events/invite-bg-janeu.jpg", tone: "A SACRED THREAD · A NEW CHAPTER" },
+  sukhmani: { title: "Sukhmani Sahib Paath", date: paathDate, time: paathTime, venue: paathVenue, source: "assets/events/sukhmani-paath.mp4", poster: "assets/events/invite-bg-sukhmani.jpg", tone: "A PRAYER FOR PEACE · A BLESSED BEGINNING" },
+  haldi: { title: "Haldi Carnival", date: "20th November 2026", time: "11:00 AM onwards", venue: "Signature Resorts, Nagpur", source: "assets/events/haldi-carnival.mp4", poster: "assets/events/invite-bg-haldi.jpg", tone: "COLOUR, CHAOS & JOY" },
+  sangeet: { title: "Sangeet Ceremony", date: "20th November 2026", time: "7:00 PM onwards", venue: "Dublin, Nagpur", source: "assets/events/sangeet.mp4", poster: "assets/events/invite-bg-sangeet.jpg", tone: "ONE FLOOR · ALL HEART" },
+  baarat: { title: "Baarat", date: "21st November 2026", time: "10:00 AM onwards", venue: "Signature Resorts, Nagpur", source: "assets/events/baarat.mp4", poster: "assets/events/invite-bg-baarat.jpg", tone: "THE GRAND PROCESSION" },
+  reception: { title: "Wedding Reception", date: "21st November 2026", time: "7:00 PM onwards", venue: "Dublin, Nagpur", source: "assets/events/reception.mp4", poster: "assets/events/invite-bg-reception.jpg", tone: "A NIGHT TO REMEMBER" },
 };
 let filmEvents = [];
 let selectionVersion = 0;
@@ -190,7 +190,7 @@ document.querySelector("#estimate").textContent = formatDuration(INTRO_SECONDS *
 
 const audio = new Audio();
 audio.crossOrigin = "anonymous";
-audio.src = "assets/audio/wedding-track.mp3";
+audio.src = "assets/audio/wedding_final_audio.mp3";
 audio.preload = "auto";
 audio.loop = true;
 let generatedObjectUrl = "";
@@ -232,76 +232,98 @@ function centerText(text, y, font, color = "#f2dcaa", maxWidth = W - 120) {
   ctx.fillText(text, W / 2, y, maxWidth);
 }
 
+function fittedText(text, x, y, font, color, maxWidth, align = "left") {
+  ctx.font = font;
+  const match = font.match(/(\d+(?:\.\d+)?)px/);
+  const size = match ? Number(match[1]) : 24;
+  if (ctx.measureText(text).width > maxWidth) ctx.font = font.replace(match[0], `${Math.max(16, size * maxWidth / ctx.measureText(text).width)}px`);
+  ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = "middle";
+  ctx.fillText(text, x, y, maxWidth);
+}
+
 function coverCard(time = 0) {
   const guest = currentGuest();
-  const t = Math.max(0, Math.min(1, time / 2.25));
+  const t = Math.max(0, Math.min(1, time / 2.3));
   const eased = 1 - (1 - t) ** 3;
   paintCard(time);
+  const envelopeY = 480;
+  ctx.save(); ctx.shadowColor = "rgba(0,0,0,.42)"; ctx.shadowBlur = 38; ctx.shadowOffsetY = 22;
+  const envelopeGradient = ctx.createLinearGradient(80, envelopeY, W - 80, 1050);
+  envelopeGradient.addColorStop(0, "#56344c"); envelopeGradient.addColorStop(.54, "#321c35"); envelopeGradient.addColorStop(1, "#241726");
+  ctx.fillStyle = envelopeGradient; ctx.beginPath(); ctx.roundRect(70, envelopeY, W - 140, 560, 14); ctx.fill(); ctx.restore();
+  ctx.strokeStyle = "rgba(240,211,158,.58)"; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.roundRect(80, envelopeY + 10, W - 160, 540, 10); ctx.stroke();
+  ctx.strokeStyle = "rgba(240,211,158,.3)"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(80, envelopeY + 22); ctx.lineTo(W / 2, envelopeY + 242); ctx.lineTo(W - 80, envelopeY + 22); ctx.stroke();
+  const sealAlpha = Math.max(0, 1 - time / 1.2);
+  ctx.globalAlpha = sealAlpha; ctx.fillStyle = "#a5785d"; ctx.beginPath(); ctx.arc(W / 2, envelopeY + 275, 28, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = "rgba(255,235,196,.72)"; ctx.beginPath(); ctx.arc(W / 2, envelopeY + 275, 22, 0, Math.PI * 2); ctx.stroke();
+  fittedText("R ✦ M", W / 2, envelopeY + 275, `700 13px ${SERIF}`, "#fff0cc", 48, "center");
+  ctx.globalAlpha = 1;
 
-  // The invitation rises from an illustrated envelope while its wax seal glows.
-  const paperY = 650 - eased * 410;
-  ctx.save(); ctx.shadowColor = "rgba(0,0,0,.42)"; ctx.shadowBlur = 34; ctx.shadowOffsetY = 18;
-  ctx.fillStyle = "#f5eddc"; ctx.beginPath(); ctx.roundRect(76, paperY, W - 152, 640, 10); ctx.fill();
-  ctx.restore();
-  ctx.fillStyle = "rgba(127,91,70,.13)"; ctx.fillRect(102, paperY + 24, W - 204, 1);
-  ctx.strokeStyle = "rgba(163,123,77,.28)"; ctx.lineWidth = 1; ctx.strokeRect(96, paperY + 17, W - 192, 606);
-
-  // Envelope body and folding edges.
-  ctx.fillStyle = "#d6b98e"; ctx.beginPath(); ctx.moveTo(67, 820); ctx.lineTo(W / 2, 1000); ctx.lineTo(W - 67, 820); ctx.lineTo(W - 67, 1112); ctx.quadraticCurveTo(W - 67, 1135, W - 91, 1135); ctx.lineTo(91, 1135); ctx.quadraticCurveTo(67, 1135, 67, 1112); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "rgba(112,73,70,.25)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(68, 1128); ctx.lineTo(W / 2, 952); ctx.lineTo(W - 68, 1128); ctx.stroke();
-  const flapProgress = Math.min(1, time / 1.1);
-  ctx.save(); ctx.translate(W / 2, 820); ctx.scale(1, Math.max(.03, Math.cos(flapProgress * Math.PI / 2)));
-  ctx.fillStyle = "#ead4af"; ctx.beginPath(); ctx.moveTo(-W * .42, 0); ctx.lineTo(0, -180); ctx.lineTo(W * .42, 0); ctx.closePath(); ctx.fill(); ctx.restore();
-  const sealAlpha = Math.min(1, Math.max(0, (time - .6) / .6));
-  ctx.globalAlpha = sealAlpha; ctx.fillStyle = "#963f4c"; ctx.beginPath(); ctx.arc(W / 2, 905, 31, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = "#f5dfb5"; ctx.font = `700 18px ${SERIF}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("R✦M", W / 2, 905); ctx.globalAlpha = 1;
-
-  const textAlpha = Math.min(1, Math.max(0, (time - .6) / .8));
-  ctx.globalAlpha = textAlpha;
-  centerText("R  ✦  M", paperY + 68, `500 25px ${SERIF}`, "#ad7b43");
-  centerText("A CELEBRATION OF LOVE", paperY + 128, `500 14px ${MONO}`, "#987653");
-  ctx.fillStyle = "rgba(159,119,70,.48)"; ctx.fillRect(W * .36, paperY + 158, W * .28, 1);
-  centerText("Ria & Manas", paperY + 244, `700 66px ${SERIF}`, "#38233b", W - 200);
-  centerText("invite you to celebrate", paperY + 310, `italic 25px ${SERIF}`, "#816d61");
-  let guestSize = guest.length > 44 ? 16 : 21;
-  let guestLines = wrapText(guest === "Friends & Family" ? "Dear Friends & Family" : `For ${guest}`, W - 190, `500 ${guestSize}px ${SERIF}`);
-  while (guestLines.length > 3 && guestSize > 14) {
-    guestSize -= 2;
-    guestLines = wrapText(guest === "Friends & Family" ? "Dear Friends & Family" : `For ${guest}`, W - 190, `500 ${guestSize}px ${SERIF}`);
-  }
-  const guestStart = paperY + 397 - (guestLines.length - 1) * 13;
-  guestLines.slice(0, 3).forEach((line, index) => centerText(line, guestStart + index * 26, `500 ${guestSize}px ${SERIF}`, "#49354a", W - 190));
-  centerText("19 — 21 NOVEMBER 2026  ·  NAGPUR", paperY + 482, `500 14px ${MONO}`, "#a37845");
+  // The closed monogram envelope gives way to an editorial letter card.
+  const reveal = Math.max(0, Math.min(1, (time - .42) / 1.35));
+  const cardEase = 1 - (1 - reveal) ** 3;
+  const paperY = 560 - cardEase * 348;
+  ctx.save(); ctx.globalAlpha = reveal; ctx.shadowColor = "rgba(0,0,0,.46)"; ctx.shadowBlur = 36; ctx.shadowOffsetY = 18;
+  ctx.fillStyle = "#f7f0e4"; ctx.beginPath(); ctx.roundRect(58, paperY, W - 116, 835, 8); ctx.fill(); ctx.restore();
+  ctx.globalAlpha = reveal;
+  ctx.strokeStyle = "rgba(143,104,68,.4)"; ctx.lineWidth = 1; ctx.strokeRect(73, paperY + 14, W - 146, 807);
+  ctx.fillStyle = "#9a714a"; ctx.font = `700 18px ${SERIF}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText("R  ✦  M", W / 2, paperY + 61);
+  ctx.fillStyle = "#795b48"; ctx.font = `600 12px ${MONO}`;
+  ctx.fillText("WITH THE BLESSINGS OF OUR FAMILIES", W / 2, paperY + 117);
+  ctx.fillStyle = "rgba(160,119,70,.46)"; ctx.fillRect(W * .33, paperY + 148, W * .34, 1);
+  fittedText("Ria & Manas", W / 2, paperY + 226, `700 69px ${SERIF}`, "#38233b", W - 190, "center");
+  fittedText("invite you to celebrate", W / 2, paperY + 290, `italic 24px ${SERIF}`, "#816d61", W - 190, "center");
+  const greeting = guest === "Friends & Family" ? "Dear Friends & Family," : `Dear ${guest},`;
+  let greetingSize = 21;
+  let greetingLines = wrapText(greeting, W - 190, `500 ${greetingSize}px ${SERIF}`);
+  while (greetingLines.length > 2 && greetingSize > 16) { greetingSize -= 1; greetingLines = wrapText(greeting, W - 190, `500 ${greetingSize}px ${SERIF}`); }
+  greetingLines.forEach((line, lineIndex) => fittedText(line, W / 2, paperY + 361 + lineIndex * 27, `500 ${greetingSize}px ${SERIF}`, "#49354a", W - 190, "center"));
+  const messageLines = ["With immense joy, we invite you to share", "the beautiful beginning of our new journey.", "Your presence and blessings mean the world."];
+  messageLines.forEach((line, lineIndex) => fittedText(line, W / 2, paperY + 435 + lineIndex * 31, `500 17px ${SERIF}`, "#695b56", W - 178, "center"));
+  ctx.strokeStyle = "rgba(151,112,73,.42)"; ctx.beginPath(); ctx.moveTo(W * .25, paperY + 558); ctx.lineTo(W * .75, paperY + 558); ctx.stroke();
+  fittedText("19 — 21 NOVEMBER 2026", W / 2, paperY + 607, `700 17px ${MONO}`, "#77583f", W - 145, "center");
+  fittedText("NAGPUR  ·  INDIA", W / 2, paperY + 643, `600 12px ${MONO}`, "#a37845", W - 145, "center");
+  fittedText("A CONTINUOUS CELEBRATION FILM", W / 2, paperY + 748, `600 11px ${MONO}`, "#866c54", W - 150, "center");
   ctx.globalAlpha = 1;
 }
 
 function introCard(time = 0) {
   paintCard(time);
   const progress = Math.max(0, time);
-  centerText("THE WEDDING CELEBRATIONS", 132, `500 13px ${MONO}`, "#e6c487");
-  centerText("Three days,", 242, `700 65px ${SERIF}`, "#fbf6ed");
-  centerText("one beautiful story.", 316, `700 49px ${SERIF}`, "#fbf6ed");
-  ctx.fillStyle = "rgba(236,204,150,.6)"; ctx.fillRect(W * .34, 384, W * .32, 1);
-  centerText("19 — 21 NOVEMBER 2026   ·   NAGPUR", 430, `500 13px ${MONO}`, "#e6c487");
-  const dates = { janeu: "19 NOV", sukhmani: "19 NOV", haldi: "20 NOV", sangeet: "20 NOV", baarat: "21 NOV", reception: "21 NOV" };
-  const rowHeight = filmEvents.length > 5 ? 83 : 91;
-  const startY = 510;
+  const heading = filmEvents.length === 1 ? "One day, one moment." : "Three days, one story.";
+  centerText("THE CELEBRATIONS OF RIA & MANAS", 130, `600 12px ${MONO}`, "#f0d198");
+  centerText(heading, 232, `700 53px ${SERIF}`, "#fff8ea", W - 86);
+  centerText("19 — 21 NOVEMBER 2026  ·  NAGPUR", 300, `600 12px ${MONO}`, "#e6c487");
+  ctx.strokeStyle = "rgba(236,204,150,.52)"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(92, 350); ctx.lineTo(W - 92, 350); ctx.stroke();
+  const rowHeight = filmEvents.length > 5 ? 118 : 132;
+  const startY = filmEvents.length > 5 ? 390 : 416;
+  const dates = { janeu: "19 NOV · 10:00 AM", sukhmani: "19 NOV · 5:30 PM", haldi: "20 NOV · 11:00 AM", sangeet: "20 NOV · 7:00 PM", baarat: "21 NOV · 10:00 AM", reception: "21 NOV · 7:00 PM" };
+  const dateColors = { janeu: "#f3d28c", sukhmani: "#d8d2af", haldi: "#ffd84d", sangeet: "#e5baff", baarat: "#ffcf82", reception: "#ebd29b" };
   filmEvents.forEach((event, index) => {
-    const reveal = Math.max(0, Math.min(1, (progress - .28 - index * .34) / .48));
+    const reveal = Math.max(0, Math.min(1, (progress - .12 - index * .28) / .44));
     if (!reveal) return;
     const ease = 1 - (1 - reveal) ** 3;
-    const y = startY + index * rowHeight + (1 - ease) * 24;
+    const y = startY + index * rowHeight + (1 - ease) * 18;
     ctx.globalAlpha = ease;
-    ctx.fillStyle = "rgba(250,241,222,.075)"; ctx.beginPath(); ctx.roundRect(83, y, W - 166, rowHeight - 10, 12); ctx.fill();
-    ctx.strokeStyle = "rgba(236,204,150,.28)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(83, y, W - 166, rowHeight - 10, 12); ctx.stroke();
-    ctx.fillStyle = "#e7c98e"; ctx.beginPath(); ctx.arc(128, y + (rowHeight - 10) / 2, 23, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#422a40"; ctx.font = `600 16px ${MONO}`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(String(index + 1).padStart(2, "0"), 128, y + (rowHeight - 10) / 2);
-    ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillStyle = "rgba(242,220,170,.8)"; ctx.font = `500 11px ${MONO}`; ctx.fillText(dates[event.key] || "NOV", 170, y + 26, W - 250);
-    ctx.fillStyle = "#fbf6ed"; ctx.font = `600 22px ${SERIF}`; ctx.fillText(event.title, 170, y + 51, W - 250);
-    ctx.textAlign = "right"; ctx.fillStyle = "rgba(242,220,170,.56)"; ctx.font = `500 10px ${MONO}`; ctx.fillText(String(index + 1).padStart(2, "0"), W - 104, y + (rowHeight - 10) / 2);
+    const poster = eventPosterCache.get(event.key);
+    if (poster?.loaded) {
+      ctx.save(); ctx.beginPath(); ctx.roundRect(82, y, 82, rowHeight - 20, 8); ctx.clip();
+      ctx.drawImage(poster.image, 82, y, 82, rowHeight - 20); ctx.restore();
+      ctx.strokeStyle = `${dateColors[event.key]}99`; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.roundRect(82, y, 82, rowHeight - 20, 8); ctx.stroke();
+    }
+    ctx.fillStyle = dateColors[event.key] || "#e6c487"; ctx.font = `700 12px ${MONO}`; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.fillText(dates[event.key] || event.date.toUpperCase(), 190, y + 26, W - 260);
+    fittedText(event.title, 190, y + 57, `700 25px ${SERIF}`, "#fffaf1", W - 245);
+    fittedText(event.venue, 190, y + 87, `500 14px ${SERIF}`, "rgba(255,246,225,.76)", W - 250);
+    ctx.strokeStyle = "rgba(242,220,170,.23)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(190, y + rowHeight - 10); ctx.lineTo(W - 82, y + rowHeight - 10); ctx.stroke();
     ctx.globalAlpha = 1;
   });
-  centerText("A CONTINUOUS CELEBRATION FILM  ✦", 1135, `500 12px ${MONO}`, "#e6c487");
+  centerText("LET THE CELEBRATIONS UNFOLD  ✦", 1173, `600 11px ${MONO}`, "#e6c487");
 }
 
 function closingCard() {
@@ -331,48 +353,89 @@ function detailCard(event, index, time = 0) {
   const entry = Math.max(0, Math.min(1, time / 1.05));
   const ease = 1 - (1 - entry) ** 3;
   const number = String(index + 1).padStart(2, "0");
-  const day = event.date.match(/\d{1,2}/)?.[0] || number;
-
-  // Full-bleed artwork, an invitation arch and editorial type replace document-like panels.
-  ctx.globalAlpha = .14;
-  centerText(day, 510, `700 260px ${SERIF}`, "#f1d39c");
+  const infoEase = Math.max(0, Math.min(1, (time - .28) / .72));
+  const rise = (1 - ease) * 21;
+  const ink = "#fff8ea";
+  const gold = "#ffe0a0";
+  const pale = "rgba(255,244,218,.84)";
+  const alignLeft = event.key === "haldi" || event.key === "sangeet" || event.key === "baarat";
+  const leftX = 76;
+  const textX = alignLeft ? leftX : W / 2;
+  const textAlign = alignLeft ? "left" : "center";
+  const textWidth = alignLeft ? 480 : 600;
+  const labelY = event.key === "sukhmani" ? 193 : 172;
+  const colors = { janeu: "#f4d58e", sukhmani: "#e5d8b5", haldi: "#ffdd50", sangeet: "#e8c3ff", baarat: "#ffd28b", reception: "#f1d39c" };
+  const accent = colors[event.key] || gold;
   ctx.globalAlpha = ease;
-  centerText("RIA  ✦  MANAS", 143 + (1 - ease) * 15, `700 19px ${SERIF}`, "#f5dfb2");
-  centerText(`CELEBRATION  ${number}  /  ${String(filmEvents.length).padStart(2, "0")}`, 197 + (1 - ease) * 15, `700 12px ${MONO}`, "rgba(255,242,213,.86)");
-  centerText("INVITE YOU TO", 279 + (1 - ease) * 12, `700 12px ${MONO}`, "#f6d698");
-  centerText(event.tone, 315 + (1 - ease) * 12, `700 15px ${SERIF}`, "#fff0cc", W - 100);
+  ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  ctx.fillStyle = "rgba(255,240,213,.9)"; ctx.font = `700 13px ${MONO}`;
+  ctx.fillText(`RIA  ✦  MANAS`, 58, 88 + rise);
+  ctx.textAlign = "right"; ctx.fillStyle = accent; ctx.font = `700 13px ${MONO}`;
+  ctx.fillText(`${number}  /  ${String(filmEvents.length).padStart(2, "0")}`, W - 58, 88 + rise);
+  ctx.textAlign = textAlign;
+  ctx.fillStyle = accent; ctx.font = `700 15px ${MONO}`;
+  ctx.fillText(event.tone, textX, labelY + rise, textWidth);
 
-  const titleSize = event.title.length > 18 ? 54 : event.title.length > 14 ? 61 : 72;
-  const titleFont = `700 ${titleSize}px ${SERIF}`;
-  const titleLines = wrapText(event.title, W - 100, titleFont);
-  const titleStart = 478 - ((titleLines.length - 1) * 34);
-  ctx.shadowColor = "rgba(238,197,127,.48)"; ctx.shadowBlur = 24 * ease;
-  titleLines.forEach((line, lineIndex) => centerText(line, titleStart + lineIndex * 68 + (1 - ease) * 24, titleFont, "#fffaf0", W - 100));
+  const titleLines = {
+    janeu: ["Janeu", "Ceremony"],
+    sukhmani: ["Sukhmani Sahib", "Paath"],
+    haldi: ["Haldi", "Carnival"],
+    sangeet: ["Sangeet", "Ceremony"],
+    baarat: ["Baarat"],
+    reception: ["Wedding", "Reception"],
+  }[event.key] || wrapText(event.title, textWidth, `700 64px ${SERIF}`);
+  const titleY = { janeu: 377, sukhmani: 365, haldi: 376, sangeet: 385, baarat: 410, reception: 378 }[event.key];
+  const titleSize = { janeu: 76, sukhmani: 62, haldi: 83, sangeet: 74, baarat: 98, reception: 70 }[event.key];
+  const titleLineHeight = titleSize * 1.08;
+  ctx.globalAlpha = ease;
+  ctx.shadowColor = `rgba(12,6,15,${.7 * ease})`; ctx.shadowBlur = 22 * ease; ctx.fillStyle = ink;
+  ctx.font = `700 ${titleSize}px ${SERIF}`; ctx.textAlign = textAlign; ctx.textBaseline = "middle";
+  titleLines.forEach((line, lineIndex) => {
+    fittedText(line, textX, titleY + lineIndex * titleLineHeight + rise, `700 ${titleSize}px ${SERIF}`, ink, textWidth, textAlign);
+  });
   ctx.shadowBlur = 0;
 
-  const infoEase = Math.max(0, Math.min(1, (time - .55) / .85));
   ctx.globalAlpha = infoEase;
-  const flourishY = 594 + (1 - infoEase) ** 3 * 27;
-  ctx.strokeStyle = "rgba(255,226,177,.82)"; ctx.lineWidth = 1.2;
-  ctx.beginPath(); ctx.moveTo(208, flourishY); ctx.lineTo(328, flourishY); ctx.moveTo(392, flourishY); ctx.lineTo(512, flourishY); ctx.stroke();
-  ctx.fillStyle = "#ffe4ad"; ctx.save(); ctx.translate(W / 2, flourishY); ctx.rotate(Math.PI / 4); ctx.fillRect(-4, -4, 8, 8); ctx.restore();
+  const detailY = { janeu: 677, sukhmani: 690, haldi: 680, sangeet: 697, baarat: 690, reception: 694 }[event.key];
+  const ruleX = alignLeft ? leftX : 146;
+  const ruleW = alignLeft ? 330 : 428;
+  ctx.strokeStyle = `${accent}b8`; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(ruleX, detailY - 25 + rise); ctx.lineTo(ruleX + ruleW, detailY - 25 + rise); ctx.stroke();
 
-  centerText(event.date.toUpperCase(), 690 + (1 - infoEase) * 30, `700 23px ${SERIF}`, "#ffe2af", W - 100);
-  centerText(event.time.toUpperCase(), 745 + (1 - infoEase) * 30, `700 22px ${SERIF}`, "#fffaf0", W - 100);
-
-  const venueEase = Math.max(0, Math.min(1, (time - .92) / .85));
-  ctx.globalAlpha = venueEase;
-  centerText("THE CELEBRATION", 848 + (1 - venueEase) * 24, `700 11px ${MONO}`, "rgba(255,233,194,.88)");
-  let venueSize = event.venue.length > 34 ? 22 : 26;
-  let venueLines = wrapText(event.venue, W - 120, `700 ${venueSize}px ${SERIF}`);
-  while (venueLines.length > 2 && venueSize > 18) {
-    venueSize -= 2;
-    venueLines = wrapText(event.venue, W - 120, `700 ${venueSize}px ${SERIF}`);
+  if (event.key === "haldi") {
+    // A bright festival ticket carries the date and time, followed by the venue.
+    ctx.fillStyle = "rgba(52,29,13,.37)"; ctx.beginPath(); ctx.roundRect(leftX, detailY + 2 + rise, 385, 106, 15); ctx.fill();
+    ctx.strokeStyle = "rgba(255,221,80,.63)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(leftX, detailY + 2 + rise, 385, 106, 15); ctx.stroke();
+    fittedText(event.date.toUpperCase(), leftX + 22, detailY + 34 + rise, `700 19px ${MONO}`, gold, 340);
+    fittedText(event.time.toUpperCase(), leftX + 22, detailY + 75 + rise, `700 22px ${SERIF}`, ink, 340);
+    fittedText("THE CARNIVAL", leftX, 860 + rise, `700 13px ${MONO}`, "rgba(255,230,151,.88)", 360);
+    fittedText(event.venue, leftX, 903 + rise, `700 25px ${SERIF}`, ink, 430);
+  } else if (event.key === "sangeet") {
+    fittedText("THE NIGHT OF", leftX, detailY + rise, `700 12px ${MONO}`, "rgba(255,231,197,.84)", 300);
+    fittedText(event.date.toUpperCase(), leftX, detailY + 42 + rise, `700 20px ${SERIF}`, gold, 420);
+    fittedText(event.time, leftX, detailY + 82 + rise, `700 23px ${SERIF}`, ink, 420);
+    ctx.strokeStyle = "rgba(232,195,255,.66)"; ctx.beginPath(); ctx.moveTo(leftX, 840 + rise); ctx.lineTo(leftX + 63, 840 + rise); ctx.stroke();
+    fittedText(event.venue, leftX, 884 + rise, `700 26px ${SERIF}`, ink, 410);
+  } else if (event.key === "baarat") {
+    ctx.fillStyle = "rgba(6,17,38,.42)"; ctx.fillRect(leftX - 14, detailY - 2 + rise, 390, 132);
+    ctx.fillStyle = accent; ctx.fillRect(leftX - 14, detailY - 2 + rise, 3, 132);
+    fittedText(event.date.toUpperCase(), leftX + 10, detailY + 31 + rise, `700 18px ${MONO}`, gold, 350);
+    fittedText(event.time, leftX + 10, detailY + 76 + rise, `700 25px ${SERIF}`, ink, 350);
+    fittedText("THE PROCESSION", leftX, 875 + rise, `700 12px ${MONO}`, "rgba(255,229,183,.86)", 300);
+    fittedText(event.venue, leftX, 920 + rise, `700 24px ${SERIF}`, ink, 400);
+  } else {
+    // Ritual and reception cards use a centered invitation dedication with generous rules.
+    fittedText(event.date.toUpperCase(), textX, detailY + rise, `700 22px ${SERIF}`, gold, textWidth, textAlign);
+    fittedText(event.time.toUpperCase(), textX, detailY + 49 + rise, `700 22px ${SERIF}`, ink, textWidth, textAlign);
+    const venueY = event.key === "sukhmani" ? 875 : 864;
+    const venueMax = 590;
+    const venueLines = wrapText(event.venue, venueMax, `600 25px ${SERIF}`).slice(0, 2);
+    const venueAlign = "center";
+    venueLines.forEach((line, lineIndex) => fittedText(line, W / 2, venueY + lineIndex * 35 + rise, `600 25px ${SERIF}`, pale, venueMax, venueAlign));
+    const markY = venueY + venueLines.length * 35 + 42;
+    ctx.fillStyle = accent; ctx.beginPath(); ctx.arc(W / 2, markY + rise, 3, 0, Math.PI * 2); ctx.fill();
   }
-  venueLines.slice(0, 2).forEach((line, lineIndex) => centerText(line, 900 + (lineIndex - (Math.min(2, venueLines.length) - 1) / 2) * 34 + (1 - venueEase) * 24, `700 ${venueSize}px ${SERIF}`, "#fffaf1", W - 120));
   ctx.globalAlpha = 1;
-  centerText("WITH LOVE  ·  NAGPUR", 1110, `700 12px ${MONO}`, "#f1d39c");
-  centerText("19 — 21 NOVEMBER 2026", 1142, `700 10px ${MONO}`, "rgba(255,240,216,.76)");
 }
 
 function drawVideoFrame(video, label, elapsed, duration) {
@@ -450,26 +513,37 @@ function paintEventBackdrop(event, time) {
   }
   const image = poster.image;
   const baseScale = Math.max(W / image.naturalWidth, H / image.naturalHeight);
-  const scale = baseScale * (1.015 + Math.sin(time * .8) * .008);
+  const scale = baseScale * (1.035 + Math.sin(time * .52) * .012);
   const width = image.naturalWidth * scale;
   const height = image.naturalHeight * scale;
   ctx.fillStyle = "#150d16"; ctx.fillRect(0, 0, W, H);
-  ctx.drawImage(image, (W - width) / 2, (H - height) / 2, width, height);
-  ctx.fillStyle = "rgba(15,8,17,.53)"; ctx.fillRect(0, 0, W, H);
-  const shade = ctx.createLinearGradient(0, 0, 0, H);
-  shade.addColorStop(0, "rgba(14,8,17,.45)"); shade.addColorStop(.38, "rgba(14,8,17,.08)"); shade.addColorStop(1, "rgba(14,8,17,.72)");
-  ctx.fillStyle = shade; ctx.fillRect(0, 0, W, H);
-  const accents = {
-    janeu: "rgba(245,194,94,.18)", sukhmani: "rgba(255,211,139,.2)", haldi: "rgba(255,168,48,.2)",
-    sangeet: "rgba(181,119,255,.2)", baarat: "rgba(255,181,83,.2)", reception: "rgba(255,221,160,.18)",
+  const pan = Math.sin(time * .31) * 8;
+  ctx.drawImage(image, (W - width) / 2 + pan, (H - height) / 2, width, height);
+  const overlays = {
+    janeu: [[0,"rgba(29,8,27,.18)"],[.36,"rgba(24,9,22,.07)"],[1,"rgba(21,8,17,.48)" ]],
+    sukhmani: [[0,"rgba(7,19,42,.32)"],[.45,"rgba(7,19,42,.06)"],[1,"rgba(7,19,42,.44)" ]],
+    haldi: [[0,"rgba(7,18,31,.51)"],[.5,"rgba(7,18,31,.22)"],[1,"rgba(7,18,31,.07)" ]],
+    sangeet: [[0,"rgba(24,7,32,.57)"],[.5,"rgba(24,7,32,.24)"],[1,"rgba(24,7,32,.06)" ]],
+    baarat: [[0,"rgba(4,14,36,.63)"],[.48,"rgba(4,14,36,.24)"],[1,"rgba(4,14,36,.05)" ]],
+    reception: [[0,"rgba(4,22,18,.25)"],[.43,"rgba(4,22,18,.08)"],[1,"rgba(4,22,18,.5)" ]],
   };
-  const glow = ctx.createRadialGradient(W / 2, H * .39, 8, W / 2, H * .4, H * .5);
-  glow.addColorStop(0, accents[event.key] || "rgba(242,220,170,.14)"); glow.addColorStop(1, "rgba(20,12,19,0)");
-  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = "rgba(245,220,175,.44)"; ctx.lineWidth = 1.2;
-  ctx.beginPath(); ctx.moveTo(50, 1112); ctx.lineTo(50, 486); ctx.bezierCurveTo(50, 285, 165, 208, W / 2, 208); ctx.bezierCurveTo(W - 165, 208, W - 50, 285, W - 50, 486); ctx.lineTo(W - 50, 1112); ctx.stroke();
-  ctx.strokeStyle = "rgba(245,220,175,.18)"; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(63, 1100); ctx.lineTo(63, 491); ctx.bezierCurveTo(63, 300, 174, 224, W / 2, 224); ctx.bezierCurveTo(W - 174, 224, W - 63, 300, W - 63, 491); ctx.lineTo(W - 63, 1100); ctx.stroke();
+  const shade = ctx.createLinearGradient(0, 0, event.key === "haldi" || event.key === "sangeet" || event.key === "baarat" ? W : 0, event.key === "haldi" || event.key === "sangeet" || event.key === "baarat" ? 0 : H);
+  for (const [stop, color] of overlays[event.key] || overlays.janeu) shade.addColorStop(stop, color);
+  ctx.fillStyle = shade; ctx.fillRect(0, 0, W, H);
+  if (event.key === "janeu" || event.key === "sukhmani" || event.key === "reception") {
+    ctx.strokeStyle = event.key === "sukhmani" ? "rgba(230,222,190,.38)" : "rgba(245,220,175,.35)";
+    ctx.lineWidth = 1.1;
+    ctx.beginPath(); ctx.moveTo(54, 1160); ctx.lineTo(54, 342); ctx.bezierCurveTo(54, 180, 180, 104, W / 2, 104); ctx.bezierCurveTo(W - 180, 104, W - 54, 180, W - 54, 342); ctx.lineTo(W - 54, 1160); ctx.stroke();
+  } else if (event.key === "haldi") {
+    ctx.strokeStyle = "rgba(255,219,99,.55)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(60, 170); ctx.lineTo(60, 640); ctx.stroke();
+  } else if (event.key === "sangeet") {
+    ctx.strokeStyle = "rgba(235,194,255,.58)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(64, 178); ctx.lineTo(64, 300); ctx.lineTo(96, 300); ctx.stroke();
+  } else if (event.key === "baarat") {
+    ctx.strokeStyle = "rgba(248,207,133,.62)"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(65, 170); ctx.lineTo(65, 620); ctx.stroke();
+  }
 }
 
 function drawEventMotif(event, time) {

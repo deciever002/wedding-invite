@@ -23,12 +23,20 @@ const requestedEvents = query.has("e")
 const sideEvent = side === "bride" ? "sukhmani" : "janeu";
 const commonEvents = ["haldi", "sangeet", "baarat", "reception"];
 const defaults = [sideEvent, ...commonEvents];
+const inviteBackgrounds = {
+  janeu: "assets/events/invite-bg-janeu.jpg",
+  sukhmani: "assets/events/invite-bg-sukhmani.jpg",
+  haldi: "assets/events/invite-bg-haldi.jpg",
+  sangeet: "assets/events/invite-bg-sangeet.jpg",
+  baarat: "assets/events/invite-bg-baarat.jpg",
+  reception: "assets/events/invite-bg-reception.jpg"
+};
 let chapters = [];
 let soundtrackManuallyDisabled = false;
 let savedRootOverflow = "";
 let autoIntroTimer;
 let autoStartTimer;
-const DETAILS_DWELL_MS = 2800;
+const DETAILS_DWELL_MS = 4600;
 const SCENE_EFFECT_MS = reduceMotion.matches ? 0 : 2100;
 const COVER_ENVELOPE_DWELL_MS = 1500;
 const COVER_LETTER_DWELL_MS = 5500;
@@ -48,10 +56,19 @@ function configureInvitation() {
 
   chapters.forEach((chapter, index) => {
     chapter.dataset.index = String(index);
+    chapter.style.setProperty("--invite-background", `url("${inviteBackgrounds[chapter.dataset.event]}")`);
     const act = chapter.querySelector(".chapter-meta span");
     if (act) act.textContent = `ACT ${String(index + 1).padStart(2, "0")}`;
     const watermark = chapter.querySelector(".info-watermark");
     if (watermark) watermark.textContent = String(index + 1).padStart(2, "0");
+    const reveal = chapter.querySelector(".event-reveal");
+    const sceneEffects = chapter.querySelector(".chapter-art .event-effects");
+    if (reveal && sceneEffects && !reveal.querySelector(".details-motif")) {
+      const detailMotif = sceneEffects.cloneNode(true);
+      detailMotif.classList.add("details-motif");
+      detailMotif.setAttribute("aria-hidden", "true");
+      reveal.prepend(detailMotif);
+    }
   });
 
   chapters.forEach((chapter, index) => {

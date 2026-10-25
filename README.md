@@ -34,8 +34,8 @@ The admin page starts with that address and also lets you edit it.
 
 ## Soundtrack
 
-`assets/audio/wedding-track.mp3` contains the supplied soundtrack. Event films are silent so the soundtrack can play separately without overlapping clip audio.
+`assets/audio/wedding_final_audio.mp3` contains the final supplied soundtrack. Event films are silent so the soundtrack can play separately without overlapping clip audio.
 
 ## Event media
 
-Each celebration film is stored in `assets/events/` as an H.264 MP4, with a matching poster used while it loads. The main invitation keeps the source video uncropped. The downloadable film studio uses the selected event MP4 files as moving footage and adds separate event-detail cards after each scene.
+Each celebration film is stored in `assets/events/` as an H.264 MP4. Six separate illustrated backdrops (`invite-bg-*.jpg`) give Janeu, Sukhmani Sahib, Haldi, Sangeet, Baarat and Reception their own event-specific artwork. The guest invitation uses these on the full-screen detail scenes and as video posters; the video studio uses the same art with distinct layouts and animated event motifs on each detail card before the moving footage. Source videos stay uncropped.
