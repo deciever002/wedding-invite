@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#190f19">
-  <meta name="description" content="RiaAndManas Wedding — an invitation to celebrate Ria and Manas in Nagpur, 19–21 November.">
+  <meta name="description" content="A cinematic wedding invitation to celebrate Ria and Manas in Nagpur.">
   <meta property="og:title" content="RiaAndManas Wedding">
   <meta property="og:description" content="Open the letter and step into a continuous wedding film for Ria and Manas in Nagpur.">
   <meta property="og:type" content="website">
@@ -22,7 +22,7 @@
   <title>RiaAndManas Wedding</title>
   <link rel="icon" href="assets/lotus.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
-  <script src="script.js" defer></script>
+  <script src="script.js?v=20261025-selected-dates" defer></script>
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -52,7 +52,7 @@
       <div class="cover-orbit cover-orbit--one" aria-hidden="true"></div>
       <div class="cover-orbit cover-orbit--two" aria-hidden="true"></div>
       <div class="cover-stars" aria-hidden="true"><i>✦</i><i>·</i><i>✧</i><i>·</i><i>✦</i></div>
-      <p class="cover-overline">NAGPUR <span>·</span> 19 — 21 NOVEMBER 2026</p>
+      <p class="cover-overline" id="cover-date-copy">NAGPUR · 19 — 21 NOVEMBER 2026</p>
 
       <div class="envelope-scene" id="envelope-scene">
         <div class="envelope-shadow" aria-hidden="true"></div>
@@ -67,7 +67,7 @@
           <div class="letter-rule" aria-hidden="true"><span>✦</span></div>
           <p class="letter-to" id="guest-greeting">Dear Friends &amp; Family,</p>
           <p class="letter-copy">With immense joy, we invite you to celebrate the beautiful beginning of Ria &amp; Manas’s new journey together. Your presence, love and blessings mean the world to us.</p>
-          <p class="letter-date">19 — 21 NOVEMBER 2026 <span>·</span> NAGPUR</p>
+          <p class="letter-date" id="letter-date-copy">19 — 21 NOVEMBER 2026 · NAGPUR</p>
           <button class="letter-continue" id="begin-journey" type="button">
             ENTER THE CELEBRATIONS <span aria-hidden="true">↘</span>
           </button>
@@ -90,12 +90,12 @@
 
     <section class="journey-intro" id="journey-intro" hidden aria-labelledby="journey-title">
       <div class="journey-intro-mark" aria-hidden="true">✦</div>
-      <p class="eyebrow">THREE DAYS <span>·</span> CELEBRATION FILMS <span>·</span> ONE BEAUTIFUL BEGINNING</p>
+      <p class="eyebrow"><span id="selected-day-count">THREE DAYS</span> <span>·</span> <span id="selected-activity-label">CELEBRATION FILMS</span> <span>·</span> ONE BEAUTIFUL BEGINNING</p>
       <h2 id="journey-title">Let the celebrations<br>unfold.</h2>
-      <p class="journey-intro-copy">Each moment has a little story of its own.<br>Stay with us; the celebrations flow on.</p>
+      <p class="journey-intro-copy" id="journey-intro-copy">Each moment has a little story of its own.<br>Stay with us; the celebrations flow on.</p>
       <button class="start-story" id="start-story" type="button">BEGIN THE STORY <span aria-hidden="true">↓</span></button>
       <div class="journey-intro-line" aria-hidden="true"></div>
-      <p class="journey-intro-small"><span id="film-count-label">FIVE FILMS</span> <span>·</span> ONE CONTINUOUS CELEBRATION <span>✦</span></p>
+      <p class="journey-intro-small"><span id="film-count-label">FIVE FILMS</span> <span>·</span> <span id="continuous-label">ONE CONTINUOUS CELEBRATION</span> <span>✦</span></p>
     </section>
 
     <div class="event-journey" id="event-journey" hidden>
@@ -311,9 +311,9 @@
 
       <footer class="story-footer">
         <div class="footer-ornament" aria-hidden="true">✦ <span>❧</span> ✦</div>
-        <p>Five moments. One beautiful beginning.</p>
+        <p><span id="selected-moment-count">Five moments.</span> One beautiful beginning.</p>
         <strong>RIA <span>✦</span> MANAS</strong>
-        <small>19—21 NOVEMBER <i>·</i> NAGPUR</small>
+        <small><span id="footer-date-copy">19—21 NOVEMBER 2026</span> <i>·</i> NAGPUR</small>
       </footer>
     </div>
   </main>

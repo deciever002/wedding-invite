@@ -115,6 +115,50 @@ function selectedFilmEvents() {
     .map(([key]) => ({ key, ...events[key], ...(key === "sukhmani" ? { date, time, venue } : {}) }));
 }
 
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+function calendarDateFor(value) {
+  const match = String(value).match(/\b(\d{1,2})(?:st|nd|rd|th)?\s+([a-z]+)(?:\s*,?\s+(\d{4}))?/i);
+  if (!match) return null;
+  const month = monthNames.findIndex(name => name.toLowerCase() === match[2].toLowerCase());
+  if (month < 0) return null;
+  return { day: Number(match[1]), month, year: Number(match[3] || 2026) };
+}
+function uniqueFilmDates(list = filmEvents) {
+  const dates = [];
+  const seen = new Set();
+  for (const event of list) {
+    const parsed = calendarDateFor(event.date);
+    const key = parsed ? `${parsed.year}-${parsed.month}-${parsed.day}` : String(event.date).trim().toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    dates.push({ parsed, raw: event.date });
+  }
+  dates.sort((a, b) => {
+    if (a.parsed && b.parsed) return Date.UTC(a.parsed.year, a.parsed.month, a.parsed.day) - Date.UTC(b.parsed.year, b.parsed.month, b.parsed.day);
+    return a.parsed ? -1 : b.parsed ? 1 : 0;
+  });
+  return dates;
+}
+function selectedDateLabel(list = filmEvents) {
+  const dates = uniqueFilmDates(list);
+  if (!dates.length) return "";
+  if (dates.length === 1) {
+    const { parsed, raw } = dates[0];
+    return parsed ? `${parsed.day} ${monthNames[parsed.month].toUpperCase()} ${parsed.year}` : String(raw).toUpperCase();
+  }
+  if (dates.every(date => date.parsed)) {
+    const first = dates[0].parsed;
+    const last = dates.at(-1).parsed;
+    if (first.year === last.year && first.month === last.month) return `${first.day} — ${last.day} ${monthNames[last.month].toUpperCase()} ${last.year}`;
+    const firstLabel = `${first.day} ${monthNames[first.month].toUpperCase()}${first.year === last.year ? "" : ` ${first.year}`}`;
+    return `${firstLabel} — ${last.day} ${monthNames[last.month].toUpperCase()} ${last.year}`;
+  }
+  return `${String(dates[0].raw).toUpperCase()} — ${String(dates.at(-1).raw).toUpperCase()}`;
+}
+function numberWord(value) {
+  return ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"][value] || String(value);
+}
+
 function renderEventList() {
   const eventList = document.querySelector("#maker-event-list");
   eventList.replaceChildren(...filmEvents.map(item => {
@@ -265,7 +309,7 @@ function coverCard(time = 0) {
   const messageLines = ["With immense joy, we invite you to share", "the beautiful beginning of our new journey.", "Your presence and blessings mean the world."];
   messageLines.forEach((line, lineIndex) => fittedText(line, W / 2, paperY + 435 + lineIndex * 35, `500 22px ${SERIF}`, "#695b56", W - 178, "center"));
   ctx.strokeStyle = "rgba(151,112,73,.42)"; ctx.beginPath(); ctx.moveTo(W * .25, paperY + 558); ctx.lineTo(W * .75, paperY + 558); ctx.stroke();
-  fittedText("19 — 21 NOVEMBER 2026", W / 2, paperY + 607, `700 20px ${MONO}`, "#77583f", W - 145, "center");
+  fittedText(selectedDateLabel(), W / 2, paperY + 607, `700 20px ${MONO}`, "#77583f", W - 145, "center");
   fittedText("NAGPUR  ·  INDIA", W / 2, paperY + 643, `600 16px ${MONO}`, "#a37845", W - 145, "center");
   fittedText("A CONTINUOUS CELEBRATION FILM", W / 2, paperY + 748, `600 14px ${MONO}`, "#866c54", W - 150, "center");
   ctx.globalAlpha = 1;
@@ -274,10 +318,13 @@ function coverCard(time = 0) {
 function introCard(time = 0) {
   paintCard(time);
   const progress = Math.max(0, time);
-  const heading = filmEvents.length === 1 ? "One day, one moment." : "Three days, one story.";
-  centerText("THE CELEBRATIONS OF RIA & MANAS", 130, `600 16px ${MONO}`, "#f0d198");
+  const dayCount = uniqueFilmDates().length;
+  const heading = dayCount <= 1
+    ? (filmEvents.length === 1 ? "One day, one moment." : "One day, many moments.")
+    : `${numberWord(dayCount)} days, one story.`;
+  centerText(filmEvents.length === 1 ? "A CELEBRATION FOR RIA & MANAS" : "THE CELEBRATIONS OF RIA & MANAS", 130, `600 16px ${MONO}`, "#f0d198");
   centerText(heading, 232, `700 61px ${SERIF}`, "#fff8ea", W - 86);
-  centerText("19 — 21 NOVEMBER 2026  ·  NAGPUR", 300, `600 16px ${MONO}`, "#e6c487");
+  centerText(`${selectedDateLabel()}  ·  NAGPUR`, 300, `600 16px ${MONO}`, "#e6c487");
   ctx.strokeStyle = "rgba(236,204,150,.52)"; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(92, 350); ctx.lineTo(W - 92, 350); ctx.stroke();
   const rowHeight = filmEvents.length > 5 ? 118 : 132;
@@ -306,7 +353,7 @@ function introCard(time = 0) {
     ctx.beginPath(); ctx.moveTo(190, y + rowHeight - 10); ctx.lineTo(W - 82, y + rowHeight - 10); ctx.stroke();
     ctx.globalAlpha = 1;
   });
-  centerText("LET THE CELEBRATIONS UNFOLD  ✦", 1173, `600 14px ${MONO}`, "#e6c487");
+  centerText(filmEvents.length === 1 ? "LET THIS MOMENT UNFOLD  ✦" : "LET THE CELEBRATIONS UNFOLD  ✦", 1173, `600 14px ${MONO}`, "#e6c487");
 }
 
 function closingCard() {
@@ -314,7 +361,7 @@ function closingCard() {
   centerText("WITH LOVE", 510, `500 20px ${MONO}`, "#e6c487");
   centerText("Ria & Manas", 625, `700 82px ${SERIF}`, "#fbf6ed");
   centerText("We cannot wait to celebrate with you.", 710, `500 29px ${SERIF}`, "#d6c6ad");
-  centerText("19—21 NOVEMBER 2026  ·  NAGPUR", 840, `500 20px ${MONO}`, "#e6c487");
+  centerText(`${selectedDateLabel()}  ·  NAGPUR`, 840, `500 20px ${MONO}`, "#e6c487");
   centerText("✦", 970, `500 34px ${SERIF}`, "#e6c487");
 }
 

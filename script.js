@@ -31,6 +31,54 @@ const inviteBackgrounds = {
   baarat: "assets/events/invite-bg-baarat.jpg",
   reception: "assets/events/invite-bg-reception.jpg"
 };
+const eventDates = {
+  janeu: "19th November 2026",
+  sukhmani: "19th November 2026",
+  haldi: "20th November 2026",
+  sangeet: "20th November 2026",
+  baarat: "21st November 2026",
+  reception: "21st November 2026"
+};
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+function calendarDateFor(value) {
+  const match = String(value).match(/\b(\d{1,2})(?:st|nd|rd|th)?\s+([a-z]+)(?:\s*,?\s+(\d{4}))?/i);
+  if (!match) return null;
+  const month = monthNames.findIndex(name => name.toLowerCase() === match[2].toLowerCase());
+  if (month < 0) return null;
+  return { day: Number(match[1]), month, year: Number(match[3] || 2026) };
+}
+function uniqueDates(values) {
+  const dates = [];
+  const seen = new Set();
+  for (const value of values) {
+    const parsed = calendarDateFor(value);
+    const key = parsed ? `${parsed.year}-${parsed.month}-${parsed.day}` : String(value).trim().toLowerCase();
+    if (!seen.has(key)) { seen.add(key); dates.push({ parsed, raw: value }); }
+  }
+  dates.sort((a, b) => a.parsed && b.parsed
+    ? Date.UTC(a.parsed.year, a.parsed.month, a.parsed.day) - Date.UTC(b.parsed.year, b.parsed.month, b.parsed.day)
+    : a.parsed ? -1 : b.parsed ? 1 : 0);
+  return dates;
+}
+function selectedDateLabel(values) {
+  const dates = uniqueDates(values);
+  if (!dates.length) return "";
+  if (dates.length === 1) {
+    const { parsed, raw } = dates[0];
+    return parsed ? `${parsed.day} ${monthNames[parsed.month].toUpperCase()} ${parsed.year}` : String(raw).toUpperCase();
+  }
+  if (dates.every(date => date.parsed)) {
+    const first = dates[0].parsed;
+    const last = dates.at(-1).parsed;
+    if (first.year === last.year && first.month === last.month) return `${first.day} — ${last.day} ${monthNames[last.month].toUpperCase()} ${last.year}`;
+    const firstLabel = `${first.day} ${monthNames[first.month].toUpperCase()}${first.year === last.year ? "" : ` ${first.year}`}`;
+    return `${firstLabel} — ${last.day} ${monthNames[last.month].toUpperCase()} ${last.year}`;
+  }
+  return `${String(dates[0].raw).toUpperCase()} — ${String(dates.at(-1).raw).toUpperCase()}`;
+}
+function numberWord(value) {
+  return ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"][value] || String(value);
+}
 let chapters = [];
 let soundtrackManuallyDisabled = false;
 let savedRootOverflow = "";
@@ -84,6 +132,15 @@ function configureInvitation() {
   const total = String(chapters.length).padStart(2, "0");
   document.querySelector("#film-count-label").textContent = `${total === "01" ? "ONE FILM" : `${total} FILMS`}`;
   counter.innerHTML = `01 <span>/</span> ${total}`;
+  const singleFilm = chapters.length === 1;
+  const journeyTitle = document.querySelector("#journey-title");
+  const journeyCopy = document.querySelector("#journey-intro-copy");
+  const continuousLabel = document.querySelector("#continuous-label");
+  const activityLabel = document.querySelector("#selected-activity-label");
+  if (journeyTitle && singleFilm) journeyTitle.innerHTML = "Let this moment<br>unfold.";
+  if (journeyCopy && singleFilm) journeyCopy.innerHTML = "This moment has a story of its own.<br>Stay with us; let it unfold.";
+  if (continuousLabel && singleFilm) continuousLabel.textContent = "ONE CONTINUOUS FILM";
+  if (activityLabel && singleFilm) activityLabel.textContent = "ONE CELEBRATION FILM";
 
   const date = (query.get("d") ?? query.get("sukhmaniDate"))?.trim() || "19th November 2026";
   const time = (query.get("t") ?? query.get("sukhmaniTime"))?.trim() || "5:30 PM onwards";
@@ -95,6 +152,7 @@ function configureInvitation() {
   const filmDate = document.querySelector("[data-sukhmani-film-date]");
   const map = document.querySelector("[data-sukhmani-map]");
   if (when) when.textContent = [date, time].join("\n");
+  eventDates.sukhmani = date;
   const venueMapUrl = venue === defaultVenue ? defaultVenueMapUrl : `https://maps.google.com/?q=${encodeURIComponent(venue)}`;
   if (where) {
     where.textContent = venue;
@@ -104,6 +162,23 @@ function configureInvitation() {
   if (map) {
     map.href = venueMapUrl;
   }
+
+  const selectedDates = chapters.map(chapter => eventDates[chapter.dataset.event]).filter(Boolean);
+  const days = uniqueDates(selectedDates).length;
+  const dateLabel = selectedDateLabel(selectedDates);
+  const durationLabel = days === 1 ? "ONE DAY" : `${numberWord(days).toUpperCase()} DAYS`;
+  const coverDateCopy = document.querySelector("#cover-date-copy");
+  const letterDateCopy = document.querySelector("#letter-date-copy");
+  const selectedDayCount = document.querySelector("#selected-day-count");
+  const selectedMomentCount = document.querySelector("#selected-moment-count");
+  const footerDateCopy = document.querySelector("#footer-date-copy");
+  if (coverDateCopy) coverDateCopy.textContent = `NAGPUR · ${dateLabel}`;
+  if (letterDateCopy) letterDateCopy.textContent = `${dateLabel} · NAGPUR`;
+  if (selectedDayCount) selectedDayCount.textContent = durationLabel;
+  if (selectedMomentCount) selectedMomentCount.textContent = `${numberWord(chapters.length)} ${chapters.length === 1 ? "moment." : "moments."}`;
+  if (footerDateCopy) footerDateCopy.textContent = dateLabel;
+  const description = document.querySelector('meta[name="description"]');
+  if (description) description.content = `Ria and Manas invite you to celebrate in Nagpur, ${dateLabel}.`;
 }
 
 configureInvitation();
