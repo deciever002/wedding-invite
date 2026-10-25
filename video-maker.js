@@ -9,7 +9,7 @@ const audioChoice = document.querySelector("#include-music");
 const W = canvas.width;
 const H = canvas.height;
 const FPS = 30;
-const INTRO_SECONDS = 5.5;
+const INTRO_SECONDS = 7;
 const DETAIL_SECONDS = 3.6;
 const CLOSING_SECONDS = 4.5;
 const codes = { j: "janeu", p: "sukhmani", h: "haldi", n: "sangeet", b: "baarat", r: "reception" };
@@ -61,6 +61,9 @@ const events = {
 };
 let filmEvents = [];
 let selectionVersion = 0;
+let studioPreviewStarted = performance.now();
+let filmIsRendering = false;
+function resetStudioPreview() { studioPreviewStarted = performance.now(); }
 function currentGuest() {
   return guestField.value.trim().replace(/\s+/g, " ") || "Friends & Family";
 }
@@ -123,17 +126,42 @@ const preparedClips = new Map();
 let totalDuration = INTRO_SECONDS * 2 + CLOSING_SECONDS + filmEvents.length * (6 + DETAIL_SECONDS);
 let clipsReady = false;
 
-function paintCard() {
+function paintCard(time = 0) {
+  const t = time * 1000;
   const gradient = ctx.createLinearGradient(0, 0, W, H);
-  gradient.addColorStop(0, "#261427"); gradient.addColorStop(.55, "#160e19"); gradient.addColorStop(1, "#27151e");
+  gradient.addColorStop(0, "#342138"); gradient.addColorStop(.48, "#180f1c"); gradient.addColorStop(1, "#2b1925");
   ctx.fillStyle = gradient; ctx.fillRect(0, 0, W, H);
-  const glow = ctx.createRadialGradient(W * .5, H * .36, 18, W * .5, H * .42, H * .58);
-  glow.addColorStop(0, "rgba(205,160,92,.16)"); glow.addColorStop(1, "rgba(205,160,92,0)");
+  const glowX = W * (.5 + Math.sin(t * .00022) * .13);
+  const glow = ctx.createRadialGradient(glowX, H * .4, 10, glowX, H * .43, H * .66);
+  glow.addColorStop(0, "rgba(218,171,104,.19)"); glow.addColorStop(.45, "rgba(134,75,88,.08)"); glow.addColorStop(1, "rgba(205,160,92,0)");
   ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = "rgba(236,204,150,.75)"; ctx.lineWidth = 2; ctx.strokeRect(34, 34, W - 68, H - 68);
-  ctx.strokeStyle = "rgba(236,204,150,.24)"; ctx.lineWidth = 1; ctx.strokeRect(49, 49, W - 98, H - 98);
-  ctx.fillStyle = "rgba(242,220,170,.65)"; ctx.font = "24px Georgia"; ctx.textAlign = "center";
+
+  // A slowly turning, fine-line mandala gives the title screens a little life.
+  ctx.save(); ctx.translate(W / 2, H * .48); ctx.rotate(t * .000035);
+  ctx.strokeStyle = "rgba(229,190,128,.075)"; ctx.lineWidth = 1;
+  for (let ring = 0; ring < 3; ring += 1) {
+    const radius = 246 + ring * 25;
+    ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.stroke();
+  }
+  for (let i = 0; i < 24; i += 1) {
+    const angle = (i / 24) * Math.PI * 2;
+    ctx.save(); ctx.rotate(angle); ctx.beginPath(); ctx.ellipse(0, -270, 9, 23, 0, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+  }
+  ctx.restore();
+
+  // Champagne flecks drift around the frame as a subtle animated texture.
+  for (let i = 0; i < 24; i += 1) {
+    const x = (i * 173 + Math.sin(t * .0007 + i * 4) * 25 + W) % W;
+    const y = (i * 271 - t * (.012 + (i % 3) * .004) + H * 2) % H;
+    const pulse = .22 + (Math.sin(t * .002 + i * 2) + 1) * .23;
+    ctx.fillStyle = `rgba(247,220,167,${pulse})`;
+    ctx.beginPath(); ctx.arc(x, y, i % 5 === 0 ? 2.1 : 1.15, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.strokeStyle = "rgba(236,204,150,.68)"; ctx.lineWidth = 1.5; ctx.strokeRect(34, 34, W - 68, H - 68);
+  ctx.strokeStyle = "rgba(236,204,150,.23)"; ctx.lineWidth = 1; ctx.strokeRect(49, 49, W - 98, H - 98);
+  ctx.fillStyle = "rgba(242,220,170,.8)"; ctx.font = "24px Georgia"; ctx.textAlign = "center";
   [[78, 92], [W - 78, 92], [78, H - 78], [W - 78, H - 78]].forEach(([x,y]) => ctx.fillText("✦", x, y));
+  ctx.fillStyle = "rgba(236,204,150,.36)"; ctx.fillRect(74, H * .5, 1, 180); ctx.fillRect(W - 75, H * .5, 1, 180);
 }
 
 function centerText(text, y, font, color = "#f2dcaa", maxWidth = W - 120) {
@@ -141,29 +169,71 @@ function centerText(text, y, font, color = "#f2dcaa", maxWidth = W - 120) {
   ctx.fillText(text, W / 2, y, maxWidth);
 }
 
-function coverCard() {
+function coverCard(time = 0) {
   const guest = currentGuest();
-  paintCard();
-  centerText("R ✦ M", 268, "500 42px Georgia", "#e6c487");
-  ctx.fillStyle = "rgba(236,204,150,.62)"; ctx.fillRect(W * .32, 343, W * .36, 1);
-  centerText("WITH IMMENSE JOY & HAPPINESS", 426, "18px monospace", "#e6c487");
-  centerText("Ria & Manas", 548, "500 76px Georgia", "#fbf6ed");
-  centerText("invite you to celebrate", 626, "italic 28px Georgia", "#d6c6ad");
-  centerText(guest === "Friends & Family" ? "Dear Friends & Family" : `For ${guest}`, 802, "500 30px Georgia", "#fbf6ed");
-  centerText("A beautiful new journey begins", 864, "24px Georgia", "#d6c6ad");
-  centerText("19—21 NOVEMBER 2026  ·  NAGPUR", 1002, "18px monospace", "#e6c487");
-  centerText("A LITTLE FILM FOR OUR FAVOURITE PEOPLE", 1102, "14px monospace", "rgba(242,220,170,.65)");
+  const t = Math.max(0, Math.min(1, time / 2.25));
+  const eased = 1 - (1 - t) ** 3;
+  paintCard(time);
+
+  // The invitation rises from an illustrated envelope while its wax seal glows.
+  const paperY = 690 - eased * 380;
+  ctx.save(); ctx.shadowColor = "rgba(0,0,0,.42)"; ctx.shadowBlur = 34; ctx.shadowOffsetY = 18;
+  ctx.fillStyle = "#f5eddc"; ctx.beginPath(); ctx.roundRect(92, paperY, W - 184, 505, 8); ctx.fill();
+  ctx.restore();
+  ctx.fillStyle = "rgba(127,91,70,.13)"; ctx.fillRect(117, paperY + 24, W - 234, 1);
+  ctx.strokeStyle = "rgba(163,123,77,.28)"; ctx.lineWidth = 1; ctx.strokeRect(111, paperY + 17, W - 222, 471);
+
+  // Envelope body and folding edges.
+  ctx.fillStyle = "#d6b98e"; ctx.beginPath(); ctx.moveTo(67, 762); ctx.lineTo(W / 2, 1000); ctx.lineTo(W - 67, 762); ctx.lineTo(W - 67, 1092); ctx.quadraticCurveTo(W - 67, 1115, W - 91, 1115); ctx.lineTo(91, 1115); ctx.quadraticCurveTo(67, 1115, 67, 1092); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "rgba(112,73,70,.25)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(68, 1110); ctx.lineTo(W / 2, 938); ctx.lineTo(W - 68, 1110); ctx.stroke();
+  const flapProgress = Math.min(1, time / 1.1);
+  ctx.save(); ctx.translate(W / 2, 777); ctx.scale(1, Math.max(.03, Math.cos(flapProgress * Math.PI / 2)));
+  ctx.fillStyle = "#ead4af"; ctx.beginPath(); ctx.moveTo(-W * .42, 0); ctx.lineTo(0, -208); ctx.lineTo(W * .42, 0); ctx.closePath(); ctx.fill(); ctx.restore();
+  const sealAlpha = Math.min(1, Math.max(0, (time - .6) / .6));
+  ctx.globalAlpha = sealAlpha; ctx.fillStyle = "#963f4c"; ctx.beginPath(); ctx.arc(W / 2, 875, 34, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#f5dfb5"; ctx.font = "20px Georgia"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("R✦M", W / 2, 875); ctx.globalAlpha = 1;
+
+  const textAlpha = Math.min(1, Math.max(0, (time - .6) / .8));
+  ctx.globalAlpha = textAlpha;
+  centerText("R  ✦  M", paperY + 76, "500 27px Georgia", "#ad7b43");
+  centerText("A CELEBRATION OF LOVE", paperY + 137, "13px monospace", "#987653");
+  ctx.fillStyle = "rgba(159,119,70,.48)"; ctx.fillRect(W * .39, paperY + 170, W * .22, 1);
+  centerText("Ria & Manas", paperY + 245, "500 62px Georgia", "#38233b");
+  centerText("invite you to celebrate", paperY + 300, "italic 23px Georgia", "#816d61");
+  centerText(guest === "Friends & Family" ? "Dear Friends & Family" : `For ${guest}`, paperY + 375, "500 21px Georgia", "#49354a");
+  centerText("19 — 21 NOVEMBER 2026", paperY + 426, "13px monospace", "#a37845");
+  ctx.globalAlpha = 1;
+  centerText("NAGPUR  ·  WITH LOVE", 1180, "12px monospace", "rgba(242,220,170,.78)");
 }
 
-function introCard() {
-  paintCard();
-  centerText("THREE DAYS  ·  CELEBRATION FILMS", 330, "16px monospace", "#e6c487");
-  centerText("Let the", 520, "500 72px Georgia", "#fbf6ed");
-  centerText("celebrations unfold.", 605, "500 62px Georgia", "#fbf6ed");
-  ctx.fillStyle = "rgba(236,204,150,.62)"; ctx.fillRect(W * .38, 708, W * .24, 1);
-  const names = filmEvents.map(item => item.title);
-  names.slice(0, 5).forEach((name, index) => centerText(name.toUpperCase(), 785 + index * 48, "16px monospace", "#e5d7c0"));
-  centerText("ONE CONTINUOUS CELEBRATION  ✦", 1095, "15px monospace", "#e6c487");
+function introCard(time = 0) {
+  paintCard(time);
+  const progress = Math.max(0, time);
+  centerText("THE WEDDING CELEBRATIONS", 132, "13px monospace", "#e6c487");
+  centerText("Three days,", 242, "500 65px Georgia", "#fbf6ed");
+  centerText("one beautiful story.", 316, "500 49px Georgia", "#fbf6ed");
+  ctx.fillStyle = "rgba(236,204,150,.6)"; ctx.fillRect(W * .34, 384, W * .32, 1);
+  centerText("19 — 21 NOVEMBER 2026   ·   NAGPUR", 430, "13px monospace", "#e6c487");
+  const dates = { janeu: "19 NOV", sukhmani: "19 NOV", haldi: "20 NOV", sangeet: "20 NOV", baarat: "21 NOV", reception: "21 NOV" };
+  const icons = { janeu: "ॐ", sukhmani: "✧", haldi: "✿", sangeet: "♫", baarat: "✦", reception: "✧" };
+  const rowHeight = filmEvents.length > 5 ? 83 : 91;
+  const startY = 510;
+  filmEvents.forEach((event, index) => {
+    const reveal = Math.max(0, Math.min(1, (progress - .28 - index * .34) / .48));
+    if (!reveal) return;
+    const ease = 1 - (1 - reveal) ** 3;
+    const y = startY + index * rowHeight + (1 - ease) * 24;
+    ctx.globalAlpha = ease;
+    ctx.fillStyle = "rgba(250,241,222,.075)"; ctx.beginPath(); ctx.roundRect(83, y, W - 166, rowHeight - 10, 12); ctx.fill();
+    ctx.strokeStyle = "rgba(236,204,150,.28)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(83, y, W - 166, rowHeight - 10, 12); ctx.stroke();
+    ctx.fillStyle = "#e7c98e"; ctx.beginPath(); ctx.arc(128, y + (rowHeight - 10) / 2, 23, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#422a40"; ctx.font = event.key === "janeu" || event.key === "sukhmani" ? "19px Georgia" : "22px Georgia"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(icons[event.key] || "✦", 128, y + (rowHeight - 10) / 2);
+    ctx.textAlign = "left"; ctx.textBaseline = "middle"; ctx.fillStyle = "rgba(242,220,170,.8)"; ctx.font = "11px monospace"; ctx.fillText(dates[event.key] || "NOV", 170, y + 26, W - 250);
+    ctx.fillStyle = "#fbf6ed"; ctx.font = "500 22px Georgia"; ctx.fillText(event.title, 170, y + 51, W - 250);
+    ctx.textAlign = "right"; ctx.fillStyle = "rgba(242,220,170,.56)"; ctx.font = "10px monospace"; ctx.fillText(String(index + 1).padStart(2, "0"), W - 104, y + (rowHeight - 10) / 2);
+    ctx.globalAlpha = 1;
+  });
+  centerText("A CONTINUOUS CELEBRATION FILM  ✦", 1135, "12px monospace", "#e6c487");
 }
 
 function closingCard() {
@@ -222,7 +292,7 @@ function renderStatic(draw, durationSeconds, label, baseProgress, totalDuration)
     const start = performance.now();
     const tick = now => {
       const elapsed = (now - start) / 1000;
-      draw();
+      draw(elapsed);
       progressFill.style.width = `${Math.min(100, ((baseProgress + elapsed) / totalDuration) * 100)}%`;
       statusLine.textContent = `${label} · ${Math.min(Math.round((elapsed / durationSeconds) * 100), 100)}%`;
       if (elapsed < durationSeconds) requestAnimationFrame(tick); else resolve();
@@ -267,7 +337,7 @@ function refreshSelection() {
   filmEvents = selectedFilmEvents();
   renderEventList();
   clearGeneratedVideo();
-  coverCard();
+  resetStudioPreview();
   totalDuration = INTRO_SECONDS * 2 + CLOSING_SECONDS + filmEvents.length * (6 + DETAIL_SECONDS);
   document.querySelector("#estimate").textContent = formatDuration(totalDuration);
   progressFill.style.width = "0";
@@ -322,7 +392,7 @@ for (const field of [paathDateField, paathTimeField, paathVenueField]) {
 guestField.addEventListener("input", () => {
   updateGuestGreeting();
   clearGeneratedVideo();
-  coverCard();
+  resetStudioPreview();
 });
 
 function supportedMime() {
@@ -430,12 +500,24 @@ async function createFilm() {
   statusLine.textContent = `Your ${ext.toUpperCase()} is ready · ${(blob.size / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-coverCard();
+function animateStudioPreview(now) {
+  if (!filmIsRendering) {
+    const introTime = ((now - studioPreviewStarted) / 1000) % (INTRO_SECONDS * 2);
+    if (introTime < INTRO_SECONDS) coverCard(introTime);
+    else introCard(introTime - INTRO_SECONDS);
+  }
+  requestAnimationFrame(animateStudioPreview);
+}
+
 refreshSelection();
+requestAnimationFrame(animateStudioPreview);
 createButton.addEventListener("click", async () => {
+  filmIsRendering = true;
   try { await createFilm(); }
   catch (error) { statusLine.textContent = error.message || "The video could not be created. Please try again."; }
   finally {
+    filmIsRendering = false;
+    resetStudioPreview();
     selectionPanel.disabled = false;
     guestField.disabled = false;
     audioChoice.disabled = false;
