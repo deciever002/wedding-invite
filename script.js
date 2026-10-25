@@ -103,7 +103,17 @@ async function startSoundtrack() {
 soundToggle.hidden = false;
 audio.autoplay = true;
 audio.preload = "auto";
+audio.volume = 1;
 void startSoundtrack();
+
+// If the browser blocks audio on page load, resume it on the first visitor
+// interaction. Browsers still require a gesture before playing sound in some cases.
+function resumeSoundtrackOnInteraction(event) {
+  if (event.target instanceof Element && event.target.closest("#sound-toggle")) return;
+  if (!soundtrackManuallyDisabled && audio.paused) void startSoundtrack();
+}
+document.addEventListener("pointerdown", resumeSoundtrackOnInteraction, { passive: true });
+document.addEventListener("keydown", resumeSoundtrackOnInteraction);
 
 function revealLetter() {
   if (cover.classList.contains("is-open")) return;
