@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#190f19">
-  <meta name="description" content="An invitation to celebrate Ria and Manas in Nagpur, 19–21 November.">
-  <meta property="og:title" content="Ria & Manas — A Wedding in Five Acts">
-  <meta property="og:description" content="Open the letter. Step into five little wedding films. Celebrate with us in Nagpur.">
-  <title>Ria & Manas — A Wedding in Five Acts</title>
+  <meta name="description" content="RiaManas Wedding — an invitation to celebrate Ria and Manas in Nagpur, 19–21 November.">
+  <meta property="og:title" content="RiaManas Wedding">
+  <meta property="og:description" content="Open the letter and step into a continuous wedding film for Ria and Manas in Nagpur.">
+  <title>RiaManas Wedding</title>
   <link rel="icon" href="assets/lotus.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
@@ -29,7 +29,7 @@
 
   <header class="masthead">
     <a class="monogram" href="#cover" aria-label="Ria and Manas invitation cover">R<span>✦</span>M</a>
-    <p class="masthead-label">A WEDDING IN FIVE ACTS <span>·</span> NAGPUR</p>
+    <p class="masthead-label">RIAMANAS WEDDING <span>·</span> NAGPUR</p>
     <button class="sound-toggle" id="sound-toggle" type="button" aria-label="Turn music on" hidden>
       <span class="sound-icon" aria-hidden="true">♫</span><span id="sound-label">SOUND OFF</span>
     </button>
@@ -71,19 +71,19 @@
 
       <button class="open-invite" id="open-invite" type="button" aria-expanded="false" aria-controls="letter-paper">
         <span class="open-icon" aria-hidden="true">↗</span>
-        <span><strong>Open your invitation</strong><small>Tap to unfold the letter</small></span>
+        <span><strong>Open your invitation</strong><small>The letter opens automatically</small></span>
       </button>
       <p class="cover-footnote">A LITTLE FILM FOR OUR FAVOURITE PEOPLE <span>✦</span></p>
     </section>
 
     <section class="journey-intro" id="journey-intro" hidden aria-labelledby="journey-title">
       <div class="journey-intro-mark" aria-hidden="true">✦</div>
-      <p class="eyebrow">THREE DAYS <span>·</span> FIVE MOMENTS <span>·</span> ONE BEAUTIFUL BEGINNING</p>
+      <p class="eyebrow">THREE DAYS <span>·</span> CELEBRATION FILMS <span>·</span> ONE BEAUTIFUL BEGINNING</p>
       <h2 id="journey-title">Let the celebrations<br>unfold.</h2>
-      <p class="journey-intro-copy">Each moment has a little story of its own.<br>The next celebration follows when the film ends.</p>
+      <p class="journey-intro-copy">Each moment has a little story of its own.<br>Stay with us; the celebrations flow on.</p>
       <button class="start-story" id="start-story" type="button">BEGIN THE STORY <span aria-hidden="true">↓</span></button>
       <div class="journey-intro-line" aria-hidden="true"></div>
-      <p class="journey-intro-small">FIVE FILMS <span>·</span> ONE CONTINUOUS CELEBRATION <span>✦</span></p>
+      <p class="journey-intro-small"><span id="film-count-label">FIVE FILMS</span> <span>·</span> ONE CONTINUOUS CELEBRATION <span>✦</span></p>
     </section>
 
     <div class="event-journey" id="event-journey" hidden>
@@ -91,7 +91,7 @@
       <div class="story-counter" id="story-counter" aria-live="polite">01 <span>/</span> 05</div>
       <button class="journey-exit" type="button" data-exit aria-label="Return to the invitation letter">← <span>BACK TO LETTER</span></button>
 
-      <section class="event-chapter is-active" id="janeu" data-index="0" aria-labelledby="janeu-title">
+      <section class="event-chapter is-active" id="janeu" data-event="janeu" data-index="0" aria-labelledby="janeu-title">
         <div class="chapter-art" style="--event-poster:url('assets/events/janeu.jpg')">
           <div class="film-backdrop" aria-hidden="true"></div>
           <video class="chapter-film" muted playsinline preload="none" poster="assets/events/janeu.jpg" aria-label="Full-frame cinematic video of a Janeu ceremony">
@@ -108,7 +108,7 @@
               <circle class="thread-glint" cx="151" cy="135" r="3"/><circle class="thread-glint thread-glint--two" cx="318" cy="139" r="2.5"/>
             </svg>
           </div>
-          <div class="chapter-meta"><span>ACT 01</span><i>✦</i><span>19 NOVEMBER</span></div>
+          <div class="chapter-meta"><span>ACT 01</span><i>✦</i><span data-sukhmani-film-date>DATE TO FOLLOW</span></div>
           <div class="intro-title">
             <p>A BLESSED BEGINNING</p>
             <h2 id="janeu-title">Janeu<br>Ceremony</h2>
@@ -138,7 +138,35 @@
         </div>
       </section>
 
-      <section class="event-chapter" id="haldi" data-index="1" aria-labelledby="haldi-title">
+      <section class="event-chapter" id="sukhmani" data-event="sukhmani" data-index="1" aria-labelledby="sukhmani-title" hidden>
+        <div class="chapter-art" style="--event-poster:url('assets/events/sukhmani-paath.png')">
+          <div class="film-backdrop" aria-hidden="true"></div>
+          <video class="chapter-film" muted playsinline preload="none" poster="assets/events/sukhmani-paath.png" aria-label="Animated cinematic video of a Sukhmani Sahib paath in a softly lit prayer hall">
+            <source src="assets/events/sukhmani-paath.mp4" type="video/mp4">
+          </video>
+          <div class="art-shade" aria-hidden="true"></div><div class="art-grain" aria-hidden="true"></div><div class="art-light" aria-hidden="true"></div>
+          <div class="event-effects event-effects--sukhmani" aria-hidden="true"><span class="prayer-glow prayer-glow--one"></span><span class="prayer-glow prayer-glow--two"></span><span class="prayer-petal prayer-petal--one">✿</span><span class="prayer-petal prayer-petal--two">✿</span><span class="prayer-petal prayer-petal--three">✿</span></div>
+          <div class="chapter-meta"><span>ACT 01</span><i>✦</i><span>19 NOVEMBER</span></div>
+          <div class="intro-title"><p>A MOMENT OF PRAYER</p><h2 id="sukhmani-title">Sukhmani<br>Sahib Paath</h2><span class="scene-status"><b></b> A PEACEFUL BEGINNING</span></div>
+          <div class="film-progress" aria-hidden="true"><span></span></div><button class="scene-skip" type="button" data-advance>NEXT EVENT <span aria-hidden="true">↗</span></button>
+          <div class="frame-corner frame-corner--top" aria-hidden="true"></div><div class="frame-corner frame-corner--bottom" aria-hidden="true"></div>
+        </div>
+        <div class="chapter-info">
+          <div class="waiting-copy"><span class="waiting-orbit"><span>✦</span></span><p>THE MOMENT IS UNFOLDING</p></div>
+          <div class="event-reveal" aria-hidden="true">
+            <p class="info-index">A PRAYER FOR PEACE <span>·</span> A BLESSED BEGINNING</p>
+            <h3>Sukhmani Sahib Paath</h3>
+            <div class="event-details">
+              <div><span>WHEN</span><strong data-sukhmani-when>Details to follow</strong></div>
+              <div><span>WHERE</span><strong data-sukhmani-where>Details to follow</strong></div>
+            </div>
+            <div class="info-actions"><a class="map-action" data-sukhmani-map href="https://www.google.com/maps/search/?api=1&amp;query=Nagpur" target="_blank" rel="noopener noreferrer">OPEN IN MAPS <span aria-hidden="true">↗</span></a><button class="replay-action" type="button" data-replay>REPLAY SCENE <span aria-hidden="true">↻</span></button></div>
+            <button class="next-event" type="button" data-next="2"><span>UP NEXT</span> HALDI CARNIVAL <i aria-hidden="true">↓</i></button>
+          </div><span class="info-watermark" aria-hidden="true">01</span>
+        </div>
+      </section>
+
+      <section class="event-chapter" id="haldi" data-event="haldi" data-index="1" aria-labelledby="haldi-title">
         <div class="chapter-art" style="--event-poster:url('assets/events/haldi-carnival.jpg')">
           <div class="film-backdrop" aria-hidden="true"></div>
           <video class="chapter-film" muted playsinline preload="none" poster="assets/events/haldi-carnival.jpg" aria-label="Full-frame cinematic video of the Haldi Carnival arrival on a decorated ATV">
@@ -172,7 +200,7 @@
         </div>
       </section>
 
-      <section class="event-chapter" id="sangeet" data-index="2" aria-labelledby="sangeet-title">
+      <section class="event-chapter" id="sangeet" data-event="sangeet" data-index="2" aria-labelledby="sangeet-title">
         <div class="chapter-art" style="--event-poster:url('assets/events/sangeet.jpg')">
           <div class="film-backdrop" aria-hidden="true"></div>
           <video class="chapter-film" muted playsinline preload="none" poster="assets/events/sangeet.jpg" aria-label="Full-frame cinematic video of a couple dancing at the Sangeet">
@@ -204,7 +232,7 @@
         </div>
       </section>
 
-      <section class="event-chapter" id="baarat" data-index="3" aria-labelledby="baarat-title">
+      <section class="event-chapter" id="baarat" data-event="baarat" data-index="3" aria-labelledby="baarat-title">
         <div class="chapter-art" style="--event-poster:url('assets/events/baarat.jpg')">
           <div class="film-backdrop" aria-hidden="true"></div>
           <video class="chapter-film" muted playsinline preload="none" poster="assets/events/baarat.jpg" aria-label="Full-frame cinematic video of a wedding Baarat procession">
@@ -236,7 +264,7 @@
         </div>
       </section>
 
-      <section class="event-chapter" id="reception" data-index="4" aria-labelledby="reception-title">
+      <section class="event-chapter" id="reception" data-event="reception" data-index="4" aria-labelledby="reception-title">
         <div class="chapter-art" style="--event-poster:url('assets/events/reception.jpg')">
           <div class="film-backdrop" aria-hidden="true"></div>
           <video class="chapter-film" muted playsinline preload="none" poster="assets/events/reception.jpg" aria-label="Full-frame cinematic video of the wedding reception">

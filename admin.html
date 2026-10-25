@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#190f19">
   <meta name="robots" content="noindex, nofollow">
-  <title>Guest Invitation Studio — Ria &amp; Manas</title>
+  <title>RiaManas Wedding — Invitation Studio</title>
   <link rel="icon" href="assets/lotus.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
   <script src="admin.js" defer></script>
@@ -16,38 +16,71 @@
     .admin-card h1 { margin: 0; color: var(--paper); font: 500 clamp(37px, 8vw, 62px)/1.02 var(--serif); letter-spacing: -.04em; }
     .admin-intro { max-width: 560px; margin: 16px 0 31px; color: var(--muted); font-size: 14px; line-height: 1.7; }
     .admin-form { display: grid; gap: 19px; }
-    .admin-form label { display: grid; gap: 9px; color: var(--gold-light); font: 8px var(--mono); letter-spacing: .14em; }
-    .admin-form input, .admin-form textarea { width: 100%; color: var(--paper); border: 1px solid rgba(242,220,170,.25); border-radius: 0; background: rgba(255,255,255,.045); font: 14px var(--sans); letter-spacing: normal; }
-    .admin-form input { min-height: 48px; padding: 0 13px; }
+    .admin-form > label, .admin-schedule label { display: grid; gap: 9px; color: var(--gold-light); font: 8px var(--mono); letter-spacing: .14em; }
+    .admin-form input:not([type="checkbox"]), .admin-form textarea { width: 100%; color: var(--paper); border: 1px solid rgba(242,220,170,.25); border-radius: 0; background: rgba(255,255,255,.045); font: 14px var(--sans); letter-spacing: normal; }
+    .admin-form input:not([type="checkbox"]) { min-height: 48px; padding: 0 13px; }
     .admin-form textarea { min-height: 248px; padding: 15px; line-height: 1.6; resize: vertical; }
     .admin-form input:focus, .admin-form textarea:focus { border-color: var(--gold); outline: 2px solid rgba(216,176,111,.22); outline-offset: 2px; }
     .admin-hint { margin: -10px 0 0; color: rgba(243,235,220,.52); font: 10px/1.5 var(--sans); }
+    .admin-fieldset { margin: 0; padding: 17px; border: 1px solid rgba(216,176,111,.22); }
+    .admin-fieldset legend { padding: 0 8px; color: var(--gold-light); font: 8px var(--mono); letter-spacing: .16em; }
+    .admin-option-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+    .admin-option { min-height: 48px; display: flex; align-items: center; gap: 11px; padding: 10px 12px; color: var(--paper); border: 1px solid rgba(242,220,170,.14); background: rgba(255,255,255,.025); font: 12px/1.35 var(--sans); letter-spacing: normal; cursor: pointer; }
+    .admin-option:has(input:checked) { border-color: rgba(242,220,170,.59); background: rgba(216,176,111,.1); }
+    .admin-option input { flex: none; width: 17px; height: 17px; accent-color: #d8b06f; }
+    .admin-schedule { display: grid; gap: 14px; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(216,176,111,.19); }
+    .admin-schedule[hidden] { display: none; }
+    .admin-schedule-title { margin: 0; color: rgba(243,235,220,.74); font: 10px/1.5 var(--sans); }
     .admin-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
-    .admin-button { min-height: 47px; padding: 0 17px; color: #241522; border: 1px solid var(--gold-light); background: linear-gradient(120deg, #f2dcaa, #cfaa6d); font: 8px var(--mono); letter-spacing: .13em; }
+    .admin-button { min-height: 47px; padding: 0 17px; color: #241522; border: 1px solid var(--gold-light); background: linear-gradient(120deg, #f2dcaa, #cfaa6d); font: 8px var(--mono); letter-spacing: .13em; cursor: pointer; }
     .admin-button--secondary { color: var(--gold-light); border-color: rgba(242,220,170,.45); background: transparent; }
     .admin-result { margin-top: 33px; padding-top: 28px; border-top: 1px solid rgba(216,176,111,.25); }
     .admin-result h2 { margin: 0 0 17px; font: 500 25px var(--serif); }
     .admin-link { display: block; overflow-wrap: anywhere; color: var(--gold-light); font: 12px/1.6 var(--mono); }
     .admin-status { min-height: 22px; margin: 13px 0 0; color: var(--gold-light); font: 11px var(--sans); }
     .admin-back { display: inline-flex; margin-top: 25px; color: var(--gold-light); text-decoration: none; font: 8px var(--mono); letter-spacing: .12em; }
-    @media(max-width: 520px) { .admin-shell { padding: 84px 14px 28px; } .admin-card { padding: 23px 19px; } .admin-actions { display: grid; } .admin-button { width: 100%; } }
+    @media(max-width: 520px) { .admin-shell { padding: 84px 14px 28px; } .admin-card { padding: 23px 19px; } .admin-actions { display: grid; } .admin-button { width: 100%; } .admin-option-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
   <header class="masthead">
     <a class="monogram" href="index.html" aria-label="Ria and Manas invitation">R<span>✦</span>M</a>
-    <p class="masthead-label">GUEST INVITATION STUDIO <span>·</span> LINK GENERATOR</p>
+    <p class="masthead-label">RIAMANAS WEDDING <span>·</span> INVITATION STUDIO</p>
   </header>
   <main class="admin-shell">
     <section class="admin-card" aria-labelledby="admin-title">
       <p class="admin-eyebrow">PERSONALISED GUEST LINKS</p>
       <h1 id="admin-title">Make it<br>theirs.</h1>
-      <p class="admin-intro">Add a guest name to create a personal invitation link. Copy the link alone, or copy the complete message with all five celebrations and the link included.</p>
+      <p class="admin-intro">Choose the family side and the celebrations this guest is invited to. Their link opens as a continuous, hands-free wedding film.</p>
       <form class="admin-form" id="invite-form">
         <label for="guest-name">GUEST OR FAMILY NAME
           <input id="guest-name" name="guest" autocomplete="name" maxlength="100" placeholder="e.g. Aditi Sharma" required>
         </label>
+        <fieldset class="admin-fieldset">
+          <legend>INVITATION SIDE</legend>
+          <div class="admin-option-grid">
+            <label class="admin-option"><input type="checkbox" id="side-groom" checked> Groom side</label>
+            <label class="admin-option"><input type="checkbox" id="side-bride"> Bride side</label>
+          </div>
+        </fieldset>
+        <fieldset class="admin-fieldset">
+          <legend>CELEBRATIONS TO INCLUDE</legend>
+          <div class="admin-option-grid">
+            <label class="admin-option" data-side-option="groom"><input type="checkbox" id="event-janeu" checked> Janeu Ceremony</label>
+            <label class="admin-option" data-side-option="bride" hidden><input type="checkbox" id="event-sukhmani"> Sukhmani Sahib Paath</label>
+            <label class="admin-option"><input type="checkbox" id="event-haldi" checked> Haldi Carnival</label>
+            <label class="admin-option"><input type="checkbox" id="event-sangeet" checked> Sangeet Ceremony</label>
+            <label class="admin-option"><input type="checkbox" id="event-baarat" checked> Baarat</label>
+            <label class="admin-option"><input type="checkbox" id="event-reception" checked> Wedding Reception</label>
+          </div>
+          <div class="admin-schedule" id="sukhmani-schedule" hidden>
+            <p class="admin-schedule-title">Bride-side Sukhmani Sahib details. Leave a field blank to show “details to follow” on the invitation.</p>
+            <label for="sukhmani-date">PAATH DATE<input id="sukhmani-date" type="text" placeholder="e.g. 18 November"></label>
+            <label for="sukhmani-time">START TIME<input id="sukhmani-time" type="text" value="5:30 PM onwards" placeholder="e.g. 5:30 PM onwards"></label>
+            <label for="sukhmani-venue">VENUE<input id="sukhmani-venue" type="text" placeholder="Venue and city"></label>
+          </div>
+        </fieldset>
         <label for="base-url">INVITATION WEBSITE URL
           <input id="base-url" name="base-url" type="url" value="https://deciever002.github.io/wedding-invite/" required>
         </label>

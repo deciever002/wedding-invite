@@ -3,23 +3,88 @@ const envelopeScene = document.querySelector("#envelope-scene");
 const openInvite = document.querySelector("#open-invite");
 const journeyIntro = document.querySelector("#journey-intro");
 const eventJourney = document.querySelector("#event-journey");
-const chapters = [...document.querySelectorAll(".event-chapter")];
+const allChapters = [...document.querySelectorAll(".event-chapter")];
 const counter = document.querySelector("#story-counter");
 const progressFill = document.querySelector("#story-progress-fill");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-const TRANSITION_MS = 2100;
-const TRANSITION_FADE_MS = 500;
-const FILM_FALLBACK_MS = 9500;
-const DETAILS_DWELL_MS = 5500;
 const audio = document.querySelector("#wedding-audio");
 const soundToggle = document.querySelector("#sound-toggle");
 const soundLabel = document.querySelector("#sound-label");
+const query = new URLSearchParams(window.location.search);
+const invitedGuest = query.get("guest")?.trim().slice(0, 100);
+const side = query.get("side") === "bride" ? "bride" : "groom";
+const requestedEvents = query.has("events")
+  ? new Set(query.get("events").split(",").map(event => event.trim()).filter(Boolean))
+  : null;
+const sideEvent = side === "bride" ? "sukhmani" : "janeu";
+const commonEvents = ["haldi", "sangeet", "baarat", "reception"];
+const defaults = [sideEvent, ...commonEvents];
+let chapters = [];
 let soundtrackManuallyDisabled = false;
 let savedRootOverflow = "";
+let autoIntroTimer;
+let autoStartTimer;
+const DETAILS_DWELL_MS = 2800;
+const SCENE_EFFECT_MS = reduceMotion.matches ? 0 : 2100;
+
+function configureInvitation() {
+  const selected = requestedEvents?.size ? requestedEvents : new Set(defaults);
+  for (const chapter of allChapters) {
+    const key = chapter.dataset.event;
+    const belongsToOtherSide = (key === "janeu" || key === "sukhmani") && key !== sideEvent;
+    chapter.hidden = belongsToOtherSide || !selected.has(key);
+  }
+  chapters = allChapters.filter(chapter => !chapter.hidden);
+  if (!chapters.length) {
+    for (const chapter of allChapters) chapter.hidden = !defaults.includes(chapter.dataset.event);
+    chapters = allChapters.filter(chapter => !chapter.hidden);
+  }
+
+  chapters.forEach((chapter, index) => {
+    chapter.dataset.index = String(index);
+    const act = chapter.querySelector(".chapter-meta span");
+    if (act) act.textContent = `ACT ${String(index + 1).padStart(2, "0")}`;
+    const watermark = chapter.querySelector(".info-watermark");
+    if (watermark) watermark.textContent = String(index + 1).padStart(2, "0");
+  });
+
+  chapters.forEach((chapter, index) => {
+    const next = chapters[index + 1];
+    const nextLabel = chapter.querySelector(".next-event:not(.next-event--end)");
+    if (nextLabel && next) {
+      nextLabel.innerHTML = `<span>UP NEXT</span> ${next.querySelector(".chapter-info h3").textContent.toUpperCase()} <i aria-hidden="true">↓</i>`;
+    } else if (nextLabel) {
+      nextLabel.hidden = true;
+    }
+  });
+
+  const total = String(chapters.length).padStart(2, "0");
+  document.querySelector("#film-count-label").textContent = `${total === "01" ? "ONE FILM" : `${total} FILMS`}`;
+  counter.innerHTML = `01 <span>/</span> ${total}`;
+
+  const date = query.get("sukhmaniDate")?.trim();
+  const time = query.get("sukhmaniTime")?.trim();
+  const venue = query.get("sukhmaniVenue")?.trim();
+  const when = document.querySelector("[data-sukhmani-when]");
+  const where = document.querySelector("[data-sukhmani-where]");
+  const filmDate = document.querySelector("[data-sukhmani-film-date]");
+  const map = document.querySelector("[data-sukhmani-map]");
+  if (when) when.textContent = [date || "Date to follow", time || "Time to follow"].join("\n");
+  if (where) where.textContent = venue || "Venue to follow";
+  if (filmDate) filmDate.textContent = date || "DATE TO FOLLOW";
+  if (map) {
+    const place = venue || "Nagpur";
+    map.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`;
+  }
+}
+
+configureInvitation();
+
+if (invitedGuest) document.querySelector("#guest-greeting").textContent = `Dear ${invitedGuest},`;
 
 function setSoundControl(isPlaying, blocked = false) {
   soundToggle.classList.toggle("is-on", isPlaying);
-  soundLabel.textContent = isPlaying ? "SOUND ON" : blocked ? "TAP TO PLAY" : "SOUND OFF";
+  soundLabel.textContent = isPlaying ? "SOUND ON" : blocked ? "TAP FOR SOUND" : "SOUND OFF";
   soundToggle.setAttribute("aria-label", isPlaying ? "Turn music off" : "Start invitation music");
 }
 
@@ -40,46 +105,43 @@ audio.autoplay = true;
 audio.preload = "auto";
 void startSoundtrack();
 
-const invitedGuest = new URLSearchParams(window.location.search).get("guest")?.trim().slice(0, 100);
-if (invitedGuest) {
-  document.querySelector("#guest-greeting").textContent = `Dear ${invitedGuest},`;
-}
-
 function revealLetter() {
   if (cover.classList.contains("is-open")) return;
   void startSoundtrack();
   cover.classList.add("is-open");
   openInvite.setAttribute("aria-expanded", "true");
-  window.setTimeout(() => {
-    document.querySelector("#begin-journey").focus({ preventScroll: true });
-  }, 1100);
+  window.clearTimeout(autoIntroTimer);
+  autoIntroTimer = window.setTimeout(beginJourney, 2550);
+}
+
+function beginJourney() {
+  if (eventJourney.classList.contains("is-live")) return;
+  window.clearTimeout(autoStartTimer);
+  journeyIntro.hidden = false;
+  document.body.classList.add("story-started");
+  journeyIntro.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
+  autoStartTimer = window.setTimeout(startStory, reduceMotion.matches ? 250 : 950);
 }
 
 openInvite.addEventListener("click", revealLetter);
 envelopeScene.addEventListener("click", event => {
   if (!cover.classList.contains("is-open") && !event.target.closest("button")) revealLetter();
 });
-
-document.querySelector("#begin-journey").addEventListener("click", () => {
-  void startSoundtrack();
-  journeyIntro.hidden = false;
-  document.body.classList.add("story-started");
-  journeyIntro.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
-});
+document.querySelector("#begin-journey").addEventListener("click", beginJourney);
 
 function updateStoryPosition(index) {
-  counter.innerHTML = `${String(index + 1).padStart(2, "0")} <span>/</span> 05`;
+  counter.innerHTML = `${String(index + 1).padStart(2, "0")} <span>/</span> ${String(chapters.length).padStart(2, "0")}`;
   progressFill.style.width = `${((index + 1) / chapters.length) * 100}%`;
 }
 
 function clearChapterTimers(chapter) {
-  window.clearTimeout(chapter.transitionTimer);
+  window.clearTimeout(chapter.effectTimer);
   window.clearTimeout(chapter.revealTimer);
   window.clearTimeout(chapter.advanceTimer);
 }
 
 function showDetails(chapter) {
-  if (chapter.classList.contains("is-revealed")) return;
+  if (chapter.classList.contains("is-revealed") || !chapter.classList.contains("is-active")) return;
   const video = chapter.querySelector("video");
   const art = chapter.querySelector(".chapter-art");
   clearChapterTimers(chapter);
@@ -91,10 +153,11 @@ function showDetails(chapter) {
   info.classList.add("is-revealed");
   info.querySelector(".event-reveal").removeAttribute("aria-hidden");
   info.querySelector(".waiting-copy").setAttribute("aria-hidden", "true");
-  video.pause();
-  video.currentTime = Math.min(video.currentTime, video.duration || video.currentTime);
+  if (video) {
+    video.pause();
+    if (Number.isFinite(video.duration)) video.currentTime = Math.min(video.currentTime, video.duration);
+  }
 
-  // Keep each revealed event on screen for a moment before advancing automatically.
   if (Number(chapter.dataset.index) < chapters.length - 1) {
     chapter.advanceTimer = window.setTimeout(() => advanceChapter(chapter), DETAILS_DWELL_MS);
   }
@@ -104,9 +167,11 @@ function resetChapter(chapter) {
   clearChapterTimers(chapter);
   const video = chapter.querySelector("video");
   const art = chapter.querySelector(".chapter-art");
-  video.pause();
-  video.currentTime = 0;
-  chapter.classList.remove("is-active", "is-revealed", "is-playing", "video-fallback");
+  if (video) {
+    video.pause();
+    try { video.currentTime = 0; } catch { /* Media metadata may not be ready yet. */ }
+  }
+  chapter.classList.remove("is-active", "is-exiting", "is-revealed", "is-playing", "video-fallback");
   art.classList.remove("is-revealed", "is-playing", "is-transitioning", "video-fallback");
   const info = chapter.querySelector(".chapter-info");
   info.classList.remove("is-revealed");
@@ -123,8 +188,17 @@ function exitJourney() {
   document.body.classList.remove("event-mode", "story-started");
   document.documentElement.style.overflow = savedRootOverflow;
   progressFill.style.width = "0";
-  counter.innerHTML = `01 <span>/</span> 05`;
+  counter.innerHTML = `01 <span>/</span> ${String(chapters.length).padStart(2, "0")}`;
   window.scrollTo({ top: 0, behavior: reduceMotion.matches ? "auto" : "smooth" });
+}
+
+function warmNextClip(chapter) {
+  const nextIndex = Number(chapter.dataset.index) + 1;
+  const nextVideo = chapters[nextIndex]?.querySelector("video");
+  if (nextVideo && nextVideo.preload !== "auto") {
+    nextVideo.preload = "auto";
+    nextVideo.load();
+  }
 }
 
 function startChapter(chapter, restart = false) {
@@ -139,44 +213,58 @@ function startChapter(chapter, restart = false) {
 
   chapter.dataset.started = "true";
   updateStoryPosition(Number(chapter.dataset.index));
-  if (reduceMotion.matches) {
-    showDetails(chapter);
+  chapter.classList.add("is-playing");
+  art.classList.add("is-playing", "is-transitioning");
+  chapter.effectTimer = window.setTimeout(() => art.classList.remove("is-transitioning"), SCENE_EFFECT_MS);
+  warmNextClip(chapter);
+
+  if (!video) {
+    chapter.revealTimer = window.setTimeout(() => showDetails(chapter), chapter.querySelector(".chapter-illustration") ? 6000 : 7800);
     return;
   }
 
-  // Event-specific artwork plays as a transition splash before the clean event film.
-  art.classList.add("is-transitioning");
-  chapter.transitionTimer = window.setTimeout(() => {
-    if (!chapter.classList.contains("is-active")) return;
-    art.classList.remove("is-transitioning");
-    chapter.transitionTimer = window.setTimeout(() => {
+  video.preload = "auto";
+  const setClipProgress = () => {
+    if (Number.isFinite(video.duration) && video.duration > 0) {
+      chapter.querySelector(".film-progress span").style.setProperty("--clip-duration", `${video.duration}s`);
+    }
+  };
+  video.addEventListener("loadedmetadata", setClipProgress, { once: true });
+  setClipProgress();
+  const playback = video.play();
+  if (playback?.catch) {
+    playback.catch(() => {
       if (!chapter.classList.contains("is-active")) return;
-      chapter.classList.add("is-playing");
-      art.classList.add("is-playing");
-      chapter.revealTimer = window.setTimeout(() => showDetails(chapter), FILM_FALLBACK_MS);
-      const playback = video.play();
-      if (playback && typeof playback.catch === "function") {
-        playback.catch(() => art.classList.add("video-fallback"));
-      }
-    }, TRANSITION_FADE_MS);
-  }, TRANSITION_MS);
+      art.classList.add("video-fallback");
+      chapter.revealTimer = window.setTimeout(() => showDetails(chapter), 6500);
+    });
+  }
+  chapter.revealTimer = window.setTimeout(() => {
+    if (video.paused || !video.duration || video.readyState < 2) {
+      art.classList.add("video-fallback");
+      showDetails(chapter);
+    }
+  }, 16000);
 }
 
 function advanceChapter(chapter) {
   if (!chapter.classList.contains("is-active")) return;
-  const nextIndex = Number(chapter.dataset.index) + 1;
-  if (nextIndex >= chapters.length) {
-    exitJourney();
-    return;
-  }
+  const next = chapters[Number(chapter.dataset.index) + 1];
+  if (!next) return;
 
-  resetChapter(chapter);
-  const nextChapter = chapters[nextIndex];
-  nextChapter.classList.add("is-active");
-  startChapter(nextChapter);
+  clearChapterTimers(chapter);
+  chapter.classList.add("is-exiting");
+  chapter.classList.remove("is-active");
+  const oldVideo = chapter.querySelector("video");
+  if (oldVideo) oldVideo.pause();
+  next.classList.add("is-active");
+  startChapter(next);
+  window.setTimeout(() => resetChapter(chapter), reduceMotion.matches ? 0 : 460);
 }
 
-document.querySelector("#start-story").addEventListener("click", () => {
+function startStory() {
+  window.clearTimeout(autoStartTimer);
+  if (!chapters.length || eventJourney.classList.contains("is-live")) return;
   void startSoundtrack();
   chapters.forEach(resetChapter);
   chapters[0].classList.add("is-active");
@@ -187,21 +275,27 @@ document.querySelector("#start-story").addEventListener("click", () => {
   savedRootOverflow = document.documentElement.style.overflow;
   document.documentElement.style.overflow = "hidden";
   startChapter(chapters[0]);
-});
+}
 
-for (const chapter of chapters) {
+for (const chapter of allChapters) {
   const video = chapter.querySelector("video");
   const art = chapter.querySelector(".chapter-art");
-  video.addEventListener("ended", () => showDetails(chapter));
-  video.addEventListener("error", () => art.classList.add("video-fallback"));
-  chapter.querySelector("[data-advance]").addEventListener("click", () => advanceChapter(chapter));
-  chapter.querySelector("[data-replay]").addEventListener("click", () => startChapter(chapter, true));
+  if (video) {
+    video.addEventListener("ended", () => showDetails(chapter));
+    video.addEventListener("error", () => {
+      art.classList.add("video-fallback");
+      if (chapter.classList.contains("is-active")) chapter.revealTimer = window.setTimeout(() => showDetails(chapter), 6500);
+    });
+  }
+  chapter.querySelector("[data-advance]")?.addEventListener("click", () => advanceChapter(chapter));
+  chapter.querySelector("[data-replay]")?.addEventListener("click", () => startChapter(chapter, true));
 }
 
 document.querySelectorAll("[data-next]").forEach(button => {
   button.addEventListener("click", () => advanceChapter(button.closest(".event-chapter")));
 });
 document.querySelectorAll("[data-exit]").forEach(button => button.addEventListener("click", exitJourney));
+document.querySelector("#start-story").addEventListener("click", startStory);
 
 soundToggle.addEventListener("click", async () => {
   if (audio.paused) {
@@ -213,3 +307,6 @@ soundToggle.addEventListener("click", async () => {
     setSoundControl(false);
   }
 });
+
+// The letter is the opening splash; the film starts on its own after the brief title card.
+window.setTimeout(revealLetter, 650);

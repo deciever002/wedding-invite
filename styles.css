@@ -487,3 +487,37 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Personalized event selection and the continuous, full-frame story player. */
+.event-chapter[hidden], .admin-option[hidden] { display: none !important; }
+.event-journey.is-live .event-chapter.is-exiting { z-index: 2; display: block; opacity: 0; transition: opacity .46s ease; pointer-events: none; }
+.event-journey.is-live .event-chapter.is-active { z-index: 1; animation-duration: .46s; }
+.event-journey.is-live .chapter-film { object-fit: cover; }
+.event-journey.is-live .chapter-art.is-playing.is-transitioning .event-effects { display: block !important; opacity: 1; }
+.event-journey.is-live .chapter-art.is-revealed .intro-title { opacity: 0; pointer-events: none; }
+.event-journey.is-live .film-progress span { animation-duration: var(--clip-duration, 6s); }
+.event-journey.is-live .chapter-art.is-playing .film-progress span { animation-duration: var(--clip-duration, 6s); }
+.event-journey.is-live .chapter-info.is-revealed .next-event[hidden] { display: none; }
+.event-journey.is-live .scene-skip,
+.event-journey.is-live .journey-exit,
+.event-journey.is-live .chapter-info.is-revealed .replay-action,
+.event-journey.is-live .chapter-info.is-revealed .next-event { display: none; }
+[data-sukhmani-when] { white-space: pre-line; }
+.event-effects--sukhmani { background: radial-gradient(ellipse at 50% 72%, rgba(241,204,137,.2), transparent 55%); }
+.prayer-glow { position: absolute; width: 42%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255,225,162,.55), rgba(255,191,115,.12) 46%, transparent 73%); filter: blur(8px); opacity: 0; }
+.prayer-glow--one { top: 25%; left: 28%; }
+.prayer-glow--two { top: 48%; right: 7%; width: 30%; }
+.chapter-art.is-transitioning .prayer-glow--one { animation: prayer-bloom 2.2s ease-out both; }
+.chapter-art.is-transitioning .prayer-glow--two { animation: prayer-bloom 2.4s .22s ease-out both; }
+.prayer-petal { position: absolute; top: 57%; left: 50%; color: #f8d9a4; font-size: 17px; opacity: 0; text-shadow: 0 0 13px rgba(255,221,160,.75); }
+.prayer-petal--one { --petal-x: -118px; }.prayer-petal--two { --petal-x: 83px; }.prayer-petal--three { --petal-x: 4px; }
+.chapter-art.is-transitioning .prayer-petal { animation: prayer-petal-drift 3.4s ease-out both; }
+.chapter-art.is-transitioning .prayer-petal--two { animation-delay: .16s; }.chapter-art.is-transitioning .prayer-petal--three { animation-delay: .3s; }
+@keyframes prayer-bloom { 0% { opacity: 0; transform: scale(.5); } 24% { opacity: .9; } 100% { opacity: 0; transform: scale(1.45); } }
+@keyframes prayer-petal-drift { 0% { opacity: 0; transform: translate(0, 70px) rotate(0); } 20% { opacity: .8; } 100% { opacity: 0; transform: translate(var(--petal-x), -180px) rotate(90deg); } }
+
+@media (max-width: 760px) {
+  .event-journey.is-live .chapter-film { object-fit: cover; }
+  .event-journey.is-live .chapter-info.is-revealed { bottom: max(13px, env(safe-area-inset-bottom)); max-height: calc(100svh - 105px); }
+  .event-journey.is-live .event-details strong { line-height: 1.42; }
+}
