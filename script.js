@@ -30,6 +30,8 @@ let autoIntroTimer;
 let autoStartTimer;
 const DETAILS_DWELL_MS = 2800;
 const SCENE_EFFECT_MS = reduceMotion.matches ? 0 : 2100;
+const COVER_ENVELOPE_DWELL_MS = 1500;
+const COVER_LETTER_DWELL_MS = 5500;
 
 function configureInvitation() {
   const selected = requestedEvents?.size ? requestedEvents : new Set(defaults);
@@ -128,7 +130,7 @@ function revealLetter() {
   cover.classList.add("is-open");
   openInvite.setAttribute("aria-expanded", "true");
   window.clearTimeout(autoIntroTimer);
-  autoIntroTimer = window.setTimeout(beginJourney, 2550);
+  autoIntroTimer = window.setTimeout(beginJourney, COVER_LETTER_DWELL_MS);
 }
 
 function beginJourney() {
@@ -326,4 +328,4 @@ soundToggle.addEventListener("click", async () => {
 });
 
 // The letter is the opening splash; the film starts on its own after the brief title card.
-window.setTimeout(revealLetter, 650);
+window.setTimeout(revealLetter, COVER_ENVELOPE_DWELL_MS);
