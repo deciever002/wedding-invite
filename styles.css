@@ -604,3 +604,12 @@ body.event-mode .story-counter { right: auto; left: 50%; transform: translateX(-
   .letter-copy { font-size: 13px; line-height: 1.36; }
   .letter-date { margin-top: 7px; margin-bottom: 1px; }
 }
+
+/* Keep the letter action close to its date instead of pinning it to the paper edge. */
+.cover .letter-paper { padding-bottom: 26px; }
+.cover .letter-continue { position: relative; bottom: auto; left: auto; align-self: center; margin: 9px 0 0; transform: translateY(12px); }
+.cover.is-open .letter-continue { transform: translateY(0); }
+
+@media (max-width: 760px) {
+  .cover .letter-paper { padding-bottom: 18px; }
+}
